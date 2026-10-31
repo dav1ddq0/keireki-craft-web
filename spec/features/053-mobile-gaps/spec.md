@@ -56,3 +56,17 @@ Verification: `tests/bottomSheet.test.ts` (the autofocus, no sheet ring, room fo
 without the fix. In a phone viewport, Firefox: the focus lands on the sheet with no ring, Tab rings
 the close button clear of the first card; Chromium: the close button, no ring. WebKit cannot run on
 this machine: the user checks on the iPhone. `qa:consistency` 12/12, `qa:e2e` 123/123 (Chromium).
+
+## 3 · Pinned, the style preview let scrolled content show at its bottom corners
+
+Found while fixing 1: the strip's bottom corners are rounded and nothing covered the form scrolling
+under them, so pinned, the fields showed through the two corners.
+
+Fix: a third solid shadow of the page colour, one corner radius (`--shape-lg`, 20 px) down, covers
+them; unpinned it stays inside the step's 24 px gap to the gallery. The strip's 1 px border is now
+the first shadow, so neither cover hides it (the top border was hidden before).
+
+Verification: the `qa:consistency` check now also measures what a pinned element paints below
+itself against the distance to what follows it; a 32 px shadow fails it (`div.strip paints 32px
+down, 24px to section.block`, Pixel 7). Screenshots pinned at an iPhone 15 Pro viewport (Chromium).
+

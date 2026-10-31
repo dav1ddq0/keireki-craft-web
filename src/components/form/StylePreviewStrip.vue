@@ -40,8 +40,13 @@ const { t } = useI18n()
   background: var(--surface-2);
   /* Pinned, scrolled content must not peek out above the strip (the form's top padding) or round
      its top corners: the ::before covers the band above, the shadow the corners. Both reach exactly
-     the wizard's gap, which unpinned is the space to the step bar, so they never paint over it. */
-  box-shadow: 0 calc(-1 * var(--wizard-gap, 16px)) 0 0 var(--bg), 0 0 0 1px var(--border);
+     the wizard's gap, which unpinned is the space to the step bar, so they never paint over it.
+     Below, a shadow one corner radius down covers the bottom corners; unpinned it stays inside the
+     step's 24 px gap to the gallery. The border goes first, so neither hides it. */
+  box-shadow:
+    0 0 0 1px var(--border),
+    0 calc(-1 * var(--wizard-gap, 16px)) 0 0 var(--bg),
+    0 var(--shape-lg) 0 0 var(--bg);
 }
 
 .strip::before {

@@ -75,22 +75,28 @@ const COLLECT = `(() => {
     rows.get(key).push(Math.round(r.height))
   }
   out.uneven = [...rows.values()].filter((h) => Math.max(...h) - Math.min(...h) > 2).map((h) => h.join('/'))
-  // What a pinned element of the form paints above itself (a solid shadow, a ::before) stays out of
-  // the step bar it sits under, unpinned (spec 053: the style preview painted over the bar's base).
+  // What a pinned element of the form paints around itself (a solid shadow, a ::before) stays out
+  // of the step bar above it and of what follows it, unpinned (spec 053: the style preview painted
+  // over the bar's base).
   out.covers = []
   for (const el of document.querySelectorAll('.wizard *')) {
     if (!visible(el) || getComputedStyle(el).position !== 'sticky') continue
     const bar = el.closest('.wizard').firstElementChild
     if (!bar || bar.contains(el)) continue
     const r = el.getBoundingClientRect(), gap = r.top - bar.getBoundingClientRect().bottom
-    let reach = 0
+    let up = 0, down = 0
     for (const m of getComputedStyle(el).boxShadow.matchAll(/(-?[\\d.]+)px (-?[\\d.]+)px ([\\d.]+)px (-?[\\d.]+)px/g)) {
       const [, , y, blur, spread] = m.map(Number)
-      reach = Math.max(reach, -y + blur + spread)
+      up = Math.max(up, -y + blur + spread)
+      down = Math.max(down, y + blur + spread)
     }
     const b = getComputedStyle(el, '::before')
-    if (b.content !== 'none' && b.position === 'absolute' && b.bottom.endsWith('px')) reach = Math.max(reach, parseFloat(b.bottom) + parseFloat(b.height) - r.height)
-    if (reach > gap + 0.5) out.covers.push(label(el) + ' paints ' + Math.round(reach) + 'px up, ' + Math.round(gap) + 'px to the bar')
+    if (b.content !== 'none' && b.position === 'absolute' && b.bottom.endsWith('px')) up = Math.max(up, parseFloat(b.bottom) + parseFloat(b.height) - r.height)
+    if (up > gap + 0.5) out.covers.push(label(el) + ' paints ' + Math.round(up) + 'px up, ' + Math.round(gap) + 'px to the bar')
+    let next = el.nextElementSibling
+    while (next && !visible(next)) next = next.nextElementSibling
+    const below = next ? next.getBoundingClientRect().top - r.bottom : Infinity
+    if (down > below + 0.5) out.covers.push(label(el) + ' paints ' + Math.round(down) + 'px down, ' + Math.round(below) + 'px to ' + label(next))
   }
   if (document.documentElement.scrollWidth > innerWidth + 1) out.overflow.push({ l: 'the page scrolls sideways', by: document.documentElement.scrollWidth - innerWidth })
   return out
@@ -219,7 +225,7 @@ const COLLECT = `(() => {
   check('scale', 'blurred shadows are elevation tokens', !seen.shadow.size, none(seen.shadow))
   check('controls', 'no input shows the browser\'s own grey', !seen.input.size, none(seen.input))
   check('controls', 'the template cards of a row are one height', !seen.uneven.size, none(seen.uneven))
-  check('controls', 'a pinned element does not paint over the step bar', !seen.covers.size, none(seen.covers))
+  check('controls', 'a pinned element paints over neither the step bar nor what follows it', !seen.covers.size, none(seen.covers))
   check('controls', 'nothing sticks out of its box or scrolls sideways', !seen.overflow.size, none(seen.overflow))
   const variants = new Map()
   for (const key of seen.btn.keys()) { const [kind, look] = key.split(' | '); if (!variants.has(kind)) variants.set(kind, new Set()); variants.get(kind).add(look) }
