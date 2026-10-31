@@ -30,9 +30,12 @@ function onBackdropClick(event: MouseEvent) {
 </script>
 
 <template>
+  <!-- autofocus: the sheet itself takes the focus on open, not the close button, which Safari would
+       ring as if reached by keyboard (WebKit bug 247416). Tab still goes to it. -->
   <dialog
     ref="dialog"
     class="sheet"
+    autofocus
     closedby="any"
     :aria-labelledby="titleId"
     @close="emit('close')"
@@ -70,6 +73,11 @@ function onBackdropClick(event: MouseEvent) {
   display: flex;
 }
 
+/* The sheet is not a control: focused on open, it shows no ring of its own. */
+.sheet:focus-visible {
+  outline: none;
+}
+
 .sheet::backdrop {
   background: rgb(0 0 0 / 0.32);
 }
@@ -94,7 +102,8 @@ function onBackdropClick(event: MouseEvent) {
   align-items: center;
   justify-content: space-between;
   flex-shrink: 0;
-  padding: 4px 8px 2px 16px;
+  /* Room below for the close button's keyboard focus ring (2 px + 2 px offset), off the content. */
+  padding: 4px 8px 8px 16px;
 }
 
 .title {
