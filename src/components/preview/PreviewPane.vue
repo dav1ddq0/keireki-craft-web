@@ -84,6 +84,8 @@ function fitToPanel() {
 }
 
 const templateName = computed(() => getTemplate(cv.templateId).name)
+/** The chip takes you to the template gallery: not shown while the gallery is already on screen (spec 054). */
+const showTemplateChip = computed(() => !isCompact.value && !(ui.step === 'style' && !ui.previewExpanded))
 
 /*
  * The page is scaled from its top-left corner inside a frame the size of the scaled page, so the
@@ -102,7 +104,7 @@ const scaleStyle = computed(() => ({ transform: `scale(${effectiveZoom.value})` 
     <header v-if="!isPhone" class="bar">
       <h2 class="title" :class="{ 'sr-only': !isCompact }">{{ t('preview.title') }}</h2>
       <button
-        v-if="!isCompact"
+        v-if="showTemplateChip"
         type="button"
         class="chip"
         :aria-label="t('preview.changeTemplate', { name: templateName })"
@@ -180,6 +182,8 @@ const scaleStyle = computed(() => ({ transform: `scale(${effectiveZoom.value})` 
   display: flex;
   align-items: center;
   gap: 4px;
+  /* Stays on the right when the template chip is not shown. */
+  margin-inline-start: auto;
   font: var(--type-label-large);
   color: var(--md-on-surface-variant);
 }

@@ -21,6 +21,21 @@ describe('preview toolbar (spec 018)', () => {
     expect(ui.step).toBe('style')
   })
 
+  it('hides the template button while the template gallery is on screen (spec 054)', async () => {
+    const ui = useUiStore()
+    const wrapper = mountPane()
+    ui.goTo('style')
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('button.chip').exists()).toBe(false)
+    // The full-width preview hides the form: there the button brings the gallery back.
+    ui.setPreviewExpanded(true)
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('button.chip').exists()).toBe(true)
+    ui.goTo('experience')
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('button.chip').exists()).toBe(true)
+  })
+
   it('zooms in steps of 10 % within its bounds', async () => {
     const wrapper = mountPane()
     const [out, into] = wrapper.findAll('button.zoom-btn')
