@@ -75,6 +75,23 @@ const COLLECT = `(() => {
     rows.get(key).push(Math.round(r.height))
   }
   out.uneven = [...rows.values()].filter((h) => Math.max(...h) - Math.min(...h) > 2).map((h) => h.join('/'))
+  // What a pinned element of the form paints above itself (a solid shadow, a ::before) stays out of
+  // the step bar it sits under, unpinned (spec 053: the style preview painted over the bar's base).
+  out.covers = []
+  for (const el of document.querySelectorAll('.wizard *')) {
+    if (!visible(el) || getComputedStyle(el).position !== 'sticky') continue
+    const bar = el.closest('.wizard').firstElementChild
+    if (!bar || bar.contains(el)) continue
+    const r = el.getBoundingClientRect(), gap = r.top - bar.getBoundingClientRect().bottom
+    let reach = 0
+    for (const m of getComputedStyle(el).boxShadow.matchAll(/(-?[\\d.]+)px (-?[\\d.]+)px ([\\d.]+)px (-?[\\d.]+)px/g)) {
+      const [, , y, blur, spread] = m.map(Number)
+      reach = Math.max(reach, -y + blur + spread)
+    }
+    const b = getComputedStyle(el, '::before')
+    if (b.content !== 'none' && b.position === 'absolute' && b.bottom.endsWith('px')) reach = Math.max(reach, parseFloat(b.bottom) + parseFloat(b.height) - r.height)
+    if (reach > gap + 0.5) out.covers.push(label(el) + ' paints ' + Math.round(reach) + 'px up, ' + Math.round(gap) + 'px to the bar')
+  }
   if (document.documentElement.scrollWidth > innerWidth + 1) out.overflow.push({ l: 'the page scrolls sideways', by: document.documentElement.scrollWidth - innerWidth })
   return out
 })()`
@@ -86,7 +103,7 @@ const COLLECT = `(() => {
   process.env.BASE = server.url
   const { chromium, check, results, open, settled, startSample, step } = require('./e2e/lib.cjs')
   const browser = await chromium.launch()
-  const seen = { btnHeight: new Map(), size: new Map(), weight: new Map(), radius: new Map(), shadow: new Map(), input: new Map(), overflow: new Map(), uneven: new Map(), btn: new Map(), field: new Map(), title: new Map() }
+  const seen = { btnHeight: new Map(), size: new Map(), weight: new Map(), radius: new Map(), shadow: new Map(), input: new Map(), overflow: new Map(), uneven: new Map(), covers: new Map(), btn: new Map(), field: new Map(), title: new Map() }
   const note = (map, key, where) => { if (!map.has(key)) map.set(key, []); if (map.get(key).length < 3) map.get(key).push(where) }
   let views = 0
 
@@ -110,6 +127,7 @@ const COLLECT = `(() => {
     for (const i of d.inputs) note(seen.input, i.l, where)
     for (const o of d.overflow) note(seen.overflow, `${o.l} (+${o.by}px)`, where)
     for (const row of d.uneven) note(seen.uneven, `a row of cards of ${row} px`, where)
+    for (const c of d.covers) note(seen.covers, c, where)
     // The height of a touch-sized call to action (48 and up) is its own; the look of every variant is not.
     for (const b of d.buttons) {
       note(seen.btn, `${b.l} | ${b.radius} ${b.size} w${b.weight}`, where)
@@ -201,6 +219,7 @@ const COLLECT = `(() => {
   check('scale', 'blurred shadows are elevation tokens', !seen.shadow.size, none(seen.shadow))
   check('controls', 'no input shows the browser\'s own grey', !seen.input.size, none(seen.input))
   check('controls', 'the template cards of a row are one height', !seen.uneven.size, none(seen.uneven))
+  check('controls', 'a pinned element does not paint over the step bar', !seen.covers.size, none(seen.covers))
   check('controls', 'nothing sticks out of its box or scrolls sideways', !seen.overflow.size, none(seen.overflow))
   const variants = new Map()
   for (const key of seen.btn.keys()) { const [kind, look] = key.split(' | '); if (!variants.has(kind)) variants.set(kind, new Set()); variants.get(kind).add(look) }

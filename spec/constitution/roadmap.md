@@ -68,6 +68,8 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
 
+- **053** · Visual gaps on the phone (the style preview over the step bar, a focus ring on the sheets' close button)
+
 
 ## Backlog / ideas 💡
 

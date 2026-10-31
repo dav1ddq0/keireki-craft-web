@@ -107,9 +107,11 @@ watch(
 
 <style scoped>
 .wizard {
+  /* Read by the pinned style preview (StylePreviewStrip), which covers exactly this gap. */
+  --wizard-gap: 16px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--wizard-gap);
   min-height: 0;
   /* No bottom padding: the sticky footer anchors to the padding box, so any padding here leaves a gap where content shows through under the bar. */ padding: 16px 16px 0;
   overflow: auto;
@@ -209,7 +211,7 @@ watch(
 /* A phone held sideways has ~390px of height: give it to the fields. */
 @media (max-height: 500px) and (orientation: landscape) {
   .wizard {
-    gap: 8px;
+    --wizard-gap: 8px;
     padding-top: 8px;
   }
 

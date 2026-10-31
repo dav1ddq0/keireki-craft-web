@@ -1,0 +1,4 @@
+# 053 · Tasks
+
+- [x] 1 · The pinned style preview no longer paints over the step bar
+- [ ] 2 · The bottom sheets open without a focus ring on the close button

@@ -38,9 +38,19 @@ const { t } = useI18n()
   padding: 8px;
   border-radius: var(--shape-lg);
   background: var(--surface-2);
-  /* The first shadow paints over the form's top padding, where scrolled content would peek out
-     above the pinned strip. */
-  box-shadow: 0 -2em 0 0 var(--bg), 0 0 0 1px var(--border);
+  /* Pinned, scrolled content must not peek out above the strip (the form's top padding) or round
+     its top corners: the ::before covers the band above, the shadow the corners. Both reach exactly
+     the wizard's gap, which unpinned is the space to the step bar, so they never paint over it. */
+  box-shadow: 0 calc(-1 * var(--wizard-gap, 16px)) 0 0 var(--bg), 0 0 0 1px var(--border);
+}
+
+.strip::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: 100%;
+  height: var(--wizard-gap, 16px);
+  background: var(--bg);
 }
 
 /* The page keeps its real size and is shrunk with a transform; the box takes the scaled size. */
