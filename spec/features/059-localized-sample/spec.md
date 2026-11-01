@@ -20,8 +20,9 @@ Decisions (asked of the user):
     it: Giulia Ferri, Bologna (Università di Bologna); pt: Inês Carvalho, Porto (Universidade do
     Porto); de: Lena Schneider, München (TU München). Companies are made up.
   - Phones are made up: the UK (Ofcom 07700 900xxx) and French (ARCEP 01 99 xx xx xx) ones from
-    the ranges kept for fiction; the Italian, Portuguese and German ones start their subscriber
-    number with 0, which no line has. E-mails are at example.com.
+    the ranges kept for fiction. The Italian and Portuguese ones are invented and were not checked
+    against those countries' numbering plans; the German one starts its subscriber number with 0,
+    which German numbering does not allow. E-mails are at example.com.
 - `WelcomeView.vue` and `DocumentList.vue` pass the interface language.
 
 ## Verification
