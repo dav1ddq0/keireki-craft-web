@@ -442,4 +442,53 @@ async function noLayoutShift(browser) {
   await p.context().close()
 }
 
-module.exports = { mainFlow, customAndStyle, exportImport, documentsAndPrefs, phone, widths, renameMigration, noLayoutShift }
+/** G · Improve a text with AI (spec 063): the prompt is the CV one, it is copied, and the assistant opens with it. */
+async function aiImprove(browser) {
+  const B = 'ai'
+  const p = await open(browser, { permissions: ['clipboard-read', 'clipboard-write'] })
+  // The assistants are real sites: answer their pages here so the check needs no network.
+  await p.context().route(/^https:\/\/(claude\.ai|chatgpt\.com|gemini\.google\.com)\//, (route) => route.fulfill({ status: 200, contentType: 'text/html', body: '<title>assistant</title>' }))
+  await p.getByRole('button', { name: /En blanco/ }).click()
+  await settled(p)
+  await step(p, 'Experiencia')
+  await p.getByRole('button', { name: /Añadir experiencia/ }).click()
+  const button = p.getByRole('button', { name: 'Mejorar con IA' }).last()
+  check(B, 'the button is disabled while the description is empty', await button.isDisabled())
+  const text = 'Lideré un equipo de cuatro personas en el rediseño de la plataforma de pagos.'
+  await p.getByLabel('Descripción').last().fill(text)
+  check(B, 'it enables once there is text', await until(() => button.isEnabled(), { timeout: 2000 }))
+  await button.click()
+  const items = await p.getByRole('menuitem').allInnerTexts()
+  check(B, 'the menu offers Claude, ChatGPT and Gemini', items.length === 3 && /Claude/.test(items[0]) && /ChatGPT/.test(items[1]) && /Gemini/.test(items[2]), items.join(' | '))
+
+  const popup = p.context().waitForEvent('page')
+  await p.getByRole('menuitem', { name: /Claude/ }).click()
+  const opened = await popup
+  const clip = await p.evaluate(() => navigator.clipboard.readText())
+  check(B, 'the copied prompt asks to improve this CV text and carries it', /^Mejora la redacción de la descripción de un puesto de mi CV/.test(clip) && clip.endsWith('Texto:\n' + text))
+  check(B, 'the prompt has nothing to do with a news site', !/europa ?press|noticia/i.test(clip))
+  const url = new URL(opened.url())
+  check(B, 'Claude opens with that same prompt as its only parameter', url.origin + url.pathname === 'https://claude.ai/new' && url.searchParams.get('q') === clip && [...url.searchParams.keys()].join() === 'q', opened.url().slice(0, 80))
+  check(B, 'the notice says it was opened and copied', await until(() => p.getByText(/Claude abierto con el prompt/).isVisible(), { timeout: 2000 }))
+  await opened.close()
+
+  await step(p, 'Resumen')
+  check(B, 'the summary has the button too, disabled while empty', await p.getByRole('button', { name: 'Mejorar con IA' }).isDisabled())
+  check(B, 'no console errors', p.errs.length === 0, p.errs.join(' | '))
+  await p.context().close()
+
+  const m = await open(browser, { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true })
+  await m.getByRole('button', { name: /Desde un ejemplo/ }).tap()
+  await m.getByRole('button', { name: /Cambiar de paso/ }).tap()
+  await m.locator('dialog[open] button', { hasText: 'Experiencia' }).tap()
+  await until(async () => !(await m.locator('dialog[open]').count()), { timeout: 2000 })
+  await m.getByRole('button', { name: 'Mejorar con IA' }).first().tap()
+  const sheet = await until(() => m.locator('dialog[open]').innerText(), { timeout: 2000 })
+  check(B, 'on the phone the menu is a bottom sheet with the three assistants', /Mejorar con IA[\s\S]*Claude[\s\S]*ChatGPT[\s\S]*Gemini/.test(sheet || ''))
+  await m.keyboard.press('Escape')
+  check(B, 'the sheet closes with Escape', await until(async () => !(await m.locator('dialog[open]').count()), { timeout: 2000 }))
+  check(B, 'no console errors on the phone', m.errs.length === 0, m.errs.join(' | '))
+  await m.context().close()
+}
+
+module.exports = { aiImprove, mainFlow, customAndStyle, exportImport, documentsAndPrefs, phone, widths, renameMigration, noLayoutShift }

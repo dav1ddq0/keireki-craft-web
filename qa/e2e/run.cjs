@@ -44,6 +44,7 @@ const { ROOT, startServer } = require('../lib/server.cjs')
       ...(ENGINE === 'chromium' ? [timed('rename', () => flows.renameMigration(browser))] : []),
       timed('layout', () => flows.noLayoutShift(browser)),
       timed('phone', () => flows.phone(browser)),
+      timed('ai', () => flows.aiImprove(browser)),
       timed('widths', () => flows.widths(browser)),
       timed('transitions', () => transitions.run(browser)),
       timed('fidelity', () => fidelity.run(browser, outDir)),

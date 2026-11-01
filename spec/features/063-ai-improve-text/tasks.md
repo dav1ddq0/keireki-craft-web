@@ -5,6 +5,6 @@
 - [x] 3 · `AiImproveButton.vue`: menu, copy, fallback, announcement, phone sheet — commit: d47189b
 - [x] 4 · Use it in summary, experience, education and custom entries — commit: 4ab921d
 - [x] 5 · i18n strings in the six languages — commit: d47189b
-- [ ] 6 · Tests for the button (done: `tests/aiImproveButton.test.ts`) and a browser check in `qa/` (pending)
+- [x] 6 · Tests for the button (`tests/aiImproveButton.test.ts`) and a browser check in `qa/e2e` (block `ai`)
 - [ ] 7 · `npm test`, `typecheck`, `build`, `qa:*`; check each of the three assistants' pages by hand
 - [ ] 8 · README, spec verification, and move 063 to "Done" in `constitution/roadmap.md`
