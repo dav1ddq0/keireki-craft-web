@@ -3,8 +3,8 @@
 - [x] 1 · `core/aiPrompt.ts` (six languages, four kinds) and its tests  — commit: d92bb8d
 - [x] 2 · `core/aiAssistants.ts` (the list)  — commit: 8583f28
 - [x] 3 · `AiImproveButton.vue`: menu, copy, fallback, announcement, phone sheet — commit: d47189b
-- [ ] 4 · Use it in summary, experience, education and custom entries
+- [x] 4 · Use it in summary, experience, education and custom entries
 - [x] 5 · i18n strings in the six languages — commit: d47189b
-- [ ] 6 · Tests for the button and a browser check in `qa/`
+- [ ] 6 · Tests for the button (done: `tests/aiImproveButton.test.ts`) and a browser check in `qa/` (pending)
 - [ ] 7 · `npm test`, `typecheck`, `build`, `qa:*`; check each of the three assistants' pages by hand
 - [ ] 8 · README, spec verification, and move 063 to "Done" in `constitution/roadmap.md`

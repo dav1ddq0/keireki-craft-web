@@ -13,14 +13,14 @@ import { buildImprovePrompt, type ImproveKind } from '@/core/aiPrompt'
 import { AI_ASSISTANTS, type AiAssistant } from '@/core/aiAssistants'
 import BottomSheet from '@/components/ui/BottomSheet.vue'
 
-const props = defineProps<{ text: string; kind: ImproveKind }>()
+const props = defineProps<{ text?: string; kind: ImproveKind }>()
 
 const cv = useCvStore()
 const { t } = useI18n()
 const isPhone = useIsPhone()
 const reasonId = useId()
 
-const hasText = computed(() => props.text.trim().length > 0)
+const hasText = computed(() => (props.text ?? '').trim().length > 0)
 const open = ref(false)
 /** Set when the clipboard failed: the prompt to copy by hand, and where to go afterwards. */
 const manual = ref<{ assistant: AiAssistant; prompt: string } | null>(null)
@@ -59,7 +59,7 @@ function announce(message: string) {
 }
 
 async function choose(assistant: AiAssistant) {
-  const prompt = buildImprovePrompt(props.kind, props.text, cv.data.meta.language)
+  const prompt = buildImprovePrompt(props.kind, props.text ?? '', cv.data.meta.language)
   try {
     await navigator.clipboard.writeText(prompt)
   } catch {
@@ -94,6 +94,7 @@ onBeforeUnmount(() => {
 })
 
 const sparkle = 'M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z'
+const external = 'M7 17L17 7M9 7h8v8'
 </script>
 
 <template>
@@ -112,7 +113,7 @@ const sparkle = 'M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z'
       <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path :d="sparkle" fill="currentColor" /></svg>
       {{ t('ai.button') }}
     </button>
-    <span v-if="!hasText" :id="reasonId" class="sr-only">{{ t('ai.empty') }}</span>
+    <span v-if="!hasText" :id="reasonId" class="notice">{{ t('ai.empty') }}</span>
     <span class="notice" role="status">{{ notice }}</span>
 
     <component
@@ -130,14 +131,16 @@ const sparkle = 'M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z'
             class="item m3-state"
             @click="choose(assistant)"
           >
-            {{ t('ai.item', { name: assistant.name }) }}
+            <span>{{ t('ai.item', { name: assistant.name }) }}</span>
+            <svg class="out" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path :d="external" /></svg>
           </button>
         </div>
         <div v-if="manual" class="manual">
           <p class="intro">{{ t('ai.copyFailed') }}</p>
           <textarea readonly rows="5" :aria-label="t('ai.promptLabel')" :value="manual.prompt" @focus="($event.target as HTMLTextAreaElement).select()" />
-          <button type="button" class="item m3-state" @click="openAssistant(manual.assistant)">
-            {{ t('ai.openNamed', { name: manual.assistant.name }) }}
+          <button type="button" class="item item--primary m3-state" @click="openAssistant(manual.assistant)">
+            <span>{{ t('ai.openNamed', { name: manual.assistant.name }) }}</span>
+            <svg class="out" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path :d="external" /></svg>
           </button>
         </div>
       </div>
@@ -179,15 +182,6 @@ const sparkle = 'M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z'
   font: var(--type-body-small);
 }
 
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
 .popup {
   position: absolute;
   z-index: 30;
@@ -224,6 +218,9 @@ const sparkle = 'M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z'
 
 .item {
   --container: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   min-height: 48px;
   padding: 0 16px;
   border: 0;
@@ -232,6 +229,20 @@ const sparkle = 'M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z'
   font: var(--type-body-large);
   text-align: start;
   cursor: pointer;
+}
+
+.item--primary {
+  color: var(--md-primary);
+  font-weight: 500;
+}
+
+.out {
+  flex: none;
+  color: var(--md-on-surface-variant);
+}
+
+.item--primary .out {
+  color: inherit;
 }
 
 .manual {

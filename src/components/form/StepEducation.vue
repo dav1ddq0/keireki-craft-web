@@ -4,6 +4,7 @@ import { useCvStore } from '@/stores/cv'
 import { formatMonth, useI18n } from '@/i18n'
 import { createEducation } from '@/core/factory'
 import BaseField from '@/components/ui/BaseField.vue'
+import AiImproveButton from '@/components/ui/AiImproveButton.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import SortableList from '@/components/ui/SortableList.vue'
 import EntryCard from '@/components/ui/EntryCard.vue'
@@ -58,6 +59,7 @@ function entrySubtitle(item: EducationEntry): string {
             <BaseField v-slot="{ id }" :label="t('experience.description')">
               <textarea :id="id" v-model="item.description" rows="2" />
             </BaseField>
+            <AiImproveButton :text="item.description" kind="education" />
 
             <div class="actions">
               <BaseButton size="sm" variant="danger" :aria-label="t('actions.removeNamed', { name: entryTitle(item) })" @click="cv.data.education.splice(index, 1)">

@@ -6,6 +6,7 @@ import { useI18n } from '@/i18n'
 import { createCustomEntry } from '@/core/factory'
 import { SECTION_PRESET_IDS, createSectionFromPreset } from '@/core/sectionPresets'
 import BaseField from '@/components/ui/BaseField.vue'
+import AiImproveButton from '@/components/ui/AiImproveButton.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import SortableList from '@/components/ui/SortableList.vue'
 import BottomSheet from '@/components/ui/BottomSheet.vue'
@@ -90,6 +91,7 @@ function addBlank() {
                   <BaseField v-slot="{ id }" :label="t('custom.entryDescription')">
                     <textarea :id="id" v-model="entry.description" rows="2" />
                   </BaseField>
+                  <AiImproveButton :text="entry.description" kind="custom" />
                   <div class="actions">
                     <BaseButton size="sm" variant="danger" :aria-label="entry.title ? t('actions.removeNamed', { name: entry.title }) : undefined" @click="item.entries.splice(entryIndex, 1)">
                       {{ t('actions.remove') }}

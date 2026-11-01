@@ -4,6 +4,7 @@ import { useCvStore } from '@/stores/cv'
 import { formatMonth, useI18n } from '@/i18n'
 import { createExperience } from '@/core/factory'
 import BaseField from '@/components/ui/BaseField.vue'
+import AiImproveButton from '@/components/ui/AiImproveButton.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import SortableList from '@/components/ui/SortableList.vue'
 import EntryCard from '@/components/ui/EntryCard.vue'
@@ -59,6 +60,7 @@ function entrySubtitle(item: ExperienceEntry): string {
             <BaseField v-slot="{ id }" :label="t('experience.description')">
               <textarea :id="id" v-model="item.description" rows="3" />
             </BaseField>
+            <AiImproveButton :text="item.description" kind="experience" />
 
             <BaseField
               v-slot="{ id }"
