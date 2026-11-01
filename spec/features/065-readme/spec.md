@@ -1,6 +1,6 @@
 # 065 · A README that shows the product
 
-**Status:** in progress
+**Status:** done
 
 Asked for by the user: improve the README after looking at how the best-known projects on GitHub
 write theirs.

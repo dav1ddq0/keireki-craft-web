@@ -75,6 +75,7 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 - **062** · The CV as an image: download as JPG, copy to the clipboard
 - **063** · Improve a text with AI: an icon button under the summary and the descriptions opens Claude, ChatGPT or Gemini with a ready prompt in the link (copied too)
 - **064** · Phone dock: icons-only switch, and in preview a quick template switch, copy image and Export as an icon
+- **065** · A README that shows the product: demo GIF, the templates, features, privacy, the QA scripts
 
 ## Next 🔜
 
