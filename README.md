@@ -27,9 +27,9 @@ The app is deliberately usable with the backend permanently absent: nothing in
 phases 1–4 talks to a server, with two exceptions. The phone's default country asks
 `ipwho.is` for the country code of the connection (spec 056): a single request, the answer
 holds no IP, nothing is stored, and if it fails the editor works the same. And the "Improve
-with AI" button (spec 063) opens Claude, ChatGPT or Gemini in a new tab with a prompt that
-carries the text of that one field in the link; it only happens when you choose an assistant,
-and the app itself makes no request.
+with AI" button (spec 063) copies a prompt and opens Claude, ChatGPT or Gemini in a new tab;
+for ChatGPT the text of that one field also travels in the link. It only happens when you choose
+an assistant, and the app itself makes no request.
 
 ## Architecture
 

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /**
- * "Improve with AI" for one text of the CV (spec 063). It opens the chosen assistant with a ready
- * prompt in its box (only this field's text, in the CV's language) and also copies it, in case the
- * assistant ignores the link's prompt. The app makes no request itself. If the clipboard is not
+ * "Improve with AI" for one text of the CV (spec 063). It copies a ready prompt (only this field's
+ * text, in the CV's language) and opens the chosen assistant; ChatGPT also gets it in its box through
+ * the link, for Claude and Gemini the user pastes. The app makes no request itself. If the clipboard is not
  * available the prompt is shown to be copied by hand. A popover on desktop, a bottom sheet on the phone.
  */
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId } from 'vue'
@@ -69,7 +69,7 @@ async function choose(assistant: AiAssistant) {
   }
   closeMenu(false)
   openAssistant(assistant, prompt)
-  announce(t('ai.copied', { name: assistant.name }))
+  announce(t(assistant.prefill ? 'ai.copied' : 'ai.copiedPaste', { name: assistant.name }))
 }
 
 function onMenuKey(event: KeyboardEvent) {
@@ -134,7 +134,7 @@ const external = 'M7 17L17 7M9 7h8v8'
             class="item m3-state"
             @click="choose(assistant)"
           >
-            <span>{{ t('ai.item', { name: assistant.name }) }}</span>
+            <span>{{ t(assistant.prefill ? 'ai.item' : 'ai.itemCopy', { name: assistant.name }) }}</span>
             <svg class="out" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path :d="external" /></svg>
           </button>
         </div>

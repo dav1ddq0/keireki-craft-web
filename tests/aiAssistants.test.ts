@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { AI_ASSISTANTS, MAX_LINK_LENGTH, assistantLink } from '@/core/aiAssistants'
 
+const by = (id: string) => AI_ASSISTANTS.find((a) => a.id === id)!
+
 describe('AI assistants (spec 063)', () => {
   it('offers Claude, ChatGPT and Gemini', () => {
     expect(AI_ASSISTANTS.map((a) => a.id)).toEqual(['claude', 'chatgpt', 'gemini'])
@@ -14,18 +16,20 @@ describe('AI assistants (spec 063)', () => {
     }
   })
 
-  it('opens each one with the prompt as the only parameter, encoded', () => {
+  it('puts the prompt in the link only for ChatGPT, the one that fills its box from it', () => {
+    expect(AI_ASSISTANTS.filter((a) => a.prefill).map((a) => a.id)).toEqual(['chatgpt'])
     const prompt = 'Mejora: "esto" & aquello\n\nTexto:\nñandú'
-    for (const assistant of AI_ASSISTANTS) {
-      const url = new URL(assistantLink(assistant, prompt))
-      expect([...url.searchParams.keys()]).toEqual(['q'])
-      expect(url.searchParams.get('q')).toBe(prompt)
-      expect(url.origin + url.pathname).toBe(new URL(assistant.url).origin + new URL(assistant.url).pathname)
-    }
+    const url = new URL(assistantLink(by('chatgpt'), prompt))
+    expect(url.origin + url.pathname).toBe('https://chatgpt.com/')
+    expect([...url.searchParams.keys()]).toEqual(['q'])
+    expect(url.searchParams.get('q')).toBe(prompt)
   })
 
-  it('opens the plain page, with no text in the link, when the prompt would make it too long', () => {
-    const long = 'x'.repeat(MAX_LINK_LENGTH)
-    for (const assistant of AI_ASSISTANTS) expect(assistantLink(assistant, long)).toBe(assistant.url)
+  it('opens Claude and Gemini on their plain page, with no text in the link', () => {
+    for (const id of ['claude', 'gemini']) expect(assistantLink(by(id), 'secreto')).toBe(by(id).url)
+  })
+
+  it('opens ChatGPT plain when the prompt would make the link too long', () => {
+    expect(assistantLink(by('chatgpt'), 'x'.repeat(MAX_LINK_LENGTH))).toBe(by('chatgpt').url)
   })
 })

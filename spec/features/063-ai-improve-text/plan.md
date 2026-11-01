@@ -2,17 +2,18 @@
 
 ## Approach
 
-Open-with-prompt, plus copy as a fallback: the app builds a prompt (pure function), opens the
-assistant with it in `?q=`, and copies it too. The app itself makes no request, so the CSP stays
-as it is; the text of one field reaches the assistant the user chose, on their click. The UI is one small component reused by the four fields.
+Copy, plus open-with-prompt where the assistant supports it: the app builds a prompt (pure
+function), copies it, and opens the assistant; only ChatGPT also gets it in `?q=` (the other two
+ignore it, checked by hand). The app itself makes no request, so the CSP stays as it is. The UI is one small component reused by the four fields.
 
 ## Implementation
 
 1. `src/core/aiPrompt.ts`: `buildImprovePrompt(kind, text, language)`; a template per CV language
    (en, es, fr, it, pt, de) and per kind (`summary`, `experience`, `education`, `custom`). Pure,
    tested. Falls back to English for an unknown language.
-2. `src/core/aiAssistants.ts`: the list `{ id, name, url, withPrompt }` and `assistantLink`, which
-   adds the encoded prompt and falls back to the plain page above 6000 characters.
+2. `src/core/aiAssistants.ts`: the list `{ id, name, url, prefill? }` and `assistantLink`, which adds
+   the encoded prompt for assistants with `prefill` (ChatGPT) and falls back to the plain page above
+   6000 characters.
 3. `src/components/ui/AiImproveButton.vue`: button + menu (a popover on desktop, `BottomSheet` on
    the phone), copy with `navigator.clipboard.writeText`, fallback box with the prompt, notice
    announced in a live region. Props: `text`, `kind`.
@@ -26,9 +27,9 @@ as it is; the text of one field reaches the assistant the user chose, on their c
 
 ## Decisions
 
-- **`?q=` plus copy** (owner's decision, replacing "copy only"): one click and no pasting. The CV
-  text of that field is in the URL (browser history, the assistant's logs); the copy covers a
-  provider that ignores or changes the parameter.
+- **`?q=` only where it works** (owner's decision after trying it): Claude and Gemini ignored it,
+  so sending text in their URL would cost privacy for nothing. ChatGPT fills its box, so it gets
+  the prompt in the link too; the copy covers it if that changes.
 - **Length cap**: long prompts open the plain page, so a link never grows past what browsers and
   servers accept.
 - **Prompt in the CV's language**: the user's text is in that language, and the answer should be.
