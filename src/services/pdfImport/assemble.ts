@@ -357,9 +357,9 @@ const INDENT = 6
 /** A category line is smaller than the next line by this factor at least. */
 const CATEGORY_SIZE = 1.015
 
-/** A level of language, on its own: "Nativo", "C1", "Intermediate", "B2 – C1". */
+/** A level of language, on its own: "Nativo", "C1", "Intermediate", "B2 – C1", "Muttersprache" (spec 060). */
 const LANGUAGE_LEVEL_RE =
-  /^(?:nativ[oa]|native|bilingüe|bilingual|fluid[oa]|fluent|avanzad[oa]|advanced|intermedi[oa]|intermediate|básic[oa]|basic|elementary|proficient|lengua materna|mother tongue|[abc][12](?:\s*[-–]\s*[abc][12])?)$/iu
+  /^(?:nativ[oa]|native|bilingüe|bilingual|fluid[oa]|fluent|avanzad[oa]|advanced|intermedi[oa]|intermediate|básic[oa]|basic|elementary|proficient|lengua materna|mother tongue|langue maternelle|natif|bilingue|courant|avancé|intermédiaire|débutant|notions|madrelingua|fluente|avanzato|elementare|língua materna|avançado|intermédio|muttersprache|muttersprachlich|zweisprachig|fließend|verhandlungssicher|gute kenntnisse|grundkenntnisse|[abc][12](?:\s*[-–]\s*[abc][12])?)$/iu
 
 /**
  * Splits a section into entries at each line carrying a date range: in practice

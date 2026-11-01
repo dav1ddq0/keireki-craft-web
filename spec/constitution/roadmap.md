@@ -70,6 +70,7 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 - **057** · French, Italian, Portuguese and German: the CV and the interface
 - **058** · The GitHub and LinkedIn links show the networks' own marks
 - **059** · The sample CV in the interface language, with a local person for each
+- **060** · PDF import in French, Italian, Portuguese and German (headings, months, levels)
 
 ## Next 🔜
 

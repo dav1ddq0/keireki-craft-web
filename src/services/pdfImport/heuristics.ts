@@ -445,11 +445,14 @@ export function parseDateRange(text: string): ParsedRange | null {
 export function toPartialIso(token: string): string {
   const year = token.match(/\d{4}/)?.[0]
   if (!year) return ''
+  // Accents off: "févr." → "fevr", "März" → "marz", "août" → "aout".
   const monthWord = token
     .toLowerCase()
-    .match(/[a-záéíóú]{3,}/)?.[0]
+    .normalize('NFD')
+    .replace(/\p{M}/gu, '')
+    .match(/\p{L}{3,}/u)?.[0]
     ?.slice(0, 4)
-  const numericMonth = token.match(/\b(\d{1,2})[/-]\d{4}/)?.[1]
+  const numericMonth = token.match(/\b(\d{1,2})[/.-]\d{4}/)?.[1]
 
   const month =
     numericMonth ??
