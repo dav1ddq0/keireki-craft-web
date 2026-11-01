@@ -14,6 +14,7 @@ import BaseButton from '@/components/ui/BaseButton.vue'
 import FileDropzone from '@/components/import/FileDropzone.vue'
 import SortableList from '@/components/ui/SortableList.vue'
 import PhotoCropDialog from './PhotoCropDialog.vue'
+import PhoneField from './PhoneField.vue'
 
 const cv = useCvStore()
 const { t } = useI18n()
@@ -92,7 +93,7 @@ async function removePhoto() {
       </BaseField>
 
       <BaseField v-slot="{ id }" :label="t('personal.phone')">
-        <input :id="id" v-model="cv.data.personal.phone" type="tel" autocomplete="tel" />
+        <PhoneField v-model="cv.data.personal.phone" :input-id="id" />
       </BaseField>
 
       <BaseField v-slot="{ id }" :label="t('personal.location')">
