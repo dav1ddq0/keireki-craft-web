@@ -1,6 +1,6 @@
 # 064 · Phone dock: icons, copy and a quick template switch
 
-**Status:** in progress
+**Status:** implemented ✅
 
 ## What it does
 
@@ -28,22 +28,35 @@ for both where the thumb is.
 
 ## Acceptance criteria
 
-- [ ] Phone (≤ 640 px): the switch buttons show only their icon, both named (`aria-label`, `title`).
-- [ ] Preview mode: switch · template button · Copy image · Export (icon, named "Exportar"), in one row
+- [x] Phone (≤ 640 px): the switch buttons show only their icon, both named (`aria-label`, `title`).
+- [x] Preview mode: switch · template button · Copy image · Export (icon, named "Exportar"), in one row
       that fits a 320 px screen without horizontal scroll.
-- [ ] Copy image is no longer drawn over the page on the phone; its state ("Copiado", the failure and
+- [x] Copy image is no longer drawn over the page on the phone; its state ("Copiado", the failure and
       the Share fallback of spec 062) shows above the dock without moving the row.
-- [ ] Where images cannot be copied, the copy button is absent and the template button takes its room.
-- [ ] The template button names the current template and opens the sheet; the sheet lists every
+- [x] Where images cannot be copied, the copy button is absent and the template button takes its room.
+- [x] The template button names the current template and opens the sheet; the sheet lists every
       template with its thumbnail and name, marks the current one, and a tap applies it (undoable,
       autosaved) and keeps the sheet open. Closing returns focus to the button.
-- [ ] Picking a template from the sheet does exactly what picking it in the style step does
+- [x] Picking a template from the sheet does exactly what picking it in the style step does
       (one shared store action).
-- [ ] Edit mode: Next with its text; on the last step, Export with its text (spec 027).
-- [ ] Desktop and tablet are unchanged.
-- [ ] `qa:consistency` and `qa:e2e` (phone block) pass.
+- [x] Edit mode: Next with its text; on the last step, Export with its text (spec 027).
+- [x] Desktop and tablet are unchanged.
+- [x] `qa:consistency` and `qa:e2e` (phone block) pass.
 
 ## Out of scope
 
 - Filters or descriptions in the sheet (the style step keeps them).
 - Changing colours or fonts from the dock.
+
+## Verification
+
+`tests/mobileDock.test.ts` (icons-only switch, the preview row, the template sheet from the dock, Export
+as an icon), `templateSheet.test.ts` (every template, the current one pressed, a pick applies like the
+style step and keeps the sheet open), `copyCvImage.test.ts` (compact look, state bubble) and
+`cvStore.test.ts` (`chooseTemplate`). The phone block of `qa/e2e` checks the dock in Chromium: icons
+only, copy image in the dock and not over the page, no horizontal scroll, a pick in the sheet changes
+the template. `npm test` 860, `qa:e2e` 147/147, `qa:consistency` 13/13, `qa:security` 55/55,
+typecheck and build clean. Screenshots at 390 and 320 px, dark theme.
+
+**Known limit:** at 320 px the template button has room for the accent and the arrow only; the
+template's name is still in its accessible name, and the sheet names every template.
