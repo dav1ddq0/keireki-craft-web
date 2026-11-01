@@ -16,6 +16,7 @@ const { busy, failed, run } = useCvExport()
 const OPTIONS: { kind: ExportKind; title: string; hint: string }[] = [
   { kind: 'pdfFile', title: 'exportView.pdfFile', hint: 'exportView.pdfFileHint' },
   { kind: 'pdf', title: 'exportView.pdf', hint: 'exportView.pdfHint' },
+  { kind: 'jpg', title: 'exportView.image', hint: 'exportView.imageHint' },
   { kind: 'html', title: 'exportView.html', hint: 'exportView.htmlHint' },
   { kind: 'json', title: 'exportView.json', hint: 'exportView.jsonHint' },
 ]
@@ -37,6 +38,9 @@ async function pick(kind: ExportKind) {
     <div v-if="failed === 'pdfFile'" class="failed" role="alert">
       <p class="failed-text">{{ t('exportView.pdfFileFailed') }}</p>
       <button type="button" class="retry" :disabled="busy !== null" @click="pick('pdf')">{{ t('exportView.printInstead') }}</button>
+    </div>
+    <div v-if="failed === 'jpg'" class="failed" role="alert">
+      <p class="failed-text">{{ t('exportView.imageFailed') }}</p>
     </div>
     <ul class="list">
       <li v-for="option in OPTIONS" :key="option.kind">

@@ -75,6 +75,7 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 
 ## Next 🔜
 
+- **062** · The CV as an image: download as JPG, copy to the clipboard
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
 
 

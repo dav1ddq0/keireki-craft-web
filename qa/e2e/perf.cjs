@@ -222,6 +222,34 @@ async function run(browser, outDir) {
   const directDoc = await pdfjs.getDocument({ data: new Uint8Array(fs.readFileSync(directFile)) }).promise
   check(B, 'direct PDF: same page count as the printed one', directDoc.numPages === doc.numPages, `${directDoc.numPages} vs ${doc.numPages}`)
 
+  // ---- JPG download (spec 062) ------------------------------------------------------------------
+  t0 = Date.now()
+  const [jpg] = await Promise.all([p.waitForEvent('download', { timeout: 30000 }), p.getByRole('button', { name: 'Descargar JPG' }).click()])
+  const jpgBytes = fs.readFileSync(await jpg.path())
+  timing(B, 'Descargar JPG → file (long CV)', Date.now() - t0, 4000)
+  // The pages stacked at 192 dpi, 8 pt apart: each band of the image must carry ink, or a page was lost.
+  const bands = await p.evaluate(async ([b64, pages]) => {
+    const bytes = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0))
+    const bitmap = await createImageBitmap(new Blob([bytes], { type: 'image/jpeg' }))
+    const canvas = Object.assign(document.createElement('canvas'), { width: bitmap.width, height: bitmap.height })
+    const ctx = canvas.getContext('2d', { willReadFrequently: true })
+    ctx.drawImage(bitmap, 0, 0)
+    const scale = 192 / 72
+    const ink = []
+    for (let i = 0; i < pages; i++) {
+      const top = Math.round(i * (841.89 + 8) * scale)
+      const { data } = ctx.getImageData(0, top, bitmap.width, Math.floor(841.89 * scale))
+      let dark = 0
+      for (let j = 0; j < data.length; j += 4) if (data[j] + data[j + 1] + data[j + 2] < 600) dark++
+      ink.push(dark / (data.length / 4))
+    }
+    return { width: bitmap.width, height: bitmap.height, ink }
+  }, [jpgBytes.toString('base64'), directDoc.numPages])
+  const jpgHeight = Math.floor((directDoc.numPages * 841.89 + (directDoc.numPages - 1) * 8) * (192 / 72))
+  check(B, 'JPG: a JPEG named "<name> – CV.jpg"', jpgBytes[0] === 0xff && jpgBytes[1] === 0xd8 && /– CV\.jpg$/.test(jpg.suggestedFilename()), jpg.suggestedFilename())
+  check(B, 'JPG: every page of the direct PDF, one under the other, at 192 dpi', bands.width === 1587 && Math.abs(bands.height - jpgHeight) <= 1, `${bands.width}×${bands.height}, expected 1587×${jpgHeight}`)
+  check(B, 'JPG: no page drawn blank', bands.ink.every((share) => share > 0.003), bands.ink.map((share) => (share * 100).toFixed(1) + ' %').join(', '))
+
   // ---- JSON / HTML downloads --------------------------------------------------------------------
   for (const kind of ['JSON', 'HTML']) {
     t0 = Date.now()

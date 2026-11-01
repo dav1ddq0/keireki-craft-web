@@ -32,6 +32,7 @@ useModalDialog(dialog, () => props.open)
 const FORMATS: { kind: ExportKind; title: string; hint: string }[] = [
   { kind: 'pdfFile', title: 'exportView.pdfFile', hint: 'exportView.pdfFileHint' },
   { kind: 'pdf', title: 'exportView.pdf', hint: 'exportView.pdfHint' },
+  { kind: 'jpg', title: 'exportView.image', hint: 'exportView.imageHint' },
   { kind: 'html', title: 'exportView.html', hint: 'exportView.htmlHint' },
   { kind: 'json', title: 'exportView.json', hint: 'exportView.jsonHint' },
 ]
@@ -42,6 +43,7 @@ const missing = computed(() => ui.steps.filter((id) => stepStatus(cv.data, id).s
 const ACTIONS: Record<ExportKind, string> = {
   pdfFile: 'exportView.downloadPdf',
   pdf: 'exportView.print',
+  jpg: 'exportView.downloadImage',
   html: 'exportDialog.downloadHtml',
   json: 'exportDialog.downloadJson',
 }
@@ -54,8 +56,8 @@ function goFix(id: StepId) {
 
 async function confirm() {
   // A direct download keeps the dialog open while it is built, so a failure can be shown here.
-  if (kind.value === 'pdfFile') {
-    if (await run('pdfFile')) dialog.value?.close()
+  if (kind.value === 'pdfFile' || kind.value === 'jpg') {
+    if (await run(kind.value)) dialog.value?.close()
     return
   }
   // The print dialog must not open on top of a modal that is still showing.
@@ -95,6 +97,7 @@ function printInstead() {
       <p class="failed-text">{{ t('exportView.pdfFileFailed') }}</p>
       <BaseButton variant="secondary" @click="printInstead">{{ t('exportView.printInstead') }}</BaseButton>
     </div>
+    <p v-if="failed === 'jpg'" class="failed failed-text" role="alert">{{ t('exportView.imageFailed') }}</p>
 
     <section class="check" :aria-label="t('exportDialog.checkTitle')">
       <h3 class="check-title">{{ t('exportDialog.checkTitle') }}</h3>

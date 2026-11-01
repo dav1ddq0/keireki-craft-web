@@ -54,6 +54,19 @@ const { overflows: sideTooLong } = useSideColumnFit()
 
       <li class="option">
         <div>
+          <h3 class="option-title">{{ t('exportView.image') }}</h3>
+          <p class="option-hint">{{ t('exportView.imageHint') }}</p>
+        </div>
+        <BaseButton :disabled="busy !== null" @click="run('jpg')">
+          {{ busy === 'jpg' ? t('exportView.preparing') : t('exportView.downloadImage') }}
+        </BaseButton>
+        <div v-if="failed === 'jpg'" class="failed" role="alert">
+          <NoticeBar tone="warning">{{ t('exportView.imageFailed') }}</NoticeBar>
+        </div>
+      </li>
+
+      <li class="option">
+        <div>
           <h3 class="option-title">{{ t('exportView.html') }}</h3>
           <p class="option-hint">{{ t('exportView.htmlHint') }}</p>
         </div>
