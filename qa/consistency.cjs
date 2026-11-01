@@ -85,7 +85,10 @@ const COLLECT = `(() => {
     if (!bar || bar.contains(el)) continue
     const r = el.getBoundingClientRect(), gap = r.top - bar.getBoundingClientRect().bottom
     let up = 0, down = 0
-    for (const m of getComputedStyle(el).boxShadow.matchAll(/(-?[\\d.]+)px (-?[\\d.]+)px ([\\d.]+)px (-?[\\d.]+)px/g)) {
+    // One layer at a time (commas inside rgb() are not separators); an inset shadow paints inside.
+    for (const layer of getComputedStyle(el).boxShadow.split(/,(?![^(]*\\))/)) {
+      const m = !layer.includes('inset') && layer.match(/(-?[\\d.]+)px (-?[\\d.]+)px ([\\d.]+)px (-?[\\d.]+)px/)
+      if (!m) continue
       const [, , y, blur, spread] = m.map(Number)
       up = Math.max(up, -y + blur + spread)
       down = Math.max(down, y + blur + spread)
