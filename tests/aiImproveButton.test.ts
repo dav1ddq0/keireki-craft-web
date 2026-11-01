@@ -38,7 +38,7 @@ beforeEach(() => {
 })
 
 describe('AiImproveButton (spec 063)', () => {
-  it('copies a CV-improvement prompt with this field only and opens Claude on its plain page, to paste', async () => {
+  it('copies a CV-improvement prompt with this field only and opens Claude with that same prompt', async () => {
     useCvStore().data.meta.language = 'es'
     const wrapper = mountButton()
     await wrapper.get('.trigger').trigger('click')
@@ -51,8 +51,9 @@ describe('AiImproveButton (spec 063)', () => {
     expect(copied[0]!.endsWith(`Texto:\n${TEXT}`)).toBe(true)
     expect(copied[0]).not.toMatch(/Europa ?Press|noticia|europapress/i)
 
-    expect(opened).toEqual([['https://claude.ai/new', '_blank', 'noopener,noreferrer']])
-    expect(wrapper.get('[role="status"]').text()).toBe('Prompt copiado. Pégalo en Claude (Ctrl+V).')
+    const oneLine = copied[0]!.replace(/\s*\n+\s*/g, ' ')
+    expect(opened).toEqual([[`https://claude.ai/new?q=${encodeURIComponent(oneLine)}`, '_blank', 'noopener']])
+    expect(wrapper.get('[role="status"]').text()).toBe('Claude abierto con el prompt. También está copiado: pégalo si no aparece.')
   })
 
   it('writes the prompt in the CV language, not the interface language', async () => {
@@ -62,7 +63,7 @@ describe('AiImproveButton (spec 063)', () => {
     await wrapper.findAll('[role="menuitem"]')[1]!.trigger('click')
     await flushPromises()
     expect(copied[0]).toContain('Antworte auf Deutsch')
-    expect(opened[0]![0]).toBe(`https://chatgpt.com/?q=${encodeURIComponent(copied[0]!)}`)
+    expect(opened[0]![0]).toBe(`https://chatgpt.com/?q=${encodeURIComponent(copied[0]!.replace(/\s*\n+\s*/g, ' '))}`)
     expect(wrapper.get('[role="status"]').text()).toBe('ChatGPT abierto con el prompt. También está copiado: pégalo si no aparece.')
   })
 
@@ -81,17 +82,18 @@ describe('AiImproveButton (spec 063)', () => {
     expect(wrapper.get(`#${trigger.attributes('aria-describedby')}`).text()).toBe('Escribe un texto para poder mejorarlo con IA')
   })
 
-  it('shows the prompt to copy by hand when the clipboard fails, and opens nothing yet', async () => {
+  it('shows the prompt to copy by hand when the clipboard fails (the tab is already open)', async () => {
     stubBrowser(false)
     const wrapper = mountButton()
     await wrapper.get('.trigger').trigger('click')
     await wrapper.findAll('[role="menuitem"]')[2]!.trigger('click')
     await flushPromises()
-    expect(opened).toEqual([])
+    expect(opened).toHaveLength(1)
     const box = wrapper.get('.manual textarea').element as HTMLTextAreaElement
     expect(box.value).toContain(TEXT)
     await wrapper.get('.item--primary').trigger('click')
-    expect(opened[0]![0]).toBe('https://gemini.google.com/app')
+    expect(opened).toHaveLength(2)
+    expect(opened[0]![0]).toMatch(/^https:\/\/gemini\.google\.com\/app\?hl=es&q=/)
   })
 
   it('moves between the options with the arrows and closes with Escape', async () => {

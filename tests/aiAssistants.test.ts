@@ -16,20 +16,22 @@ describe('AI assistants (spec 063)', () => {
     }
   })
 
-  it('puts the prompt in the link only for ChatGPT, the one that fills its box from it', () => {
-    expect(AI_ASSISTANTS.filter((a) => a.prefill).map((a) => a.id)).toEqual(['chatgpt'])
-    const prompt = 'Mejora: "esto" & aquello\n\nTexto:\nñandú'
-    const url = new URL(assistantLink(by('chatgpt'), prompt))
-    expect(url.origin + url.pathname).toBe('https://chatgpt.com/')
-    expect([...url.searchParams.keys()]).toEqual(['q'])
-    expect(url.searchParams.get('q')).toBe(prompt)
+  it('opens each one with the prompt as `q`, encoded, on one line', () => {
+    const prompt = 'Mejora: "esto" & aquello\n\nTexto:\nñandú\n- uno\n- dos'
+    for (const assistant of AI_ASSISTANTS) {
+      const url = new URL(assistantLink(assistant, prompt, 'es'))
+      expect(url.origin + url.pathname).toBe(new URL(assistant.url).origin + new URL(assistant.url).pathname)
+      expect(url.searchParams.get('q')).toBe('Mejora: "esto" & aquello Texto: ñandú - uno - dos')
+      expect(url.href).not.toContain('%0A')
+    }
   })
 
-  it('opens Claude and Gemini on their plain page, with no text in the link', () => {
-    for (const id of ['claude', 'gemini']) expect(assistantLink(by(id), 'secreto')).toBe(by(id).url)
+  it('tells Gemini the interface language, as the Europa Press menu does', () => {
+    expect(new URL(assistantLink(by('gemini'), 'x', 'fr')).searchParams.get('hl')).toBe('fr')
+    expect(new URL(assistantLink(by('claude'), 'x', 'fr')).searchParams.has('hl')).toBe(false)
   })
 
-  it('opens ChatGPT plain when the prompt would make the link too long', () => {
-    expect(assistantLink(by('chatgpt'), 'x'.repeat(MAX_LINK_LENGTH))).toBe(by('chatgpt').url)
+  it('opens the plain page, with no text in the link, when the prompt would make it too long', () => {
+    for (const assistant of AI_ASSISTANTS) expect(assistantLink(assistant, 'x'.repeat(MAX_LINK_LENGTH))).toBe(assistant.url)
   })
 })

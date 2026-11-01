@@ -467,17 +467,23 @@ async function aiImprove(browser) {
   const clip = await p.evaluate(() => navigator.clipboard.readText())
   check(B, 'the copied prompt asks to improve this CV text and carries it', /^Mejora la redacción de la descripción de un puesto de mi CV/.test(clip) && clip.endsWith('Texto:\n' + text))
   check(B, 'the prompt has nothing to do with a news site', !/europa ?press|noticia/i.test(clip))
-  check(B, 'Claude opens its plain page, with no text in the link, for the user to paste', opened.url() === 'https://claude.ai/new', opened.url().slice(0, 80))
-  check(B, 'the notice says to paste it', await until(() => p.getByText(/Prompt copiado\. Pégalo en Claude/).isVisible(), { timeout: 2000 }))
+  const oneLine = clip.replace(/\s*\n+\s*/g, ' ')
+  const link = (u) => { const x = new URL(u); return { base: x.origin + x.pathname, q: x.searchParams.get('q'), keys: [...x.searchParams.keys()].join() } }
+  const claude = link(opened.url())
+  check(B, 'Claude opens with the prompt, on one line, as its only parameter', claude.base === 'https://claude.ai/new' && claude.q === oneLine && claude.keys === 'q', opened.url().slice(0, 80))
+  check(B, 'the notice says it was opened and copied', await until(() => p.getByText(/Claude abierto con el prompt/).isVisible(), { timeout: 2000 }))
   await opened.close()
 
-  // ChatGPT is the one that fills its box from the link.
-  await button.click()
-  const popupGpt = p.context().waitForEvent('page')
-  await p.getByRole('menuitem', { name: /ChatGPT/ }).click()
-  const gpt = new URL((await popupGpt).url())
-  check(B, 'ChatGPT opens with that same prompt as its only parameter', gpt.origin + gpt.pathname === 'https://chatgpt.com/' && gpt.searchParams.get('q') === clip && [...gpt.searchParams.keys()].join() === 'q', gpt.href.slice(0, 80))
-  await (await popupGpt).close()
+  // The other two take the same prompt; Gemini is also told the language.
+  for (const [name, base, keys] of [['ChatGPT', 'https://chatgpt.com/', 'q'], ['Gemini', 'https://gemini.google.com/app', 'hl,q']]) {
+    await button.click()
+    const next = p.context().waitForEvent('page')
+    await p.getByRole('menuitem', { name: new RegExp(name) }).click()
+    const tab = await next
+    const l = link(tab.url())
+    check(B, `${name} opens with that same prompt`, l.base === base && l.q === oneLine && l.keys === keys, tab.url().slice(0, 80))
+    await tab.close()
+  }
 
   await step(p, 'Resumen')
   check(B, 'the summary has the button too, disabled while empty', await p.getByRole('button', { name: 'Mejorar con IA' }).isDisabled())

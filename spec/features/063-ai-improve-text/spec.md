@@ -8,11 +8,11 @@ Next to the free-text fields of the CV (professional summary, and the descriptio
 experience, education and custom-section entry) there is an icon-only "AI" button, like the Copy one: the text "Improve with AI" shows as a tooltip on hover. It opens a small menu with
 three assistants (Claude, ChatGPT, Gemini). Choosing one:
 
-1. copies to the clipboard a ready prompt that asks to improve the wording of **that field's text
-   only**, keeping the facts, and
-2. opens the assistant in a new tab. ChatGPT, the only one that fills its box from the link
-   (`?q=`), receives the prompt already written; for Claude and Gemini the user pastes it. A
-   short notice says which: "Prompt copied. Paste it in Claude (Ctrl+V)."
+1. opens the assistant in a new tab, in the click itself, with a ready prompt in its link (`?q=`, on
+   one line; Gemini also gets `hl`), as the Europa Press AI menu does, asking to improve the
+   wording of **that field's text only**, keeping the facts, and
+2. copies the prompt to the clipboard too, in case the assistant does not fill its box, with a
+   short notice: "Opened with the prompt. It is also copied: paste it if it does not show."
 
 The user pastes the improved text back by hand. The prompt is written in the **CV's content
 language** (not the interface's), so the answer comes back in the language of the CV.
@@ -21,20 +21,18 @@ language** (not the interface's), so the answer comes back in the language of th
 
 Many people know what they did but not how to word it. The assistants do this well, but the user
 has to know what to ask for. A tested prompt one click away makes the result better and more
-consistent. Decision of the owner (changed from the first draft): where the assistant supports it,
-the prompt travels in the link so the user does not have to paste. Checked by hand: only ChatGPT
-does, so **only for ChatGPT is the text of that one field sent in the URL**, on the user's click;
-Claude and Gemini open their plain page. The app itself makes no request and needs no CSP change.
+consistent. Decision of the owner (changed from the first draft): the prompt travels in the link so
+the user does not have to paste. **The text of that one field is sent in the URL to the assistant the
+user chose**, only on their click. The app itself makes no request and needs no CSP change.
 
 ## Acceptance criteria
 
 - [x] The button appears on: summary, experience description, education description, custom entry
       description. Not on names, contacts or dates.
 - [x] The button is disabled, with a stated reason, while the field is empty.
-- [x] The menu lists three assistants (Claude, ChatGPT, Gemini). Choosing one copies the prompt and
-      opens it in a new tab (`noopener`, `noreferrer`); ChatGPT gets the prompt as its `q`
-      parameter, Claude and Gemini their plain page. The notice says whether to paste.
-- [x] A ChatGPT prompt that would make the link longer than 6000 characters opens the plain page (no
+- [x] The menu lists three assistants (Claude, ChatGPT, Gemini). Choosing one opens it in a new tab
+      (`noopener`) with the prompt as `q`, on one line, and copies the prompt too; the notice says so.
+- [x] A prompt that would make the link longer than 6000 characters opens the plain page (no
       text in the link) and relies on the copied prompt.
 - [x] The only text that leaves is the prompt, and only when the user chooses an assistant. The prompt contains only the text of that field (and its kind: summary / experience…), never
       name, e-mail, phone, address or other fields.
@@ -62,10 +60,11 @@ Claude and Gemini open their plain page. The app itself makes no request and nee
 `tests/aiPrompt.test.ts` (the prompt in six languages, only the field's text), `aiAssistants.test.ts`
 (links, length cap), `aiImproveButton.test.ts` (copy, link, fallback, keyboard, disabled reason, icon
 button) and the `ai` block of `qa/e2e` (Chromium, desktop and phone: the clipboard holds the CV prompt,
-Claude opens `claude.ai/new` with no text in the link, ChatGPT opens with the same prompt as its only `q`).
+Claude, ChatGPT and Gemini open with the same prompt as `q`, on one line; Gemini with `hl`).
 `npm test` 849, `qa:e2e` 141/141, `qa:security` 55/55 with no new exception, `qa:consistency` 13/13, typecheck and build clean.
 
-**Checked by hand (owner):** the three assistants open, but only ChatGPT fills its box from `?q=`;
-Claude and Gemini show an empty box. So they use copy-and-paste, and `prefill` is set only on ChatGPT
-(`src/core/aiAssistants.ts`). If Claude or Gemini start supporting it, setting `prefill` on them is
-a one-line change.
+**Checked by hand (owner), on `localhost`:** the three open, but only ChatGPT filled its box.
+The links now have the same shape and size as the Europa Press ones, which fill all three; the
+remaining suspects are the page being served from `http://localhost` and the tab being opened with
+`window.open` instead of a link. **To check on the deployed (https) site.** If Claude or Gemini still
+do not fill it there, the next step is menu items as real `<a href target="_blank">` links.

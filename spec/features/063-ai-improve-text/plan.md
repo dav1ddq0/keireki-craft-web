@@ -2,18 +2,18 @@
 
 ## Approach
 
-Copy, plus open-with-prompt where the assistant supports it: the app builds a prompt (pure
-function), copies it, and opens the assistant; only ChatGPT also gets it in `?q=` (the other two
-ignore it, checked by hand). The app itself makes no request, so the CSP stays as it is. The UI is one small component reused by the four fields.
+Open-with-prompt, plus copy as a fallback: the app builds a prompt (pure function), opens the
+assistant in the click with it in `?q=` (one line; `hl` for Gemini), then copies it. The app
+itself makes no request, so the CSP stays as it is. The UI is one small component reused by the four fields.
 
 ## Implementation
 
 1. `src/core/aiPrompt.ts`: `buildImprovePrompt(kind, text, language)`; a template per CV language
    (en, es, fr, it, pt, de) and per kind (`summary`, `experience`, `education`, `custom`). Pure,
    tested. Falls back to English for an unknown language.
-2. `src/core/aiAssistants.ts`: the list `{ id, name, url, prefill? }` and `assistantLink`, which adds
-   the encoded prompt for assistants with `prefill` (ChatGPT) and falls back to the plain page above
-   6000 characters.
+2. `src/core/aiAssistants.ts`: the list `{ id, name, url, prefill }` and `assistantLink`, which folds
+   the prompt to one line, adds it encoded (and the language for Gemini) and falls back to the plain
+   page above 6000 characters.
 3. `src/components/ui/AiImproveButton.vue`: button + menu (a popover on desktop, `BottomSheet` on
    the phone), copy with `navigator.clipboard.writeText`, fallback box with the prompt, notice
    announced in a live region. Props: `text`, `kind`.
@@ -27,9 +27,9 @@ ignore it, checked by hand). The app itself makes no request, so the CSP stays a
 
 ## Decisions
 
-- **`?q=` only where it works** (owner's decision after trying it): Claude and Gemini ignored it,
-  so sending text in their URL would cost privacy for nothing. ChatGPT fills its box, so it gets
-  the prompt in the link too; the copy covers it if that changes.
+- **`?q=` in the three, shaped like Europa Press's links** (owner's decision): one line, `hl` for
+  Gemini, the tab opened in the click before copying. On `localhost` only ChatGPT filled its box;
+  pending a check on the deployed site.
 - **Length cap**: long prompts open the plain page, so a link never grows past what browsers and
   servers accept.
 - **Prompt in the CV's language**: the user's text is in that language, and the answer should be.

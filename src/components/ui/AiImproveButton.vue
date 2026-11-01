@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /**
  * "Improve with AI" for one text of the CV (spec 063). It copies a ready prompt (only this field's
- * text, in the CV's language) and opens the chosen assistant; ChatGPT also gets it in its box through
- * the link, for Claude and Gemini the user pastes. The app makes no request itself. If the clipboard is not
+ * text, in the CV's language) and opens the chosen assistant; it also arrives in the box of the assistant
+ * through the link. The app makes no request itself. If the clipboard is not
  * available the prompt is shown to be copied by hand. A popover on desktop, a bottom sheet on the phone.
  */
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId } from 'vue'
@@ -16,7 +16,7 @@ import BottomSheet from '@/components/ui/BottomSheet.vue'
 const props = defineProps<{ text?: string; kind: ImproveKind }>()
 
 const cv = useCvStore()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const isPhone = useIsPhone()
 const reasonId = useId()
 
@@ -48,8 +48,9 @@ function closeMenu(refocus: boolean) {
   if (refocus) trigger.value?.focus()
 }
 
+/** Opens the tab in the click itself: browsers only allow it there, not after waiting for the clipboard. */
 function openAssistant(assistant: AiAssistant, prompt: string) {
-  window.open(assistantLink(assistant, prompt), '_blank', 'noopener,noreferrer')
+  window.open(assistantLink(assistant, prompt, locale.value), '_blank', 'noopener')
 }
 
 function announce(message: string) {
@@ -60,16 +61,18 @@ function announce(message: string) {
 
 async function choose(assistant: AiAssistant) {
   const prompt = buildImprovePrompt(props.kind, props.text ?? '', cv.data.meta.language)
+  // Open first, in the click, then copy: the tab already has the prompt in its link.
+  openAssistant(assistant, prompt)
+  closeMenu(false)
   try {
     await navigator.clipboard.writeText(prompt)
   } catch {
     // No clipboard (permissions, insecure context): show the prompt instead of failing silently.
     manual.value = { assistant, prompt }
+    open.value = true
     return
   }
-  closeMenu(false)
-  openAssistant(assistant, prompt)
-  announce(t(assistant.prefill ? 'ai.copied' : 'ai.copiedPaste', { name: assistant.name }))
+  announce(t('ai.copied', { name: assistant.name }))
 }
 
 function onMenuKey(event: KeyboardEvent) {
@@ -134,7 +137,7 @@ const external = 'M7 17L17 7M9 7h8v8'
             class="item m3-state"
             @click="choose(assistant)"
           >
-            <span>{{ t(assistant.prefill ? 'ai.item' : 'ai.itemCopy', { name: assistant.name }) }}</span>
+            <span>{{ t('ai.item', { name: assistant.name }) }}</span>
             <svg class="out" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path :d="external" /></svg>
           </button>
         </div>
