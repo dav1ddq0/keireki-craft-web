@@ -48,11 +48,11 @@ describe('AiImproveButton (spec 063)', () => {
 
     expect(copied).toHaveLength(1)
     expect(copied[0]).toContain('Mejora la redacción de la descripción de un puesto de mi CV')
-    expect(copied[0]!.endsWith(`Texto:\n${TEXT}`)).toBe(true)
+    expect(copied[0]!.endsWith(`Texto:\n"""\n${TEXT}\n"""`)).toBe(true)
     expect(copied[0]).not.toMatch(/Europa ?Press|noticia|europapress/i)
 
     const oneLine = copied[0]!.replace(/\s*\n+\s*/g, ' ')
-    expect(opened).toEqual([[`https://claude.ai/new?q=${encodeURIComponent(oneLine)}`, '_blank', 'noopener']])
+    expect(opened).toEqual([[`https://claude.ai/new?q=${encodeURIComponent(oneLine)}`, '_blank', 'noopener,noreferrer']])
     expect(wrapper.get('[role="status"]').text()).toBe('Claude abierto con el prompt. También está copiado: pégalo si no aparece.')
   })
 

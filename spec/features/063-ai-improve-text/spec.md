@@ -31,11 +31,13 @@ user chose**, only on their click. The app itself makes no request and needs no 
       description. Not on names, contacts or dates.
 - [x] The button is disabled, with a stated reason, while the field is empty.
 - [x] The menu lists three assistants (Claude, ChatGPT, Gemini). Choosing one opens it in a new tab
-      (`noopener`) with the prompt as `q`, on one line, and copies the prompt too; the notice says so.
+      (`noopener`, `noreferrer`) with the prompt as `q`, on one line, and copies the prompt too; the notice says so.
 - [x] A prompt that would make the link longer than 6000 characters opens the plain page (no
       text in the link) and relies on the copied prompt.
 - [x] The only text that leaves is the prompt, and only when the user chooses an assistant. The prompt contains only the text of that field (and its kind: summary / experience…), never
       name, e-mail, phone, address or other fields.
+- [x] The field's text goes between triple quotes, marked as data to improve and not instructions
+      to follow (a CV imported from someone else could carry them); quotes inside cannot close it.
 - [x] The prompt asks to keep every fact, not to invent figures, dates, employers or technologies,
       to keep the format (paragraph or list) and to answer in the CV's language.
 - [x] The prompt exists in the six CV languages (en, es, fr, it, pt, de) and follows the CV's

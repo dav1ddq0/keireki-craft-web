@@ -50,7 +50,7 @@ function closeMenu(refocus: boolean) {
 
 /** Opens the tab in the click itself: browsers only allow it there, not after waiting for the clipboard. */
 function openAssistant(assistant: AiAssistant, prompt: string) {
-  window.open(assistantLink(assistant, prompt, locale.value), '_blank', 'noopener')
+  window.open(assistantLink(assistant, prompt, locale.value), '_blank', 'noopener,noreferrer')
 }
 
 function announce(message: string) {

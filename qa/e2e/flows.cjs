@@ -465,7 +465,7 @@ async function aiImprove(browser) {
   await p.getByRole('menuitem', { name: /Claude/ }).click()
   const opened = await popup
   const clip = await p.evaluate(() => navigator.clipboard.readText())
-  check(B, 'the copied prompt asks to improve this CV text and carries it', /^Mejora la redacción de la descripción de un puesto de mi CV/.test(clip) && clip.endsWith('Texto:\n' + text))
+  check(B, 'the copied prompt asks to improve this CV text and carries it', /^Mejora la redacción de la descripción de un puesto de mi CV/.test(clip) && clip.endsWith('Texto:\n"""\n' + text + '\n"""'))
   check(B, 'the prompt has nothing to do with a news site', !/europa ?press|noticia/i.test(clip))
   const oneLine = clip.replace(/\s*\n+\s*/g, ' ')
   const link = (u) => { const x = new URL(u); return { base: x.origin + x.pathname, q: x.searchParams.get('q'), keys: [...x.searchParams.keys()].join() } }
