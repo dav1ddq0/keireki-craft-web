@@ -7,6 +7,8 @@ import vue from '@vitejs/plugin-vue'
  * headers; build-only because the dev server needs inline scripts and a websocket for HMR.
  * `style-src 'unsafe-inline'` is required by Vue style bindings and paged.js; what it would let a
  * hostile file do with CSS is closed by the validation in `core/migrations.ts`.
+ * `connect-src` allows ipwho.is, and nothing else outside the site: the phone's default country
+ * (spec 056) is the one network request of the editor, for the country code only.
  */
 const CSP = [
   "default-src 'self'",
@@ -15,7 +17,7 @@ const CSP = [
   "img-src 'self' data: blob:",
   "font-src 'self' data:",
   "worker-src 'self' blob:",
-  "connect-src 'self' blob: data:",
+  "connect-src 'self' blob: data: https://ipwho.is",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'none'",
