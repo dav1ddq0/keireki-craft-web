@@ -272,8 +272,8 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', onDocumentPoin
 .popup {
   position: absolute;
   z-index: 30;
-  top: calc(100% + 12px);
-  left: -16px;
+  top: calc(100% + 4px);
+  left: 0;
   display: flex;
   flex-direction: column;
   width: min(340px, calc(100vw - 32px));

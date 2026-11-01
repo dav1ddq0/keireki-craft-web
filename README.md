@@ -24,7 +24,9 @@ npm run build      # production bundle into dist/
 | 5–6 — Backend | Stateless FastAPI service, then sync | Not started (out of scope for v1) |
 
 The app is deliberately usable with the backend permanently absent: nothing in
-phases 1–4 talks to a server.
+phases 1–4 talks to a server, with one exception: the phone's default country asks
+`ipwho.is` for the country code of the connection (spec 056). It is a single request,
+the answer holds no IP, nothing is stored, and if it fails the editor works the same.
 
 ## Architecture
 
@@ -116,3 +118,7 @@ the deploy.
   example `BASE_PATH=/ npm run build` for a user site or a custom domain.
 - **Content-Security-Policy:** the build adds a CSP `<meta>` tag (GitHub Pages cannot send headers);
   it is not applied by `npm run dev`.
+
+## Credits
+
+- Country flags: [flag-icons](https://github.com/lipis/flag-icons) © 2013 Panayiotis Lipiridis, MIT License.

@@ -13,12 +13,18 @@ const FIXTURES = path.join(__dirname, 'fixtures/security')
 const OUT = path.join(ROOT, '.qa/security')
 const STEPS = ['Datos personales', 'Experiencia', 'Formación', 'Competencias', 'Idiomas', 'Secciones propias', 'Plantilla y estilo', 'Exportar']
 
+/**
+ * The one request the editor may make off its origin (spec 056): the phone's default country, code
+ * only, no IP in the answer. Matched exactly, so any other URL, or any other query, still fails.
+ */
+const ALLOWED_FOREIGN = new Set(['https://ipwho.is/?fields=country_code'])
+
 /** A page that records requests leaving `origin`, page errors and dialogs (dismissed). */
 function watch(page, origin) {
   const seen = { foreign: new Set(), errors: [], dialogs: [] }
   page.on('request', (r) => {
     const url = r.url()
-    if (!url.startsWith(origin) && !/^(data|blob):/.test(url)) seen.foreign.add(url.slice(0, 80))
+    if (!url.startsWith(origin) && !/^(data|blob):/.test(url) && !ALLOWED_FOREIGN.has(url)) seen.foreign.add(url.slice(0, 80))
   })
   page.on('pageerror', (e) => seen.errors.push('pageerror: ' + e.message.slice(0, 160)))
   page.on('console', (m) => m.type() === 'error' && seen.errors.push(m.text().slice(0, 160)))
