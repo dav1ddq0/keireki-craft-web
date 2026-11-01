@@ -29,7 +29,9 @@ Decisions (asked of the user):
 - `docs/readme-media.cjs` regenerates every image from the built app with Playwright, in English,
   with the English sample (Emma Clarke):
   - `demo.gif`: the headline typed into the form and the preview following it, then a few
-    templates and an accent colour. It is the top of the README.
+    templates and an accent colour. It is the top of the README. Captured at twice the density
+    and written 1600 px wide (task 4): at 880 px the text of the preview was blurred on a
+    high-density screen, where GitHub shows the README's 880 CSS px with about 1760 real ones.
   - `templates-light.webp` / `templates-dark.webp`: the templates as one grid, the first page of
     each, named; GitHub picks the one matching its theme (`<picture>`).
   - `phone.webp`: the editor and the preview on a phone, side by side, on a transparent ground.

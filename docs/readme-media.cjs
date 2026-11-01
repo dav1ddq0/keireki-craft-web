@@ -63,7 +63,9 @@ const DEMO_TEMPLATES = ['Banner', 'Cobalt', 'Editorial', 'Monogram']
   try {
     // ---- demo.gif: Chromium's screencast, a frame each time the page changes, with its time.
     {
-      const p = await withSample({ viewport: { width: 1280, height: 800 } })
+      // Twice the pixels, then down to 1600 px: sharp on a high-density screen, where GitHub shows
+      // the README's 880 CSS px with about 1760 real ones.
+      const p = await withSample({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: 2 })
       const cdp = await p.context().newCDPSession(p)
       const frames = []
       cdp.on('Page.screencastFrame', ({ data, metadata, sessionId }) => {
@@ -90,7 +92,7 @@ const DEMO_TEMPLATES = ['Banner', 'Cobalt', 'Editorial', 'Monogram']
       await p.locator('.color-row .swatch').nth(3).click()
       await p.waitForTimeout(1800)
       await cdp.send('Page.stopScreencast')
-      jobs.gif = { out: path.join(OUT, 'demo.gif'), width: 880, frames: frames.map((f, i) => ({ file: f.file, ms: Math.round((frames[i + 1]?.t ?? f.t + 1800) - f.t) })) }
+      jobs.gif = { out: path.join(OUT, 'demo.gif'), width: 1600, frames: frames.map((f, i) => ({ file: f.file, ms: Math.round((frames[i + 1]?.t ?? f.t + 1800) - f.t) })) }
       await p.context().close()
     }
 
