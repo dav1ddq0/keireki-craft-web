@@ -1,7 +1,7 @@
 # 063 · Improve a text with AI: Tasks
 
 - [x] 1 · `core/aiPrompt.ts` (six languages, four kinds) and its tests  — commit: d92bb8d
-- [ ] 2 · `core/aiAssistants.ts` (the list) 
+- [x] 2 · `core/aiAssistants.ts` (the list) 
 - [ ] 3 · `AiImproveButton.vue`: menu, copy, fallback, announcement, phone sheet
 - [ ] 4 · Use it in summary, experience, education and custom entries
 - [ ] 5 · i18n strings in the six languages
