@@ -80,6 +80,51 @@ describe('Copy image (spec 062)', () => {
     expect(mount(CopyImageButton).find('button').exists()).toBe(false)
   })
 
+  it('builds a lighter picture on a touch screen, where a phone is slow and Safari gives up', async () => {
+    vi.stubGlobal('matchMedia', (query: string) => ({ matches: query === '(pointer: coarse)' }))
+    const wrapper = mount(CopyImageButton)
+    await wrapper.find('button').trigger('click')
+    await vi.waitFor(() => expect(wrapper.find('output').text()).toBe('Copiado'))
+    expect(vi.mocked(buildCvImage).mock.calls[0]![3]).toBe(144)
+  })
+
+  it('keeps the export resolution with a mouse', async () => {
+    vi.stubGlobal('matchMedia', () => ({ matches: false }))
+    const wrapper = mount(CopyImageButton)
+    await wrapper.find('button').trigger('click')
+    await vi.waitFor(() => expect(wrapper.find('output').text()).toBe('Copiado'))
+    expect(vi.mocked(buildCvImage).mock.calls[0]![3]).toBeUndefined()
+  })
+
+  it('offers Share with the picture already built when the copy fails and the phone can share it', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {})
+    write.mockRejectedValueOnce(new DOMException('denied', 'NotAllowedError'))
+    const share = vi.fn(async () => {})
+    Object.assign(navigator, { share, canShare: (data: { files?: File[] }) => !!data.files?.length })
+    const wrapper = mount(CopyImageButton)
+    await wrapper.find('button').trigger('click')
+    await vi.waitFor(() => expect(wrapper.find('.share-btn').exists()).toBe(true))
+    expect(wrapper.find('output').text()).toBe('No se pudo copiar')
+    await wrapper.find('.share-btn').trigger('click')
+    expect(share).toHaveBeenCalledTimes(1)
+    const file = (share.mock.calls[0] as unknown as [{ files: File[] }])[0].files[0]!
+    expect(file.type).toBe('image/png')
+    expect(file.name.endsWith('.png')).toBe(true)
+    // The picture is not built again: the tap must open the sheet at once.
+    expect(buildCvImage).toHaveBeenCalledTimes(1)
+    await vi.waitFor(() => expect(wrapper.find('.share-btn').exists()).toBe(false))
+    Object.assign(navigator, { share: undefined, canShare: undefined })
+  })
+
+  it('offers no Share where files cannot be shared', async () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {})
+    write.mockRejectedValueOnce(new DOMException('denied', 'NotAllowedError'))
+    const wrapper = mount(CopyImageButton)
+    await wrapper.find('button').trigger('click')
+    await vi.waitFor(() => expect(wrapper.find('output').text()).toBe('No se pudo copiar'))
+    expect(wrapper.find('.share-btn').exists()).toBe(false)
+  })
+
   it('sits in the preview toolbar', () => {
     const wrapper = mount(PreviewPane, { global: { stubs: { CvRenderer: true } } })
     expect(wrapper.find('header button[aria-label="Copiar imagen"]').exists()).toBe(true)

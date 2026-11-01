@@ -536,6 +536,7 @@ export default {
     copying: 'Copiando…',
     copied: 'Copiado',
     copyFailed: 'No se pudo copiar',
+    shareImage: 'Compartir',
   },
   cv: {
     present: 'Actualidad',

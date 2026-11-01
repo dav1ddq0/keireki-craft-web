@@ -56,13 +56,21 @@ export function layoutPages(pages: PageSize[], dpi = IMAGE_DPI, maxPixels = MAX_
   return { scale, width: Math.floor(width * scale), height: Math.floor(height * scale), tops }
 }
 
-/** The CV as one image: its pages one under the other, on white, with a thin strip between them. */
-export async function buildCvImage(data: CVData, templateId: string, type: 'image/jpeg' | 'image/png' = 'image/jpeg'): Promise<Blob> {
+/**
+ * The CV as one image: its pages one under the other, on white, with a thin strip between them.
+ * `dpi` lowers the resolution where the picture must be ready fast (the clipboard on a phone).
+ */
+export async function buildCvImage(
+  data: CVData,
+  templateId: string,
+  type: 'image/jpeg' | 'image/png' = 'image/jpeg',
+  dpi = IMAGE_DPI,
+): Promise<Blob> {
   const pdf = await buildDirectPdf(data, templateId, printTitle(data))
   const doc = await pdfjs.getDocument({ data: new Uint8Array(await pdf.arrayBuffer()), isEvalSupported: false }).promise
   try {
     const pages = await Promise.all(Array.from({ length: doc.numPages }, (_, i) => doc.getPage(i + 1)))
-    const layout = layoutPages(pages.map((page) => page.getViewport({ scale: 1 })))
+    const layout = layoutPages(pages.map((page) => page.getViewport({ scale: 1 })), dpi)
     const canvas = document.createElement('canvas')
     canvas.width = layout.width
     canvas.height = layout.height

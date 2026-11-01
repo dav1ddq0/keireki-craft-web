@@ -5,7 +5,7 @@ import { useI18n } from '@/i18n'
 import { canCopyImages, useCopyCvImage } from '@/composables/useCopyCvImage'
 
 const { t } = useI18n()
-const { state, copy } = useCopyCvImage()
+const { state, shareable, copy, share } = useCopyCvImage()
 const supported = canCopyImages()
 
 const STATES = { copying: 'preview.copying', copied: 'preview.copied', failed: 'preview.copyFailed' } as const
@@ -15,6 +15,10 @@ const status = computed(() => (state.value === 'idle' ? '' : t(STATES[state.valu
 <template>
   <div v-if="supported" class="copy">
     <output class="copy-state" :class="{ 'copy-state--failed': state === 'failed' }" aria-live="polite">{{ status }}</output>
+    <!-- Where the copy failed but the phone can share the picture: its sheet offers Copy and Save. -->
+    <button v-if="state === 'failed' && shareable" type="button" class="share-btn m3-state m3-target" @click="share">
+      {{ t('preview.shareImage') }}
+    </button>
     <button
       type="button"
       class="copy-btn m3-icon-btn m3-state m3-target"
@@ -41,6 +45,19 @@ const status = computed(() => (state.value === 'idle' ? '' : t(STATES[state.valu
   height: 40px;
   border: 0;
   color: var(--md-on-surface-variant);
+  cursor: pointer;
+}
+
+.share-btn {
+  --container: transparent;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--shape-full);
+  color: var(--md-primary);
+  font: var(--type-label-large);
+  letter-spacing: var(--tracking-label-large);
+  white-space: nowrap;
   cursor: pointer;
 }
 

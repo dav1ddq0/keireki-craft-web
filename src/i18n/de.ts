@@ -535,6 +535,7 @@ const de: typeof es = {
     copying: 'Wird kopiert…',
     copied: 'Kopiert',
     copyFailed: 'Kopieren fehlgeschlagen',
+    shareImage: 'Teilen',
   },
   cv: {
     present: 'heute',
