@@ -70,6 +70,7 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 ## Next 🔜
 
 - **056** · Phone: a country code selector with the flag, the default country detected from the IP (language/time zone as fallback)
+- **057** · French, Italian, Portuguese and German: the CV and the interface
 
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
 

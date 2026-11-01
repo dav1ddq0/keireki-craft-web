@@ -78,4 +78,11 @@ export interface CvLanguageOption {
 export const CV_LANGUAGES: CvLanguageOption[] = [
   { code: 'es', label: 'Español' },
   { code: 'en', label: 'English' },
+  { code: 'fr', label: 'Français' },
+  { code: 'it', label: 'Italiano' },
+  { code: 'pt', label: 'Português' },
+  { code: 'de', label: 'Deutsch' },
 ]
+
+/** The "native" level offered next to the CEFR ones, per CV language; templates recognise each. */
+export const NATIVE_LEVEL: Record<string, string> = { es: 'Nativo', en: 'Native', fr: 'Langue maternelle', it: 'Madrelingua', pt: 'Nativo', de: 'Muttersprache' }

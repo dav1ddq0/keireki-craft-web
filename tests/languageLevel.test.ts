@@ -38,7 +38,7 @@ describe('levelAccessibleLabel', () => {
   it('follows the CV content language and falls back to Spanish', () => {
     expect(levelAccessibleLabel(4, 'es')).toBe('Nivel 4 de 5')
     expect(levelAccessibleLabel(4, 'en')).toBe('Level 4 of 5')
-    expect(levelAccessibleLabel(4, 'fr')).toBe('Nivel 4 de 5')
+    expect(levelAccessibleLabel(4, 'xx')).toBe('Nivel 4 de 5')
   })
 })
 

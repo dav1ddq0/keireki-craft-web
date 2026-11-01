@@ -28,6 +28,7 @@ import {
   resolveSections,
   skillNames,
   styleVars,
+  contactHeading,
 } from '@/templates/shared'
 
 const props = defineProps<{ data: CVData }>()
@@ -49,7 +50,7 @@ const summarySection = computed(() => sections.value.find((s) => s.kind === 'sum
 const contactItems = computed(() =>
   contactLines(props.data).map((text) => ({ text, kind: contactKind(text, props.data.personal) })),
 )
-const contactTitle = computed(() => (language.value === 'en' ? 'Contact' : 'Contacto'))
+const contactTitle = computed(() => contactHeading(language.value))
 </script>
 
 <template>

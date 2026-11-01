@@ -43,9 +43,10 @@ describe('CV languages', () => {
 
     for (const { code } of CV_LANGUAGES) {
       // A language missing from a table silently falls back to Spanish, so compare
-      // against the Spanish output: a covered language must produce its own text.
+      // against the Spanish output: a covered language must produce its own text. Not the months:
+      // Portuguese "abr 2023" is Spanish too (cvLanguages.test.ts checks every table's keys instead).
       if (code !== 'es') {
-        expect(formatPartialDate('2023-04', code)).not.toBe(formatPartialDate('2023-04', 'es'))
+        expect(formatPartialDate('2023-04', code)).toMatch(/2023$/)
         expect(levelAccessibleLabel(3, code)).not.toBe(levelAccessibleLabel(3, 'es'))
         const cv = createSampleCV()
         cv.meta.language = code

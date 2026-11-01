@@ -7,12 +7,21 @@ import { fontStackWithStandIns } from '@/core/fontStandIns'
  * (spec §4 — a template takes exactly one prop and holds no state).
  */
 
+// Every table below has one entry per CV language (`CV_LANGUAGES`); a test keeps them complete.
+
 const MONTHS: Record<string, string[]> = {
   es: ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'],
   en: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+  fr: ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'],
+  it: ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'],
+  pt: ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'],
+  de: ['Jan.', 'Feb.', 'März', 'Apr.', 'Mai', 'Juni', 'Juli', 'Aug.', 'Sept.', 'Okt.', 'Nov.', 'Dez.'],
 }
 
-const PRESENT: Record<string, string> = { es: 'Actualidad', en: 'Present' }
+const PRESENT: Record<string, string> = { es: 'Actualidad', en: 'Present', fr: 'Aujourd’hui', it: 'Oggi', pt: 'Presente', de: 'heute' }
+
+/** German writes the day of a date as an ordinal: "12. März 1992". */
+const DAY_SUFFIX: Record<string, string> = { de: '.' }
 
 /** Renders a partial ISO date ("2023-04" / "2023") in the CV's content language. */
 export function formatPartialDate(value: string, language = 'es'): string {
@@ -33,17 +42,25 @@ export function formatBirthDate(value: string, language = 'es'): string {
   const [, year, month, day] = match
   const name = (MONTHS[language] ?? MONTHS.es)![Number(month) - 1]
   if (!name || Number(day) < 1 || Number(day) > 31) return text
-  return `${Number(day)} ${name} ${year}`
+  return `${Number(day)}${DAY_SUFFIX[language] ?? ''} ${name} ${year}`
 }
 
 const EXTRA_LABELS: Record<string, { birth: string; nationality: string; licence: string; status: string }> = {
   es: { birth: 'Nacimiento', nationality: 'Nacionalidad', licence: 'Carné de conducir', status: 'Estado civil' },
   en: { birth: 'Born', nationality: 'Nationality', licence: 'Driving licence', status: 'Marital status' },
+  fr: { birth: 'Naissance', nationality: 'Nationalité', licence: 'Permis de conduire', status: 'Situation familiale' },
+  it: { birth: 'Nascita', nationality: 'Nazionalità', licence: 'Patente di guida', status: 'Stato civile' },
+  pt: { birth: 'Nascimento', nationality: 'Nacionalidade', licence: 'Carta de condução', status: 'Estado civil' },
+  de: { birth: 'Geboren', nationality: 'Staatsangehörigkeit', licence: 'Führerschein', status: 'Familienstand' },
 }
 
 const MARITAL_LABELS: Record<string, Record<MaritalStatus, string>> = {
   es: { single: 'Soltero/a', married: 'Casado/a', partner: 'Pareja de hecho', divorced: 'Divorciado/a', widowed: 'Viudo/a' },
   en: { single: 'Single', married: 'Married', partner: 'Domestic partnership', divorced: 'Divorced', widowed: 'Widowed' },
+  fr: { single: 'Célibataire', married: 'Marié(e)', partner: 'Pacsé(e)', divorced: 'Divorcé(e)', widowed: 'Veuf/Veuve' },
+  it: { single: 'Celibe/Nubile', married: 'Coniugato/a', partner: 'Unione civile', divorced: 'Divorziato/a', widowed: 'Vedovo/a' },
+  pt: { single: 'Solteiro/a', married: 'Casado/a', partner: 'União de facto', divorced: 'Divorciado/a', widowed: 'Viúvo/a' },
+  de: { single: 'Ledig', married: 'Verheiratet', partner: 'Lebenspartnerschaft', divorced: 'Geschieden', widowed: 'Verwitwet' },
 }
 
 /** Label of a marital-status code in the CV's content language. */
@@ -162,11 +179,18 @@ export interface ResolvedSection {
 }
 
 const BUILTIN_TITLES: Record<string, Record<string, string>> = {
-  summary: { es: 'Resumen', en: 'Summary' },
-  experience: { es: 'Experiencia', en: 'Experience' },
-  education: { es: 'Formación', en: 'Education' },
-  skills: { es: 'Competencias', en: 'Skills' },
-  languages: { es: 'Idiomas', en: 'Languages' },
+  summary: { es: 'Resumen', en: 'Summary', fr: 'Profil', it: 'Profilo', pt: 'Perfil', de: 'Profil' },
+  experience: { es: 'Experiencia', en: 'Experience', fr: 'Expérience', it: 'Esperienza', pt: 'Experiência', de: 'Berufserfahrung' },
+  education: { es: 'Formación', en: 'Education', fr: 'Formation', it: 'Formazione', pt: 'Formação', de: 'Ausbildung' },
+  skills: { es: 'Competencias', en: 'Skills', fr: 'Compétences', it: 'Competenze', pt: 'Competências', de: 'Kenntnisse' },
+  languages: { es: 'Idiomas', en: 'Languages', fr: 'Langues', it: 'Lingue', pt: 'Idiomas', de: 'Sprachen' },
+}
+
+const CONTACT_TITLES: Record<string, string> = { es: 'Contacto', en: 'Contact', fr: 'Contact', it: 'Contatti', pt: 'Contacto', de: 'Kontakt' }
+
+/** The heading of a template's contact block, in the CV's content language. */
+export function contactHeading(language = 'es'): string {
+  return CONTACT_TITLES[language] ?? CONTACT_TITLES.es!
 }
 
 /**
@@ -237,8 +261,9 @@ export function absoluteUrl(url: string): string {
  * Language levels are free text in the model (`LanguageEntry.level`), so the
  * dots shown by a template are *derived* from it. Matching is deliberately
  * conservative: an unknown string yields `null` and the template prints the text
- * alone rather than guess a level. Both languages are always recognised, because
- * what the user typed does not depend on the editor's UI language.
+ * alone rather than guess a level. The words of every CV language are always recognised,
+ * because what the user typed depends on neither the editor's UI language nor the CV's.
+ * Keys are lower case and without accents (see `normalizeLevel`); "ß" has no accent to drop.
  */
 const LEVEL_SCORES: Record<string, number> = {
   nativo: 5, native: 5, materna: 5, 'lengua materna': 5, 'mother tongue': 5,
@@ -246,6 +271,15 @@ const LEVEL_SCORES: Record<string, number> = {
   avanzado: 4, advanced: 4, fluido: 4, fluent: 4, 'intermedio alto': 4, 'upper intermediate': 4,
   intermedio: 3, intermediate: 3, competente: 3, competent: 3, conversacional: 3, conversational: 3,
   basico: 2, basic: 2, elemental: 1, elementary: 1, principiante: 1, beginner: 1, nociones: 1,
+  // French
+  'langue maternelle': 5, natif: 5, courant: 4, avance: 4, intermediaire: 3, debutant: 1, elementaire: 1, notions: 1,
+  // Italian
+  madrelingua: 5, fluente: 4, avanzato: 4, base: 2, elementare: 1,
+  // Portuguese
+  'lingua materna': 5, avancado: 4, intermediario: 3, elementar: 1, iniciante: 1,
+  // German
+  muttersprache: 5, muttersprachlich: 5, zweisprachig: 5, 'fließend': 4, fliessend: 4, verhandlungssicher: 4,
+  'gute kenntnisse': 3, mittelstufe: 3, grundkenntnisse: 2, anfanger: 1,
 }
 
 const CEFR_SCORES: Record<string, number> = { a1: 1, a2: 2, b1: 3, b2: 4, c1: 5, c2: 5 }
@@ -270,6 +304,21 @@ export function languageLevelScore(level: string): number | null {
 const LEVEL_LABELS: Record<string, (score: number) => string> = {
   es: (score) => `Nivel ${score} de 5`,
   en: (score) => `Level ${score} of 5`,
+  fr: (score) => `Niveau ${score} sur 5`,
+  it: (score) => `Livello ${score} su 5`,
+  pt: (score) => `Nível ${score} de 5`,
+  de: (score) => `Stufe ${score} von 5`,
+}
+
+/** Every per-language table of this module, for the test that keeps them complete (spec 056). */
+export const LANGUAGE_TABLES: Readonly<Record<string, Readonly<Record<string, unknown>>>> = {
+  MONTHS,
+  PRESENT,
+  EXTRA_LABELS,
+  MARITAL_LABELS,
+  CONTACT_TITLES,
+  LEVEL_LABELS,
+  ...Object.fromEntries(Object.entries(BUILTIN_TITLES).map(([id, titles]) => [`BUILTIN_TITLES.${id}`, titles])),
 }
 
 /** Text read by assistive technology; follows the CV content language, not the UI's. */

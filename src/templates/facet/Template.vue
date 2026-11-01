@@ -22,6 +22,7 @@ import {
   skillNames,
   styleVars,
   contactLines,
+  contactHeading,
 } from '@/templates/shared'
 
 const props = defineProps<{ data: CVData }>()
@@ -31,7 +32,7 @@ const language = computed(() => props.data.meta.language || 'es')
 const sections = computed(() => resolveSections(props.data))
 
 const ASIDE_KINDS = new Set(['skills', 'languages'])
-const contactTitle = computed(() => (language.value === 'en' ? 'Contact' : 'Contacto'))
+const contactTitle = computed(() => contactHeading(language.value))
 const asideSections = computed(() => sections.value.filter((s) => ASIDE_KINDS.has(s.kind)))
 const mainSections = computed(() => sections.value.filter((s) => !ASIDE_KINDS.has(s.kind)))
 
