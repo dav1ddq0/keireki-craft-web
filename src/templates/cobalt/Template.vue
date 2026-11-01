@@ -15,7 +15,7 @@ import { computed } from 'vue'
 import type { CVData } from '@/types/cv'
 import Breakable from '@/templates/Breakable.vue'
 import LevelDots from '@/templates/LevelDots.vue'
-import { CONTACT_ICONS, contactKind, linkKind } from '@/templates/contactIcons'
+import { CONTACT_ICONS, FILLED_ICONS, contactKind, linkKind } from '@/templates/contactIcons'
 import {
   absoluteUrl,
   contactLines,
@@ -69,7 +69,7 @@ const contactTitle = computed(() => contactHeading(language.value))
             <span><Breakable :text="item.text" /></span>
           </p>
           <p v-for="link in data.personal.links" :key="link.id" class="contact">
-            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path :d="CONTACT_ICONS[linkKind(link.url)]" /></svg>
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path :d="CONTACT_ICONS[linkKind(link.url)]" :class="{ filled: FILLED_ICONS.has(linkKind(link.url)) }" /></svg>
             <a :href="absoluteUrl(link.url)"><Breakable :text="link.label || displayUrl(link.url)" /></a>
           </p>
         </section>
@@ -325,6 +325,15 @@ const contactTitle = computed(() => contactHeading(language.value))
   stroke-linejoin: round;
   print-color-adjust: exact;
   -webkit-print-color-adjust: exact;
+}
+
+/* A filled mark spans the whole 24-unit box; scaled to the 18 units the stroked icons take. */
+.icon .filled {
+  fill: var(--cv-on-accent);
+  stroke: none;
+  transform: scale(0.78);
+  transform-origin: center;
+  transform-box: fill-box;
 }
 
 .bullets {

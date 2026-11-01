@@ -67,6 +67,7 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 - **054** · The preview's template button, only where it does something (hidden on the style step)
 - **055** · The paginated view no longer turns the dark theme white (paged.js gets no print-only rules)
 - **056** · Phone: a country code selector with the flag, the default country detected from the IP (language/time zone as fallback)
+- **058** · The GitHub link shows GitHub's mark instead of a branch glyph
 
 ## Next 🔜
 

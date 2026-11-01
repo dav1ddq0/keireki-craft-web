@@ -2,9 +2,10 @@
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createSampleCV } from '@/core/sample'
-import { CONTACT_ICONS, contactKind, linkKind } from '@/templates/contactIcons'
+import { CONTACT_ICONS, FILLED_ICONS, contactKind, linkKind } from '@/templates/contactIcons'
 import { monogramLetters } from '@/templates/monogram/initials'
 import Monogram from '@/templates/monogram/Template.vue'
+import Cobalt from '@/templates/cobalt/Template.vue'
 
 describe('monogramLetters (spec 049)', () => {
   it('takes the first letter of the first name and of the last surname', () => {
@@ -94,3 +95,15 @@ describe('Monogram: a long list of skills (spec 052)', () => {
   })
 })
 
+
+describe('GitHub icon (spec 058)', () => {
+  it('is GitHub’s own mark, drawn filled, and the other link icons stay stroked', () => {
+    expect(FILLED_ICONS).toEqual(new Set(['github']))
+    for (const template of [Monogram, Cobalt]) {
+      const wrapper = mount(template, { props: { data: createSampleCV() } })
+      const github = wrapper.find(`path[d="${CONTACT_ICONS.github}"]`)
+      expect(github.classes()).toContain('filled')
+      expect(wrapper.find(`path[d="${CONTACT_ICONS.linkedin}"]`).classes()).not.toContain('filled')
+    }
+  })
+})
