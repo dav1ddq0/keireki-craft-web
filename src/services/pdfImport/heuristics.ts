@@ -3,6 +3,7 @@ import {
   BULLET_RE,
   DATE_RANGE_RE,
   EMAIL_RE,
+  headingLanguage,
   MONTH_INDEX,
   normalizeHeading,
   PHONE_RE,
@@ -11,6 +12,7 @@ import {
   SECTION_KEYWORDS,
   sectionKindOfSquashed,
   URL_RE,
+  type HeadingLanguage,
   type SectionKind,
 } from './patterns'
 
@@ -45,6 +47,8 @@ export interface ImportDraft {
   unclassified: TextBlock[]
   rawText: string
   warnings: Array<'multiColumn' | 'noSections' | 'noName'>
+  /** The CV's language by its section headings, or null when none is known (spec 061). */
+  language: HeadingLanguage | null
 }
 
 /**
@@ -93,6 +97,7 @@ export function analyze(doc: ExtractedDocument): ImportDraft {
     }),
     rawText: doc.rawText,
     warnings,
+    language: headingLanguage(sections.map((section) => section.heading)),
   }
 }
 

@@ -53,63 +53,87 @@ export const MONTH_INDEX: Record<string, number> = {
 
 export type SectionKind = 'summary' | 'experience' | 'education' | 'skills' | 'languages'
 
-/** Multi-language section headers (spec §7.2). Matched on a normalized, accent-free string. */
-export const SECTION_KEYWORDS: Array<{ kind: SectionKind; words: string[] }> = [
-  {
-    kind: 'summary',
-    words: [
-      'resumen', 'perfil', 'sobre mi', 'acerca de mi', 'extracto', 'summary', 'profile', 'about me', 'objective',
-      'profil', 'profil professionnel', 'resume', 'a propos', 'a propos de moi', 'objectif',
-      'profilo', 'profilo professionale', 'chi sono', 'sommario', 'obiettivo',
-      'perfil profissional', 'sobre mim', 'resumo', 'objetivo',
-      'kurzprofil', 'berufliches profil', 'uber mich', 'zusammenfassung',
-    ],
+/** The languages whose headings are known; also the CV languages an import can be set to (spec 061). */
+export type HeadingLanguage = 'es' | 'en' | 'fr' | 'it' | 'pt' | 'de'
+
+/**
+ * Section headers per language (spec §7.2, spec 060), matched on a normalized, accent-free string.
+ * A word may be in more than one language ("perfil", "idiomas", "profil"); spec 061 tells the
+ * language of a CV by which of these tables its headings are in.
+ */
+const SECTION_WORDS: Record<HeadingLanguage, Record<SectionKind, string[]>> = {
+  es: {
+    summary: ['resumen', 'perfil', 'sobre mi', 'acerca de mi', 'extracto'],
+    experience: ['experiencia', 'experiencia laboral', 'experiencia profesional', 'trayectoria', 'empleo', 'historial laboral'],
+    education: ['formacion', 'formacion academica', 'educacion', 'estudios', 'titulacion'],
+    skills: ['habilidades', 'competencias', 'aptitudes', 'conocimientos', 'tecnologias'],
+    languages: ['idiomas', 'lenguas'],
   },
-  {
-    kind: 'experience',
-    words: [
-      'experiencia', 'experiencia laboral', 'experiencia profesional', 'trayectoria',
-      'empleo', 'historial laboral', 'experience', 'work experience',
-      'professional experience', 'employment', 'career',
-      'experiences', 'experience professionnelle', 'experiences professionnelles', 'parcours professionnel',
-      'esperienza', 'esperienze', 'esperienza professionale', 'esperienze professionali', 'esperienza lavorativa',
-      'experiencia profissional', 'percurso profissional',
-      'berufserfahrung', 'erfahrung', 'berufliche erfahrung', 'werdegang', 'beruflicher werdegang', 'praxiserfahrung',
-    ],
+  en: {
+    summary: ['summary', 'profile', 'about me', 'objective'],
+    experience: ['experience', 'work experience', 'professional experience', 'employment', 'career'],
+    education: ['education', 'academic background', 'qualifications', 'academic'],
+    skills: ['skills', 'technical skills', 'core competencies', 'expertise', 'technologies', 'stack'],
+    languages: ['languages', 'language skills'],
   },
-  {
-    kind: 'education',
-    words: [
-      'formacion', 'formacion academica', 'educacion', 'estudios', 'titulacion',
-      'education', 'academic background', 'qualifications', 'academic',
-      'formation', 'formations', 'etudes', 'diplomes', 'formation academique', 'parcours academique',
-      'formazione', 'istruzione', 'studi', 'istruzione e formazione', 'titoli di studio',
-      'formacao', 'formacao academica', 'educacao', 'habilitacoes', 'habilitacoes academicas',
-      'ausbildung', 'bildung', 'bildungsweg', 'studium', 'schulbildung', 'akademischer werdegang',
-    ],
+  fr: {
+    summary: ['profil', 'profil professionnel', 'resume', 'a propos', 'a propos de moi', 'objectif'],
+    experience: ['experience', 'experiences', 'experience professionnelle', 'experiences professionnelles', 'parcours professionnel'],
+    education: ['formation', 'formations', 'etudes', 'diplomes', 'formation academique', 'parcours academique'],
+    skills: ['competences', 'competences techniques', 'savoir faire'],
+    languages: ['langues', 'competences linguistiques'],
   },
-  {
-    kind: 'skills',
-    words: [
-      'habilidades', 'competencias', 'aptitudes', 'conocimientos', 'tecnologias',
-      'skills', 'technical skills', 'core competencies', 'expertise', 'technologies', 'stack',
-      'competences', 'competences techniques', 'savoir faire',
-      'competenze', 'competenze tecniche', 'conoscenze',
-      'competencias tecnicas', 'conhecimentos', 'aptidoes',
-      'kenntnisse', 'fahigkeiten', 'kompetenzen', 'fachkenntnisse', 'it kenntnisse', 'edv kenntnisse',
-    ],
+  it: {
+    summary: ['profilo', 'profilo professionale', 'chi sono', 'sommario', 'obiettivo'],
+    experience: ['esperienza', 'esperienze', 'esperienza professionale', 'esperienze professionali', 'esperienza lavorativa'],
+    education: ['formazione', 'istruzione', 'studi', 'istruzione e formazione', 'titoli di studio'],
+    skills: ['competenze', 'competenze tecniche', 'conoscenze'],
+    languages: ['lingue', 'lingue straniere', 'conoscenze linguistiche'],
   },
-  {
-    kind: 'languages',
-    words: [
-      'idiomas', 'lenguas', 'languages', 'language skills',
-      'langues', 'competences linguistiques',
-      'lingue', 'lingue straniere', 'conoscenze linguistiche',
-      'linguas',
-      'sprachen', 'sprachkenntnisse', 'fremdsprachen',
-    ],
+  pt: {
+    summary: ['perfil', 'perfil profissional', 'sobre mim', 'resumo', 'objetivo'],
+    experience: ['experiencia', 'experiencia profissional', 'percurso profissional'],
+    education: ['formacao', 'formacao academica', 'educacao', 'habilitacoes', 'habilitacoes academicas'],
+    skills: ['competencias', 'competencias tecnicas', 'conhecimentos', 'aptidoes'],
+    languages: ['idiomas', 'linguas'],
   },
-]
+  de: {
+    summary: ['profil', 'kurzprofil', 'berufliches profil', 'uber mich', 'zusammenfassung'],
+    experience: ['berufserfahrung', 'erfahrung', 'berufliche erfahrung', 'werdegang', 'beruflicher werdegang', 'praxiserfahrung'],
+    education: ['ausbildung', 'bildung', 'bildungsweg', 'studium', 'schulbildung', 'akademischer werdegang'],
+    skills: ['kenntnisse', 'fahigkeiten', 'kompetenzen', 'fachkenntnisse', 'it kenntnisse', 'edv kenntnisse'],
+    languages: ['sprachen', 'sprachkenntnisse', 'fremdsprachen'],
+  },
+}
+
+const HEADING_LANGUAGES = Object.keys(SECTION_WORDS) as HeadingLanguage[]
+const SECTION_KINDS: SectionKind[] = ['summary', 'experience', 'education', 'skills', 'languages']
+
+/** Every language's headers by section, the table the heuristics match against. */
+export const SECTION_KEYWORDS: Array<{ kind: SectionKind; words: string[] }> = SECTION_KINDS.map((kind) => ({
+  kind,
+  words: [...new Set(HEADING_LANGUAGES.flatMap((language) => SECTION_WORDS[language][kind]))],
+}))
+
+/**
+ * The language of a CV by its section headings (spec 061): the one whose table holds the most of
+ * them. A tie goes to the language listed first: Spanish over Portuguese for a CV headed only
+ * "Perfil · Experiência · Idiomas", which reads the same in both. No known heading gives null.
+ */
+export function headingLanguage(headings: string[]): HeadingLanguage | null {
+  const keys = headings.map((heading) => normalizeHeading(heading).replace(/ /g, '')).filter(Boolean)
+  let best: HeadingLanguage | null = null
+  let bestScore = 0
+  for (const language of HEADING_LANGUAGES) {
+    const words = new Set(SECTION_KINDS.flatMap((kind) => SECTION_WORDS[language][kind]).map((word) => word.replace(/ /g, '')))
+    const score = keys.filter((key) => words.has(key)).length
+    if (score > bestScore) {
+      best = language
+      bestScore = score
+    }
+  }
+  return best
+}
 
 export const BULLET_RE = /^[•‣▪●·*\-–—]\s+/
 

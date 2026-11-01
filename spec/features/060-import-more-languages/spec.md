@@ -41,4 +41,4 @@ All of it is data, as `patterns.ts` intends ("adding a language is a data change
 ## Out of scope
 
 - The imported CV's language (`meta.language`) is still Spanish whatever the PDF's language;
-  nothing sets `ReviewDecisions.language`. Proposed to the user as a follow-up.
+  nothing sets `ReviewDecisions.language`. Done in spec 061.

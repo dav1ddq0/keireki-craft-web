@@ -34,7 +34,8 @@ export interface ReviewDecisions {
  */
 export function assembleCV(draft: ImportDraft, decisions: ReviewDecisions = {}): CVData {
   const cv = createEmptyCV()
-  cv.meta.language = decisions.language ?? 'es'
+  // The language of the PDF's headings, so the sections keep titles in it (spec 061).
+  cv.meta.language = decisions.language ?? draft.language ?? 'es'
   cv.meta.title = draft.fullName.value || cv.meta.title
 
   cv.personal = {

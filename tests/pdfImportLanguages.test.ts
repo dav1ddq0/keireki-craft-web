@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { ExtractedDocument, ExtractedLine } from '@/services/pdfImport/extract'
 import { analyze, parseDateRange, toPartialIso } from '@/services/pdfImport/heuristics'
 import { assembleCV } from '@/services/pdfImport/assemble'
+import { headingLanguage } from '@/services/pdfImport/patterns'
 
 /** An extraction built by hand, one line under the other, like the one in pdfImport.test.ts. */
 function doc(lines: Array<Partial<ExtractedLine> & { text: string }>): ExtractedDocument {
@@ -124,5 +125,35 @@ describe('dates in the new languages (spec 060)', () => {
     ['10.2020 – derzeit', { start: '2020-10', end: null }],
   ])('reads the range %s', (text, expected) => {
     expect(parseDateRange(text)).toEqual(expected)
+  })
+})
+
+describe('the language of an imported CV (spec 061)', () => {
+  it.each(Object.entries(CVS))('%s: the CV takes the language of its headings', (lang, lines) => {
+    expect(assembleCV(analyze(doc(lines))).meta.language).toBe(lang)
+  })
+
+  it('reads Spanish and English headings as such, and keeps a choice made on review', () => {
+    const english = doc([{ text: 'ADA LOVELACE', fontSize: 22, bold: true }, heading('Experience'), { text: 'Analyst — Babbage 2019 - 2021' }, heading('Education'), { text: 'BSc — London 2015 - 2019' }])
+    expect(assembleCV(analyze(english)).meta.language).toBe('en')
+    expect(assembleCV(analyze(english), { language: 'de' }).meta.language).toBe('de')
+    const spanish = doc([{ text: 'ADA LOVELACE', fontSize: 22, bold: true }, heading('Experiencia'), { text: 'Analista — Babbage 2019 - 2021' }, heading('Formación'), { text: 'Grado — Londres 2015 - 2019' }])
+    expect(assembleCV(analyze(spanish)).meta.language).toBe('es')
+  })
+
+  it('falls back to Spanish when no heading is known', () => {
+    const draft = analyze(doc([{ text: 'ADA LOVELACE', fontSize: 22, bold: true }, { text: 'algo suelto' }]))
+    expect(draft.language).toBeNull()
+    expect(assembleCV(draft).meta.language).toBe('es')
+  })
+
+  it('counts the headings of each language; a tie goes to the language listed first', () => {
+    expect(headingLanguage(['Perfil', 'Experiência', 'Formação', 'Competências', 'Idiomas'])).toBe('pt')
+    expect(headingLanguage(['Perfil', 'Experiencia', 'Formación', 'Competencias', 'Idiomas'])).toBe('es')
+    expect(headingLanguage(['Profil', 'Berufserfahrung', 'Ausbildung'])).toBe('de')
+    expect(headingLanguage(['Profil', 'Expérience', 'Formation'])).toBe('fr')
+    expect(headingLanguage(['Perfil', 'Experiência', 'Idiomas'])).toBe('es')
+    expect(headingLanguage(['E X P E R I E N C E', 'EDUCATION'])).toBe('en')
+    expect(headingLanguage([])).toBeNull()
   })
 })
