@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { createSampleCV } from '@/core/sample'
 import { LOCALES } from '@/i18n'
 import { CV_LANGUAGES } from '@/core/stylePresets'
+import { isSectionHeading } from '@/services/pdfImport/patterns'
 
 /** The shape of a sample: what each section holds, not what it says. */
 function shape(locale: (typeof LOCALES)[number]) {
@@ -49,5 +50,9 @@ describe('sample CV in the interface language (spec 059)', () => {
     const spanish = new Set(prose('es'))
     for (const text of prose(locale)) expect(spanish.has(text), text).toBe(false)
     expect(cv.personal.email).toMatch(/@example\.com$/)
+  })
+
+  it.each(LOCALES)('%s: no skill group is called like a section, which an import would split there', (locale) => {
+    for (const group of createSampleCV(locale).skills) expect(isSectionHeading(group.category), group.category).toBe(false)
   })
 })

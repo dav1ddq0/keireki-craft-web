@@ -32,3 +32,10 @@ Decisions (asked of the user):
 - Screenshots of the sample loaded from the interface: de (Monogram, Harbor), fr (Cobalt),
   it (Modern), pt (Meridian), en (Classic).
 - `npm test` 768 passed; `qa:e2e` 125/125.
+
+## 2 · The English skill group is not called "Languages"
+
+Found by importing the PDF of each sample (spec 060): the English sample's first skill group was
+"Languages", the heading of the languages section, and the import read the skills as languages.
+It is "Programming languages" now. `tests/sampleCv.test.ts` checks that no sample names a skill
+group like a section (fails with "Languages").

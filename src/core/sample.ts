@@ -138,7 +138,8 @@ const SAMPLES: Record<Locale, SampleText> = {
     institution: 'The University of Manchester',
     city: 'Manchester',
     degreeNote: 'First-class honours. Final-year project on data visualisation.',
-    skillGroups: ['Languages', 'Frontend', 'Backend'],
+    // Not "Languages": that is the heading of the languages section, and an import reads it as one.
+    skillGroups: ['Programming languages', 'Frontend', 'Backend'],
     modernCss: 'Modern CSS',
     languages: [['English', 'Native'], ['Spanish', 'C1'], ['French', 'B1']],
     talksTitle: 'Talks',
