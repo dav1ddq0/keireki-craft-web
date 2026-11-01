@@ -10,6 +10,7 @@ import { migrate, reconcileOrder } from '@/core/migrations'
 import { NotFoundError, savePhoto, storage, StorageQuotaError } from '@/services/storage'
 import { dataUrlToBlob } from '@/services/export/json'
 import { readPrefs, writePrefs } from '@/services/prefs'
+import { applyTemplateDefaults } from '@/templates/registry'
 
 const AUTOSAVE_MS = 500
 /** Edits closer together than this collapse into a single undo step. */
@@ -238,6 +239,17 @@ export const useCvStore = defineStore('cv', () => {
     writePrefs({ lastTemplateId: id })
   }
 
+  /**
+   * Picking a template from a gallery (the style step, the phone's template sheet, spec 064): it
+   * also adopts the template's accent and face, but only while the user has not chosen their own.
+   * `applyTemplateDefaults` decides that; once someone sets a custom accent, switching never
+   * overwrites it again.
+   */
+  function chooseTemplate(id: string) {
+    setTemplate(id)
+    data.value.style = applyTemplateDefaults(id, data.value.style)
+  }
+
   /* ---- custom sections ------------------------------------------------- */
 
   // `sectionOrder` and `pageBreaks` list custom sections by id, so adding or removing one has to touch
@@ -325,6 +337,7 @@ export const useCvStore = defineStore('cv', () => {
     totalSections,
     templateId,
     setTemplate,
+    chooseTemplate,
     addCustomSection,
     removeCustomSection,
     setPageBreak,

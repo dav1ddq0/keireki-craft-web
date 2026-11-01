@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import type { CVData, CVSummary } from '@/types/cv'
+import { applyTemplateDefaults } from '@/templates/registry'
 
 /**
  * The store is tested against an in-memory adapter: these tests are about
@@ -179,6 +180,14 @@ describe('per-CV template (spec 021)', () => {
     cv.undo()
     await settle()
     expect(cv.templateId).toBe('classic')
+  })
+
+  it('chooses a template from a gallery: its defaults come with it, as in the style step (spec 064)', () => {
+    const cv = useCvStore()
+    const before = { ...cv.data.style }
+    cv.chooseTemplate('meridian')
+    expect(cv.templateId).toBe('meridian')
+    expect(cv.data.style).toEqual(applyTemplateDefaults('meridian', before))
   })
 
   it('switches to the template of the CV being opened', async () => {

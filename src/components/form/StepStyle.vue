@@ -25,16 +25,6 @@ const style = computed(() => cv.data.style)
 const palette = computed(() => getTemplate(cv.templateId).palette ?? PALETTE)
 
 /**
- * Picking a template also adopts its accent and face — but only while the user
- * has not chosen their own. `applyTemplateDefaults` decides that; once someone
- * sets a custom accent, switching templates never overwrites it again.
- */
-function pickTemplate(id: string) {
-  cv.setTemplate(id)
-  cv.data.style = applyTemplateDefaults(id, cv.data.style)
-}
-
-/**
  * The accent each card would actually produce if clicked: its own default while
  * the user is still on defaults, or the user's chosen accent once they have one.
  * Painting every thumbnail in the current accent hid the very differences the
@@ -53,7 +43,7 @@ function previewAccent(id: string): string {
       :templates="templates"
       :active-id="cv.templateId"
       :accent-for="previewAccent"
-      @pick="pickTemplate"
+      @pick="cv.chooseTemplate"
     />
 
     <section class="block">

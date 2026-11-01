@@ -1,6 +1,6 @@
 # 064 · Phone dock: Tasks
 
-- [ ] 1 · `chooseTemplate` in the CV store, used by the style step, with its test
+- [x] 1 · `chooseTemplate` in the CV store, used by the style step, with its test
 - [ ] 2 · `TemplateSheet.vue` and its tests
 - [ ] 3 · `CopyImageButton` compact look (state bubble above) and tests
 - [ ] 4 · `MobileDock` icons-only switch; preview row with template, copy and Export icon; drop the floating copy in `PreviewPane`; i18n
