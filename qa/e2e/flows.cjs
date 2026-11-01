@@ -237,7 +237,7 @@ async function documentsAndPrefs(browser) {
   check(B, 'confirming deletes it', await until(async () => (await tiles.count()) === n0, { timeout: 3000 }))
 
   await p.getByRole('button', { name: /Preferencias/ }).first().click()
-  await p.getByRole('radio', { name: 'English' }).click()
+  await p.getByLabel('Idioma de la interfaz').selectOption('en')
   check(B, 'the UI switches to English', await until(() => p.getByRole('button', { name: /^My CVs/ }).first().isVisible(), { timeout: 2000 }))
   await p.getByRole('radio', { name: /Dark|Oscuro/ }).click()
   check(B, 'the theme switches to dark', (await p.evaluate(() => document.documentElement.dataset.theme)) === 'dark')

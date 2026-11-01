@@ -67,11 +67,10 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 - **054** · The preview's template button, only where it does something (hidden on the style step)
 - **055** · The paginated view no longer turns the dark theme white (paged.js gets no print-only rules)
 - **056** · Phone: a country code selector with the flag, the default country detected from the IP (language/time zone as fallback)
+- **057** · French, Italian, Portuguese and German: the CV and the interface
 - **058** · The GitHub and LinkedIn links show the networks' own marks
 
 ## Next 🔜
-
-- **057** · French, Italian, Portuguese and German: the CV and the interface
 
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
 

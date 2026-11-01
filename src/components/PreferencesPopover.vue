@@ -6,8 +6,9 @@
  */
 import { onMounted, ref, useId, useTemplateRef } from 'vue'
 import { useUiStore } from '@/stores/ui'
-import { LOCALE_NAMES, useI18n, type Locale } from '@/i18n'
+import { LOCALE_NAMES, LOCALE_TAGS, useI18n } from '@/i18n'
 import { useCvExport } from '@/composables/useCvExport'
+import BaseField from '@/components/ui/BaseField.vue'
 
 const ui = useUiStore()
 const { t, locale, availableLocales } = useI18n()
@@ -52,23 +53,15 @@ function toggleFallback() {
     >
       <h2 class="title">{{ t('prefs.title') }}</h2>
 
+      <!-- Six languages do not fit a segmented row: a select, like the CV language (spec 057). -->
       <div class="group">
-        <span :id="`${id}-lang`" class="label">{{ t('prefs.language') }}</span>
-        <div class="segments m3-segmented" role="radiogroup" :aria-labelledby="`${id}-lang`">
-          <button
-            v-for="code in availableLocales"
-            :key="code"
-            type="button"
-            role="radio"
-            class="segment m3-segment m3-state m3-target"
-            :aria-checked="locale === code"
-            :lang="code"
-            @click="locale = code as Locale"
-          >
-            {{ LOCALE_NAMES[code as Locale] }}
-          </button>
-        </div>
-        <span class="hint">{{ t('prefs.languageHint') }}</span>
+        <BaseField v-slot="{ id: fieldId }" :label="t('prefs.language')" :hint="t('prefs.languageHint')">
+          <select :id="fieldId" v-model="locale">
+            <option v-for="code in availableLocales" :key="code" :value="code" :lang="LOCALE_TAGS[code]">
+              {{ LOCALE_NAMES[code] }}
+            </option>
+          </select>
+        </BaseField>
       </div>
 
       <div class="group">

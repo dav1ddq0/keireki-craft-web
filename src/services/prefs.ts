@@ -3,13 +3,15 @@
  * go here: it is synchronous, capped at ~5 MB per origin and throws when full.
  */
 import type { ThemeChoice } from '@/core/theme'
+import type { Locale } from '@/i18n'
 
 const KEY = 'keireki-craft:prefs'
 /** The key while the app was called "CV Maker" (spec 039): read when the new one is empty, never written. */
 const LEGACY_KEY = 'cv-maker:prefs'
 
 export interface Prefs {
-  uiLanguage: 'es' | 'en'
+  /** Checked on read by `storedLocale()`: an old or hand-edited value falls back to Spanish. */
+  uiLanguage: Locale
   lastTemplateId: string
   lastCvId: string | null
   theme: ThemeChoice

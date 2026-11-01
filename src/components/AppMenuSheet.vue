@@ -1,8 +1,9 @@
 <script setup lang="ts">
 /** Phone menu (spec 016): what the one-row header cannot hold — views, language, theme, storage note. */
 import { useUiStore } from '@/stores/ui'
-import { LOCALE_NAMES, useI18n, type Locale } from '@/i18n'
+import { LOCALE_NAMES, LOCALE_TAGS, useI18n } from '@/i18n'
 import BottomSheet from '@/components/ui/BottomSheet.vue'
+import BaseField from '@/components/ui/BaseField.vue'
 
 defineProps<{ open: boolean }>()
 const emit = defineEmits<{ close: [] }>()
@@ -35,23 +36,14 @@ function go(view: (typeof VIEWS)[number]) {
     </nav>
 
     <div class="prefs">
-      <div class="pref">
-        <span :id="'menu-lang'" class="pref-label">{{ t('nav.language') }}</span>
-        <div class="segments m3-segmented" role="radiogroup" aria-labelledby="menu-lang">
-          <button
-            v-for="code in availableLocales"
-            :key="code"
-            type="button"
-            role="radio"
-            class="segment m3-segment m3-state m3-target"
-            :aria-checked="locale === code"
-            :lang="code"
-            @click="locale = code as Locale"
-          >
-            {{ LOCALE_NAMES[code as Locale] }}
-          </button>
-        </div>
-      </div>
+      <!-- Six languages do not fit a segmented row: a select, like the CV language (spec 057). -->
+      <BaseField v-slot="{ id }" :label="t('nav.language')">
+        <select :id="id" v-model="locale">
+          <option v-for="code in availableLocales" :key="code" :value="code" :lang="LOCALE_TAGS[code]">
+            {{ LOCALE_NAMES[code] }}
+          </option>
+        </select>
+      </BaseField>
       <div class="pref">
         <span :id="'menu-theme'" class="pref-label">{{ t('nav.theme') }}</span>
         <div class="segments m3-segmented" role="radiogroup" aria-labelledby="menu-theme">

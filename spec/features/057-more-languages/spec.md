@@ -1,6 +1,6 @@
 # 057 · French, Italian, Portuguese and German
 
-**Status:** in progress
+**Status:** done
 
 The app and the CV it makes spoke Spanish and English. The user asked for French, Italian,
 Portuguese and German too, and for both language choices to offer them.
@@ -36,8 +36,24 @@ Modern, Aurora). `npm test` 742 passed; `qa:pdf` 128/128.
 
 ## 2 · The interface in six languages
 
-Pending — waits for the work on spec 056 to commit its own strings in `i18n/`, so they are
-translated too.
+- `i18n/fr.ts`, `it.ts`, `pt.ts`, `de.ts`: every key of `es.ts` (the phone strings of spec 056
+  included), typed as `typeof es` so a missing or extra key does not compile. French uses its
+  typography (no-break space inside « » and before : ; ? !), Italian and Portuguese « », German „ “.
+- `i18n/index.ts`: `LOCALES`, the names, and `LOCALE_TAGS` for `Intl` and `lang` (`pt-PT`, so dates,
+  months and country names are European Portuguese). `storedLocale()` falls back to Spanish for a
+  stored value that is not one of the six; `prefs.uiLanguage` is typed as `Locale`. The month field
+  and the phone field's country list use the tag.
+- The language choice is a select in the preferences popover and in the phone menu (six do not fit
+  a segmented row), each option named in itself with its `lang`.
+- Phone header: the app name no longer breaks in two when the save state is long ("Gespeichert",
+  "Enregistré" on a 360 px phone); the state drops below the name instead.
+
+Verification: `tests/i18nDictionaries.test.ts` (every dictionary has Spanish's keys, none empty, the
+same `{placeholders}`); `tests/localeNames.test.ts` (both selects offer the six, named in
+themselves, with `lang`; a stored unknown language falls back to Spanish; Portuguese sets
+`lang="pt-PT"`). `qa:consistency` walks the 360 px phone and the 1024 px laptop again in German:
+12/12 over 365 views. `qa:e2e` switches the language through the select: 125/125. Screenshots of
+the German and Portuguese interface on both. `npm test` 762 passed.
 
 ## Out of scope
 

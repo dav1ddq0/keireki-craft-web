@@ -3,16 +3,41 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import PreferencesPopover from '@/components/PreferencesPopover.vue'
+import AppMenuSheet from '@/components/AppMenuSheet.vue'
 
 beforeEach(() => setActivePinia(createPinia()))
 
-describe('UI language options (spec 027)', () => {
+const NAMES = [
+  ['Español', 'es'],
+  ['English', 'en'],
+  ['Français', 'fr'],
+  ['Italiano', 'it'],
+  ['Português', 'pt-PT'],
+  ['Deutsch', 'de'],
+]
+
+describe('UI language options (specs 027, 057)', () => {
   it('names each language in itself, with its lang, instead of "ES" / "EN"', () => {
     const wrapper = mount(PreferencesPopover)
-    const options = wrapper.findAll('[role="radio"][lang]')
-    expect(options.map((o) => [o.text(), o.attributes('lang')])).toEqual([
-      ['Español', 'es'],
-      ['English', 'en'],
-    ])
+    const options = wrapper.findAll('select option[lang]')
+    expect(options.map((o) => [o.text(), o.attributes('lang')])).toEqual(NAMES)
+  })
+
+  it('offers the same six in the phone menu', () => {
+    const wrapper = mount(AppMenuSheet, { props: { open: true }, global: { stubs: { BottomSheet: { template: '<div><slot /></div>' } } } })
+    expect(wrapper.findAll('select option[lang]').map((o) => [o.text(), o.attributes('lang')])).toEqual(NAMES)
+  })
+})
+
+describe('stored UI language (spec 057)', () => {
+  it('keeps one of the six and falls back to Spanish for anything else', async () => {
+    const { storedLocale, setLocale } = await import('@/i18n')
+    for (const [stored, expected] of [['pt', 'pt'], ['de', 'de'], ['xx', 'es'], [42, 'es']]) {
+      localStorage.setItem('keireki-craft:prefs', JSON.stringify({ uiLanguage: stored }))
+      expect(storedLocale()).toBe(expected)
+    }
+    setLocale('pt')
+    expect(document.documentElement.lang).toBe('pt-PT')
+    setLocale('es')
   })
 })

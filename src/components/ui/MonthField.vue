@@ -12,7 +12,7 @@ import { useI18n } from '@/i18n'
 const props = defineProps<{ id?: string; label: string; disabled?: boolean }>()
 const model = defineModel<string>({ required: true })
 
-const { t, locale } = useI18n()
+const { t, intlLocale } = useI18n()
 
 const year = ref(splitMonth(model.value).year)
 const month = ref(splitMonth(model.value).month)
@@ -39,10 +39,10 @@ function onYear(event: Event) {
 }
 
 const months = computed(() => {
-  const names = new Intl.DateTimeFormat(locale.value, { month: 'long' })
+  const names = new Intl.DateTimeFormat(intlLocale.value, { month: 'long' })
   return Array.from({ length: 12 }, (_, i) => {
     const name = names.format(new Date(2000, i, 1))
-    return { value: String(i + 1).padStart(2, '0'), name: name.charAt(0).toLocaleUpperCase(locale.value) + name.slice(1) }
+    return { value: String(i + 1).padStart(2, '0'), name: name.charAt(0).toLocaleUpperCase(intlLocale.value) + name.slice(1) }
   })
 })
 </script>

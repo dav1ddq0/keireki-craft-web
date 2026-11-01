@@ -201,6 +201,18 @@ const phoneState = computed(() => {
   padding: 0 4px 0 16px;
 }
 
+/* The name stays on one line; a save state too long to sit beside it ("Gespeichert" on a 360 px
+   phone) drops below it instead of breaking the name in two (spec 057). */
+.header--phone .brand {
+  flex-wrap: wrap;
+  row-gap: 0;
+  min-width: 0;
+}
+
+.header--phone .brand strong {
+  white-space: nowrap;
+}
+
 .state {
   font: var(--type-body-small);
   letter-spacing: var(--tracking-body-small);

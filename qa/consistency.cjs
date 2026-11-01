@@ -1,6 +1,7 @@
 // The interface against its design tokens, in the browser (spec 043, extended in 045): the computed
 // style of every element of every view, on a laptop, a desktop, an iPad in both orientations, an
-// iPad Pro and three phones, light and dark, checked against the scale.
+// iPad Pro and three phones, light and dark, checked against the scale. The narrowest phone and
+// laptop are walked again with the interface in German, the longest of its languages (spec 057).
 //   - text sizes are the sizes of the type scale (`--size-*`), weights are 400/500/600/700;
 //   - corner radii are the shape scale, and every field is the same height and radius;
 //   - a blurred shadow is an elevation token;
@@ -25,10 +26,39 @@ const PROFILES = [
   { name: 'Pixel 7', opts: () => devices['Pixel 7'], themes: ['light', 'dark'] },
   { name: 'iPhone SE', opts: () => devices['iPhone SE'], themes: ['light'] },
   { name: 'phone 360×640', opts: { viewport: { width: 360, height: 640 }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 }, themes: ['dark'] },
+  // German has the longest words of the six UI languages: the narrowest phone and laptop again (spec 057).
+  { name: 'phone 360×640 (de)', lang: 'de', opts: { viewport: { width: 360, height: 640 }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 }, themes: ['light'] },
+  { name: 'small laptop 1024×768 (de)', lang: 'de', opts: { viewport: { width: 1024, height: 768 } }, themes: ['light'] },
 ]
 
 const OUT = path.join(ROOT, '.qa')
-const STEPS = ['Datos personales', 'Resumen', 'Experiencia', 'Formación', 'Competencias', 'Idiomas', 'Secciones propias', 'Plantilla y estilo', 'Exportar']
+/** What the walk clicks, by UI language. */
+const UI = {
+  es: {
+    steps: ['Datos personales', 'Resumen', 'Experiencia', 'Formación', 'Competencias', 'Idiomas', 'Secciones propias', 'Plantilla y estilo', 'Exportar'],
+    sample: /Desde un ejemplo/,
+    next: /Siguiente/,
+    preview: /^Vista previa$/,
+    edit: /^Editar$/,
+    back: /Paso anterior|Anterior|Plantilla y estilo|Secciones propias/,
+    export: /^Exportar/,
+    menu: /^Menú/,
+    views: [/^Preferencias/, /^Importar/, /^Mis CVs/],
+    newCv: /Nuevo CV/,
+  },
+  de: {
+    steps: ['Persönliche Daten', 'Profil', 'Berufserfahrung', 'Ausbildung', 'Kenntnisse', 'Sprachen', 'Eigene Abschnitte', 'Vorlage und Stil', 'Exportieren'],
+    sample: /Aus einem Beispiel/,
+    next: /Weiter|Nächster Schritt/,
+    preview: /^Vorschau$/,
+    edit: /^Bearbeiten$/,
+    back: /Vorheriger Schritt|Zurück|Vorlage und Stil|Eigene Abschnitte/,
+    export: /^Exportieren/,
+    menu: /^Menü/,
+    views: [/^Einstellungen/, /^Importieren/, /^Meine Lebensläufe/],
+    newCv: /Neuer Lebenslauf/,
+  },
+}
 const SIZES = new Set(['11px', '12px', '14px', '16px', '22px', '24px', '28px', '32px', '36px'])
 const WEIGHTS = new Set(['400', '500', '600', '700'])
 const RADII = new Set(['0px', '4px', '8px', '16px', '20px', '28px', '9999px', '50%'])
@@ -151,9 +181,9 @@ const COLLECT = `(() => {
   /** Whether a button with this name is on screen. */
   const shown = (p, name) => p.getByRole('button', { name }).first().isVisible().catch(() => false)
   /** A view of the app by its name: the header tabs where there are any, else the menu of the phone. */
-  async function openView(p, name) {
+  async function openView(p, name, ui) {
     if (await shown(p, name)) return p.getByRole('button', { name }).first().click().catch(() => {})
-    await tap(p.getByRole('button', { name: /^Menú/ }))
+    await tap(p.getByRole('button', { name: ui.menu }))
     await p.waitForTimeout(300)
     await p.getByRole('button', { name }).first().click().catch(() => {})
   }
@@ -164,10 +194,18 @@ const COLLECT = `(() => {
     // A control a layout does not have is not waited for: each walk tries all of them.
     p.setDefaultTimeout(2000)
     const where = (view) => `${profile.name} ${theme} ${view}`
-    await p.addInitScript((t) => localStorage.setItem('keireki-craft:prefs', JSON.stringify({ uiLanguage: 'es', theme: t })), theme)
+    const lang = profile.lang ?? 'es'
+    const ui = UI[lang]
+    const STEPS = ui.steps
+    await p.addInitScript(([l, t]) => localStorage.setItem('keireki-craft:prefs', JSON.stringify({ uiLanguage: l, theme: t })), [lang, theme])
     await p.reload({ waitUntil: 'networkidle' }).catch(() => {})
     await grab(p, where('welcome'))
-    await startSample(p)
+    if (lang === 'es') await startSample(p)
+    else {
+      await p.getByRole('button', { name: ui.sample }).click()
+      await p.getByText('Nadia Martín Reyes').first().waitFor({ state: 'attached', timeout: 5000 })
+      await settled(p)
+    }
 
     const rail = (await p.locator('.editor-rail').count()) > 0
     // The nine steps: by the rail where there is one, else by the next button of the dock.
@@ -175,41 +213,41 @@ const COLLECT = `(() => {
       if (rail) await p.locator('nav button.row', { hasText: STEPS[i] }).first().click().catch(() => {})
       await p.waitForTimeout(200)
       await grab(p, where(`step ${i + 1} ${STEPS[i]}`))
-      if (!rail && i < STEPS.length - 1) await tap(p.getByRole('button', { name: /Siguiente/ }))
+      if (!rail && i < STEPS.length - 1) await tap(p.getByRole('button', { name: ui.next }))
     }
     // The phone shows one pane at a time: the preview too.
-    if (await shown(p, /^Vista previa$/)) {
-      await tap(p.getByRole('button', { name: /^Vista previa$/ }))
+    if (await shown(p, ui.preview)) {
+      await tap(p.getByRole('button', { name: ui.preview }))
       await p.waitForTimeout(400)
       await grab(p, where('preview'))
-      await tap(p.getByRole('button', { name: /^Editar$/ }))
+      await tap(p.getByRole('button', { name: ui.edit }))
     }
-    if (rail) await p.locator('nav button.row', { hasText: 'Datos personales' }).first().click().catch(() => {})
-    else for (let back = 0; back < 9; back++) await tap(p.getByRole('button', { name: /Paso anterior|Anterior|Plantilla y estilo|Secciones propias/ }))
+    if (rail) await p.locator('nav button.row', { hasText: STEPS[0] }).first().click().catch(() => {})
+    else for (let back = 0; back < 9; back++) await tap(p.getByRole('button', { name: ui.back }))
     if (await p.locator('.photo-drop input[type=file]').count()) await p.locator('.photo-drop input[type=file]').setInputFiles(path.join(__dirname, 'fixtures/portrait.jpg'))
     await p.waitForSelector('dialog.crop[open]', { timeout: 1200 }).catch(() => {})
     await p.waitForTimeout(300)
     await grab(p, where('photo crop dialog'))
     await p.keyboard.press('Escape')
     // Export: the dialog on the rail's layouts, the sheet on the others.
-    await tap(p.getByRole('button', { name: /^Exportar/ }))
+    await tap(p.getByRole('button', { name: ui.export }))
     await p.waitForSelector('dialog[open]', { timeout: 1200 }).catch(() => {})
     await grab(p, where('export'))
     await p.keyboard.press('Escape')
-    for (const view of [/^Preferencias/, /^Importar/, /^Mis CVs/]) {
-      await openView(p, view)
+    for (const view of ui.views) {
+      await openView(p, view, ui)
       await p.waitForTimeout(300)
       await grab(p, where(String(view).slice(2, -2)))
       await p.keyboard.press('Escape')
     }
     // A blank CV: the empty states of every step.
-    await tap(p.getByRole('button', { name: /Nuevo CV/ }))
+    await tap(p.getByRole('button', { name: ui.newCv }))
     await p.waitForTimeout(400)
     for (let i = 0; i < STEPS.length; i++) {
       if (rail) await p.locator('nav button.row', { hasText: STEPS[i] }).first().click().catch(() => {})
       await p.waitForTimeout(150)
       await grab(p, where(`blank ${STEPS[i]}`))
-      if (!rail && i < STEPS.length - 1) await tap(p.getByRole('button', { name: /Siguiente/ }))
+      if (!rail && i < STEPS.length - 1) await tap(p.getByRole('button', { name: ui.next }))
     }
     await p.context().close()
   }

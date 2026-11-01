@@ -22,7 +22,7 @@ import CountryFlag from '@/components/ui/CountryFlag.vue'
 defineProps<{ inputId: string }>()
 const phone = defineModel<string>({ required: true })
 
-const { t, locale } = useI18n()
+const { t, intlLocale } = useI18n()
 const uid = useId()
 const listId = `${uid}-list`
 
@@ -91,8 +91,8 @@ const list = ref<HTMLElement | null>(null)
 const fold = (text: string) => text.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase()
 
 const entries = computed(() => {
-  const collator = new Intl.Collator(locale.value)
-  const all = COUNTRIES.map((c) => ({ country: c, name: countryName(c.iso, locale.value) })).sort((a, b) =>
+  const collator = new Intl.Collator(intlLocale.value)
+  const all = COUNTRIES.map((c) => ({ country: c, name: countryName(c.iso, intlLocale.value) })).sort((a, b) =>
     collator.compare(a.name, b.name),
   )
   const q = fold(query.value.trim())
@@ -109,7 +109,7 @@ const entries = computed(() => {
 
 watch(entries, () => (active.value = 0))
 
-const currentName = computed(() => (country.value ? countryName(country.value.iso, locale.value) : ''))
+const currentName = computed(() => (country.value ? countryName(country.value.iso, intlLocale.value) : ''))
 
 async function openList() {
   open.value = true
