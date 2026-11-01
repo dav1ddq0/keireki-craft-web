@@ -125,6 +125,14 @@ describe('Copy image (spec 062)', () => {
     expect(wrapper.find('.share-btn').exists()).toBe(false)
   })
 
+  it('in the phone dock, shows its state in a bubble above the button only while there is one (spec 064)', async () => {
+    const wrapper = mount(CopyImageButton, { props: { compact: true } })
+    expect(wrapper.find('.copy--compact').exists()).toBe(true)
+    expect(wrapper.find('.state--shown').exists()).toBe(false)
+    await wrapper.find('.copy-btn').trigger('click')
+    await vi.waitFor(() => expect(wrapper.find('.state--shown output').text()).toBe('Copiado'))
+  })
+
   it('sits in the preview toolbar', () => {
     const wrapper = mount(PreviewPane, { global: { stubs: { CvRenderer: true } } })
     expect(wrapper.find('header button[aria-label="Copiar imagen"]').exists()).toBe(true)

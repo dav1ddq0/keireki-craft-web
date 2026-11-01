@@ -4,6 +4,9 @@ import { computed } from 'vue'
 import { useI18n } from '@/i18n'
 import { canCopyImages, useCopyCvImage } from '@/composables/useCopyCvImage'
 
+/** `compact`: the phone dock's look (spec 064): a 48 px icon, the state in a bubble above it, off the row. */
+defineProps<{ compact?: boolean }>()
+
 const { t } = useI18n()
 const { state, shareable, copy, share } = useCopyCvImage()
 const supported = canCopyImages()
@@ -13,12 +16,14 @@ const status = computed(() => (state.value === 'idle' ? '' : t(STATES[state.valu
 </script>
 
 <template>
-  <div v-if="supported" class="copy">
-    <output class="copy-state" :class="{ 'copy-state--failed': state === 'failed' }" aria-live="polite">{{ status }}</output>
-    <!-- Where the copy failed but the phone can share the picture: its sheet offers Copy and Save. -->
-    <button v-if="state === 'failed' && shareable" type="button" class="share-btn m3-state m3-target" @click="share">
-      {{ t('preview.shareImage') }}
-    </button>
+  <div v-if="supported" class="copy" :class="{ 'copy--compact': compact }">
+    <div class="state" :class="{ 'state--shown': status !== '' }">
+      <output class="copy-state" :class="{ 'copy-state--failed': state === 'failed' }" aria-live="polite">{{ status }}</output>
+      <!-- Where the copy failed but the phone can share the picture: its sheet offers Copy and Save. -->
+      <button v-if="state === 'failed' && shareable" type="button" class="share-btn m3-state m3-target" @click="share">
+        {{ t('preview.shareImage') }}
+      </button>
+    </div>
     <button
       type="button"
       class="copy-btn m3-icon-btn m3-state m3-target"
@@ -35,6 +40,7 @@ const status = computed(() => (state.value === 'idle' ? '' : t(STATES[state.valu
 
 <style scoped>
 .copy {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -46,6 +52,40 @@ const status = computed(() => (state.value === 'idle' ? '' : t(STATES[state.valu
   border: 0;
   color: var(--md-on-surface-variant);
   cursor: pointer;
+}
+
+.state {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* The dock's look: the button alone in the row, its state floating above it so the row never moves. */
+.copy--compact .copy-btn {
+  width: 48px;
+  height: 48px;
+}
+
+.copy--compact .state {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 16px);
+  z-index: 2;
+  display: none;
+  padding: 4px 4px 4px 16px;
+  border-radius: var(--shape-md);
+  background: var(--md-surface-container-highest);
+  box-shadow: var(--elevation-2);
+  white-space: nowrap;
+}
+
+.copy--compact .state--shown {
+  display: flex;
+}
+
+/* Without a Share button the bubble is just the words: even padding. */
+.copy--compact .state--shown:not(:has(.share-btn)) {
+  padding: 10px 16px;
 }
 
 .share-btn {
