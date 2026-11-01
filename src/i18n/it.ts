@@ -183,6 +183,9 @@ const it: typeof es = {
     more: 'Altri modi di esportare',
     edit: 'Modifica',
     next: 'Avanti: {step}',
+    template: 'Modello: {name}. Cambia',
+    templatesTitle: 'Modello',
+    templatesHint: 'Tocchi un modello per vederlo sul CV. Il pannello resta aperto per provarne un altro.',
   },
   rail: {
     label: 'Passaggi del CV',

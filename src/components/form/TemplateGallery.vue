@@ -7,6 +7,7 @@
 import { computed, ref } from 'vue'
 import { useI18n } from '@/i18n'
 import type { TemplateDefinition } from '@/types/template'
+import TemplateThumb from '@/components/ui/TemplateThumb.vue'
 
 const props = defineProps<{
   templates: TemplateDefinition[]
@@ -56,14 +57,7 @@ const shown = computed(() =>
           :aria-pressed="activeId === template.id"
           @click="emit('pick', template.id)"
         >
-          <!-- Static, authored SVG from the template definition — never user input. -->
-          <span
-            class="thumb"
-            role="img"
-            :aria-label="template.name"
-            :style="{ color: accentFor(template.id) }"
-            v-html="template.thumbnail"
-          />
+          <TemplateThumb :template="template" :accent="accentFor(template.id)" />
           <span class="card-name">{{ template.name }}</span>
           <span class="card-tags">
             <span v-for="tag in template.tags" :key="tag" class="tag">{{ t(tag) }}</span>
@@ -127,47 +121,6 @@ const shown = computed(() =>
 .card--active {
   border-color: var(--accent);
   box-shadow: 0 0 0 1px var(--accent);
-}
-
-.thumb {
-  display: block;
-  width: 100%;
-  aspect-ratio: 3 / 4;
-  overflow: hidden;
-  border-radius: var(--shape-md);
-  border: 1px solid var(--border);
-  background: #fff;
-}
-
-.thumb :deep(svg) {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-/*
- * Dark theme: the thumbnails are drawings of a page, not the CV, so they take the theme's tones
- * instead of glaring white (spec 029). Their four fixed colours map onto M3 roles; white on the
- * accent (headers) stays white.
- */
-:root[data-theme='dark'] .thumb {
-  background: var(--md-surface-container-highest);
-}
-
-:root[data-theme='dark'] .thumb :deep(svg > rect:first-child[fill='#fff']) {
-  fill: var(--md-surface-container-highest);
-}
-
-:root[data-theme='dark'] .thumb :deep([fill='#1f2937']) {
-  fill: var(--md-on-surface);
-}
-
-:root[data-theme='dark'] .thumb :deep([fill='#9ca3af']) {
-  fill: var(--md-on-surface-variant);
-}
-
-:root[data-theme='dark'] .thumb :deep([fill='#d1d5db']) {
-  fill: var(--md-outline-variant);
 }
 
 .card-name {

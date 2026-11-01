@@ -184,6 +184,9 @@ export default {
     more: 'Más formas de exportar',
     edit: 'Editar',
     next: 'Siguiente: {step}',
+    template: 'Plantilla: {name}. Cambiar',
+    templatesTitle: 'Plantilla',
+    templatesHint: 'Toca una para verla en tu CV. La hoja sigue abierta para probar otra.',
   },
   rail: {
     label: 'Pasos del CV',

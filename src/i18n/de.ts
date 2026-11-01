@@ -183,6 +183,9 @@ const de: typeof es = {
     more: 'Weitere Exportmöglichkeiten',
     edit: 'Bearbeiten',
     next: 'Weiter: {step}',
+    template: 'Vorlage: {name}. Ändern',
+    templatesTitle: 'Vorlage',
+    templatesHint: 'Tippen Sie auf eine, um sie in Ihrem Lebenslauf zu sehen. Das Blatt bleibt offen, um eine andere zu testen.',
   },
   rail: {
     label: 'Schritte des Lebenslaufs',

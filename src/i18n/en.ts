@@ -183,6 +183,9 @@ const en: typeof es = {
     more: 'More ways to export',
     edit: 'Edit',
     next: 'Next: {step}',
+    template: 'Template: {name}. Change',
+    templatesTitle: 'Template',
+    templatesHint: 'Tap one to see it on your CV. The sheet stays open to try another.',
   },
   rail: {
     label: 'CV steps',

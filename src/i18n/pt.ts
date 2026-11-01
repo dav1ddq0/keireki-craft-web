@@ -184,6 +184,9 @@ const pt: typeof es = {
     more: 'Outras formas de exportar',
     edit: 'Editar',
     next: 'Seguinte: {step}',
+    template: 'Modelo: {name}. Mudar',
+    templatesTitle: 'Modelo',
+    templatesHint: 'Toca num para o veres no teu CV. A folha continua aberta para experimentar outro.',
   },
   rail: {
     label: 'Passos do CV',
