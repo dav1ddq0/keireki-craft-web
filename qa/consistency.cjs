@@ -37,6 +37,7 @@ const UI = {
   es: {
     steps: ['Datos personales', 'Resumen', 'Experiencia', 'Formación', 'Competencias', 'Idiomas', 'Secciones propias', 'Plantilla y estilo', 'Exportar'],
     sample: /Desde un ejemplo/,
+    sampleName: 'Nadia Martín Reyes',
     next: /Siguiente/,
     preview: /^Vista previa$/,
     edit: /^Editar$/,
@@ -49,6 +50,8 @@ const UI = {
   de: {
     steps: ['Persönliche Daten', 'Profil', 'Berufserfahrung', 'Ausbildung', 'Kenntnisse', 'Sprachen', 'Eigene Abschnitte', 'Vorlage und Stil', 'Exportieren'],
     sample: /Aus einem Beispiel/,
+    // The sample is in the interface language, with a person of its own (spec 059).
+    sampleName: 'Lena Schneider',
     next: /Weiter|Nächster Schritt/,
     preview: /^Vorschau$/,
     edit: /^Bearbeiten$/,
@@ -203,7 +206,7 @@ const COLLECT = `(() => {
     if (lang === 'es') await startSample(p)
     else {
       await p.getByRole('button', { name: ui.sample }).click()
-      await p.getByText('Nadia Martín Reyes').first().waitFor({ state: 'attached', timeout: 5000 })
+      await p.getByText(ui.sampleName).first().waitFor({ state: 'attached', timeout: 5000 })
       await settled(p)
     }
 

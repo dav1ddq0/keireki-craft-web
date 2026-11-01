@@ -40,3 +40,11 @@ Found by importing the PDF of each sample (spec 060): the English sample's first
 "Languages", the heading of the languages section, and the import read the skills as languages.
 It is "Programming languages" now. `tests/sampleCv.test.ts` checks that no sample names a skill
 group like a section (fails with "Languages").
+
+## 3 · `qa:consistency` waits for the German sample's own person
+
+The German walk of `qa:consistency` (spec 057) waited for "Nadia Martín Reyes" after loading the
+sample; with the sample in the interface language it is Lena Schneider, and the walk timed out.
+`qa:consistency` was not run after task 1; found while running it for spec 062. Each language of
+the walk names its sample person now. 12/12 over 365 views.
+
