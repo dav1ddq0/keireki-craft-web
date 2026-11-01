@@ -73,10 +73,9 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 - **060** · PDF import in French, Italian, Portuguese and German (headings, months, levels)
 - **061** · An imported CV takes the language of its PDF's headings
 - **062** · The CV as an image: download as JPG, copy to the clipboard
+- **063** · Improve a text with AI: an icon button under the summary and the descriptions opens Claude, ChatGPT or Gemini with a ready prompt (copied too)
 
 ## Next 🔜
-
-- **063** · Improve a text with AI: per-field button that copies a ready prompt and opens Claude, ChatGPT or Gemini (proposed)
 
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
 
