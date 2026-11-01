@@ -9,6 +9,8 @@ import { useUiStore } from '@/stores/ui'
 import { useI18n } from '@/i18n'
 import PreferencesPopover from './PreferencesPopover.vue'
 
+const logoSrc = `${import.meta.env.BASE_URL}favicon.svg`
+
 const emit = defineEmits<{ export: [] }>()
 
 const cv = useCvStore()
@@ -34,7 +36,7 @@ const saveText = computed(() => {
 <template>
   <header class="header">
     <button type="button" class="brand" @click="ui.view = 'documents'">
-      <span class="mark" aria-hidden="true">KC</span>{{ t('app.name') }}
+      <img class="mark" :src="logoSrc" alt="" aria-hidden="true" />{{ t('app.name') }}
     </button>
 
     <nav v-if="ui.view === 'editor'" class="crumbs" :aria-label="t('header.breadcrumb')">
@@ -107,15 +109,9 @@ const saveText = computed(() => {
 }
 
 .mark {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
   width: 32px;
   height: 32px;
-  border-radius: var(--shape-sm);
-  background: var(--md-primary);
-  color: var(--md-on-primary);
-  font: var(--type-label-medium);
 }
 
 .crumbs,
