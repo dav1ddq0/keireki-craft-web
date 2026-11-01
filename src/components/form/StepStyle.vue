@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { useCvStore } from '@/stores/cv'
 import { useI18n } from '@/i18n'
 import { useCapabilities } from '@/composables/useCapabilities'
-import { applyTemplateDefaults, getTemplate, templates } from '@/templates/registry'
+import { accentIfChosen, getTemplate, templates } from '@/templates/registry'
 import BaseField from '@/components/ui/BaseField.vue'
 import RangeSlider from '@/components/ui/RangeSlider.vue'
 import TemplateGallery from './TemplateGallery.vue'
@@ -24,15 +24,6 @@ const style = computed(() => cv.data.style)
 /** The swatches of the template in use, if it has its own family of colours, else the shared ones (spec 052). */
 const palette = computed(() => getTemplate(cv.templateId).palette ?? PALETTE)
 
-/**
- * The accent each card would actually produce if clicked: its own default while
- * the user is still on defaults, or the user's chosen accent once they have one.
- * Painting every thumbnail in the current accent hid the very differences the
- * gallery exists to show.
- */
-function previewAccent(id: string): string {
-  return applyTemplateDefaults(id, style.value).accentColor
-}
 </script>
 
 <template>
@@ -42,7 +33,7 @@ function previewAccent(id: string): string {
     <TemplateGallery
       :templates="templates"
       :active-id="cv.templateId"
-      :accent-for="previewAccent"
+      :accent-for="(id: string) => accentIfChosen(id, style)"
       @pick="cv.chooseTemplate"
     />
 

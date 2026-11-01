@@ -6,7 +6,7 @@
  */
 import { useCvStore } from '@/stores/cv'
 import { useI18n } from '@/i18n'
-import { applyTemplateDefaults, templates } from '@/templates/registry'
+import { accentIfChosen, templates } from '@/templates/registry'
 import BottomSheet from '@/components/ui/BottomSheet.vue'
 import TemplateThumb from '@/components/ui/TemplateThumb.vue'
 
@@ -16,8 +16,6 @@ const emit = defineEmits<{ close: [] }>()
 const cv = useCvStore()
 const { t } = useI18n()
 
-/** The accent a template would get if picked: its own while the user is on defaults (as the gallery). */
-const accentFor = (id: string) => applyTemplateDefaults(id, cv.data.style).accentColor
 </script>
 
 <template>
@@ -32,7 +30,7 @@ const accentFor = (id: string) => applyTemplateDefaults(id, cv.data.style).accen
           :aria-pressed="cv.templateId === template.id"
           @click="cv.chooseTemplate(template.id)"
         >
-          <TemplateThumb :template="template" :accent="accentFor(template.id)" />
+          <TemplateThumb :template="template" :accent="accentIfChosen(template.id, cv.data.style)" decorative />
           <span class="name">{{ template.name }}</span>
         </button>
       </li>

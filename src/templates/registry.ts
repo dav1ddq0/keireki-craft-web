@@ -63,3 +63,12 @@ export function applyTemplateDefaults(id: string, style: StyleTokens): StyleToke
   if (isUntouched('fontFamily', style.fontFamily)) next.fontFamily = defaults.fontFamily
   return next
 }
+
+/**
+ * The accent a template would show if picked now: its own while the user is on defaults, the user's
+ * once they chose one. What a gallery thumbnail is painted in (style step, phone template sheet):
+ * painting every thumbnail in the current accent hid the very differences a gallery exists to show.
+ */
+export function accentIfChosen(id: string, style: StyleTokens): string {
+  return applyTemplateDefaults(id, style).accentColor
+}

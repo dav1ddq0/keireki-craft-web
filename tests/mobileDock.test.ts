@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import MobileDock from '@/components/form/MobileDock.vue'
@@ -60,11 +60,16 @@ describe('MobileDock', () => {
   })
 
   it('in preview, adds the template switch and copy image; in edit, neither (spec 064)', async () => {
+    // A browser that can copy images, so the copy button is drawn.
+    vi.stubGlobal('ClipboardItem', class { static supports = () => true })
+    Object.defineProperty(navigator, 'clipboard', { value: { write: async () => {} }, configurable: true })
     const ui = useUiStore()
     const wrapper = mount(MobileDock, { attachTo: document.body })
     expect(wrapper.find('.template').exists()).toBe(false)
     ui.previewOpen = true
     await wrapper.vm.$nextTick()
+    // Copy image in its compact look: its state floats above, the row never moves.
+    expect(wrapper.find('.copy--compact').exists()).toBe(true)
     const template = wrapper.find('.template')
     expect(template.text()).toBe('Classic')
     expect(template.attributes('aria-label')).toBe('Plantilla: Classic. Cambiar')
@@ -73,6 +78,8 @@ describe('MobileDock', () => {
     expect(sheet.text()).toContain('Plantilla')
     expect(sheet.findAll('.tile').length).toBeGreaterThan(5)
     wrapper.unmount()
+    vi.unstubAllGlobals()
+    Object.defineProperty(navigator, 'clipboard', { value: undefined, configurable: true })
   })
 })
 
@@ -82,6 +89,8 @@ describe('MobileDock in preview mode', () => {
     ui.previewOpen = true
     const wrapper = mount(MobileDock)
     await wrapper.find('.action').trigger('click')
+    // One export sheet for the dock, whichever button opens it (spec 064).
+    expect(wrapper.findAll('dialog').filter((d) => d.text().includes('PDF (descargar)'))).toHaveLength(1)
     // The template sheet is a dialog too (spec 064): read the one Export opened.
     const items = wrapper.findAll('dialog[open] li')
     expect(items).toHaveLength(5)

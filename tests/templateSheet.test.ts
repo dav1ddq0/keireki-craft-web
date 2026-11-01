@@ -4,7 +4,7 @@ import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import TemplateSheet from '@/components/preview/TemplateSheet.vue'
 import { useCvStore } from '@/stores/cv'
-import { applyTemplateDefaults, templates } from '@/templates/registry'
+import { accentIfChosen, applyTemplateDefaults, templates } from '@/templates/registry'
 
 // jsdom ships <dialog> without showModal/close; a minimal stand-in keeps `open`.
 beforeAll(() => {
@@ -25,6 +25,19 @@ describe('TemplateSheet (spec 064)', () => {
     const pressed = tiles.filter((t) => t.attributes('aria-pressed') === 'true')
     expect(pressed).toHaveLength(1)
     expect(pressed[0]!.text()).toBe(templates.find((t) => t.id === cv.templateId)!.name)
+    // The name is written under each picture: the picture is not read out a second time.
+    expect(wrapper.findAll('.tile .thumb').every((t) => t.attributes('aria-hidden') === 'true' && !t.attributes('role'))).toBe(true)
+    wrapper.unmount()
+  })
+
+  it('paints each thumbnail in the accent it would get, as the style step does', () => {
+    const cv = useCvStore()
+    const wrapper = mount(TemplateSheet, { props: { open: true }, attachTo: document.body })
+    const target = templates[1]!
+    const thumb = wrapper.findAll('.tile').find((t) => t.text() === target.name)!.find('.thumb')
+    const expected = accentIfChosen(target.id, cv.data.style)
+    expect(applyTemplateDefaults(target.id, cv.data.style).accentColor).toBe(expected)
+    expect(thumb.attributes('style')).toContain('color')
     wrapper.unmount()
   })
 

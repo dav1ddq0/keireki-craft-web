@@ -61,7 +61,6 @@ const isLast = computed(() => ui.stepIndex === ui.steps.length - 1)
       >
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12m0 0l-4-4m4 4l4-4" /><path d="M4 20h16" /></svg>
       </button>
-      <ExportSheet :open="exportOpen" @close="exportOpen = false" />
     </template>
     <!-- On the last step there is nothing next: the main action is exporting (spec 027). -->
     <template v-else-if="isLast">
@@ -69,12 +68,13 @@ const isLast = computed(() => ui.stepIndex === ui.steps.length - 1)
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12m0 0l-4-4m4 4l4-4" /><path d="M4 20h16" /></svg>
         {{ t('steps.export') }}
       </button>
-      <ExportSheet :open="exportOpen" @close="exportOpen = false" />
     </template>
     <button v-else type="button" class="action m3-state" @click="ui.nextStep()">
       {{ t('actions.next') }}
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
     </button>
+    <!-- One export sheet for both ways in: the preview's icon and the last step's button. -->
+    <ExportSheet :open="exportOpen" @close="exportOpen = false" />
   </div>
 </template>
 

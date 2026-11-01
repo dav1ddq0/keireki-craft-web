@@ -5,12 +5,20 @@
  */
 import type { TemplateDefinition } from '@/types/template'
 
-defineProps<{ template: TemplateDefinition; accent: string }>()
+/** `decorative`: the template's name is written next to it, so the picture is not read out again. */
+defineProps<{ template: TemplateDefinition; accent: string; decorative?: boolean }>()
 </script>
 
 <template>
   <!-- Static, authored SVG from the template definition — never user input. -->
-  <span class="thumb" role="img" :aria-label="template.name" :style="{ color: accent }" v-html="template.thumbnail" />
+  <span
+    class="thumb"
+    :role="decorative ? undefined : 'img'"
+    :aria-label="decorative ? undefined : template.name"
+    :aria-hidden="decorative ? 'true' : undefined"
+    :style="{ color: accent }"
+    v-html="template.thumbnail"
+  />
 </template>
 
 <style scoped>

@@ -71,7 +71,7 @@ const status = computed(() => (state.value === 'idle' ? '' : t(STATES[state.valu
   right: 0;
   bottom: calc(100% + 16px);
   z-index: 2;
-  display: none;
+  display: flex;
   padding: 4px 4px 4px 16px;
   border-radius: var(--shape-md);
   background: var(--md-surface-container-highest);
@@ -79,8 +79,20 @@ const status = computed(() => (state.value === 'idle' ? '' : t(STATES[state.valu
   white-space: nowrap;
 }
 
-.copy--compact .state--shown {
-  display: flex;
+/*
+ * Empty, the bubble is hidden only to the eye: VoiceOver does not announce a live region that was
+ * display: none until the moment its words arrived, which is what the phone dock needs most.
+ */
+.copy--compact .state:not(.state--shown) {
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  box-shadow: none;
+}
+
+.copy--compact .copy-state:empty {
+  display: inline;
 }
 
 /* Without a Share button the bubble is just the words: even padding. */
