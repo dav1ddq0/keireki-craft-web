@@ -124,4 +124,22 @@ describe('PhoneField (spec 056)', () => {
     expect(dialText()).toBe('+49')
     expect(wrapper.props('modelValue')).toBe('+49 151 2345678')
   })
+
+  it('never overwrites a phone that was set from outside while the lookup was out', async () => {
+    const answer = deferred()
+    ipAnswer = answer.promise
+    wrapper = mountField('')
+    await wrapper.setProps({ modelValue: '+34 600 123 456' })
+    answer.resolve(countryByIso('JP') ?? null)
+    await flushPromises()
+    expect(dialText()).toBe('+34')
+  })
+
+  it('does not rewrite what the user is typing', async () => {
+    wrapper = mountField('+34 600 123 456')
+    const input = wrapper.get('input[type="tel"]')
+    await input.setValue('600  123 ')
+    expect((input.element as HTMLInputElement).value).toBe('600  123 ')
+    expect(wrapper.props('modelValue')).toBe('+34 600  123')
+  })
 })

@@ -47,6 +47,15 @@ users already know from other sites.
 - Detecting the country from the CV's location text.
 - Any other use of the IP.
 
+## Known limitations
+
+- Countries that share a dial code cannot be told apart from the string alone (`+1` US/Canada,
+  `+7` Russia/Kazakhstan, `+44` GB/Guernsey/Isle of Man/Jersey, and similar). The selector can pick
+  either, and the saved text is always correct, but reopening the CV shows the main country of
+  that code (see `PRIMARY` in `src/core/countries.ts`).
+- Dominican Republic and Puerto Rico are listed with a single area code (`+1809`, `+1787`), so
+  numbers with `+1 829`, `+1 849` or `+1 939` show the US.
+
 ## Verification
 
 `tests/countries.test.ts`, `ipCountry.test.ts`, `countryFlag.test.ts` and `phoneField.test.ts` cover
