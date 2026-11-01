@@ -12,7 +12,7 @@ describe('CountryFlag (spec 056)', () => {
     const img = wrapper.get('img')
     expect(img.attributes('src')).toBeTruthy()
     expect(img.attributes('alt')).toBe('')
-    expect(img.attributes('aria-hidden')).toBe('true')
+    expect(wrapper.attributes('aria-hidden')).toBe('true')
   })
 
   it('follows the country when it changes', async () => {
