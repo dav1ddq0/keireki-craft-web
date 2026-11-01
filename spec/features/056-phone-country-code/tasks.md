@@ -1,6 +1,6 @@
 # 056 · Tasks
 
-- [ ] 1 · `countries.ts` with data and pure helpers (`splitPhone`, `joinPhone`, `countryFromLocale`) and their tests
+- [x] 1 · `countries.ts` with data and pure helpers (`splitPhone`, `joinPhone`, `countryFromLocale`) and their tests — commit: d0b5aa7
 - [ ] 2 · `ipCountry.ts` (timeout, validation, session cache, silent failure) and its tests with a mocked `fetch`
 - [ ] 3 · Flags: add the SVG assets (owner's OK first) and `CountryFlag.vue`
 - [ ] 4 · `PhoneField.vue` (selector, search, keyboard, mobile) and `i18n` strings
