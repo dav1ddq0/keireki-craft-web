@@ -199,6 +199,25 @@ const scaleStyle = computed(() => ({ transform: `scale(${effectiveZoom.value})` 
   margin-inline-start: -8px;
 }
 
+/* The copy state hangs under the button, over the page: in the row it pushed the zoom onto a
+   second line, and the page jumped down and back (spec 062). It opens inwards from the button's
+   end: the button can be the last thing in the bar (a wrapped row, the tablet). */
+.bar-copy {
+  position: relative;
+}
+
+.bar-copy :deep(.copy-state) {
+  position: absolute;
+  top: calc(100% + 4px);
+  inset-inline-end: 0;
+  z-index: 2;
+  padding: 4px 12px;
+  border-radius: var(--shape-full);
+  background: var(--md-surface-container-high);
+  box-shadow: var(--elevation-2);
+  pointer-events: none;
+}
+
 .chip {
   display: flex;
   align-items: center;

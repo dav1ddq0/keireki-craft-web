@@ -13,7 +13,7 @@ import PreviewPane from '@/components/preview/PreviewPane.vue'
 
 /** The async Clipboard API as Chromium and Safari have it: a ClipboardItem holds a type → blob or promise. */
 class FakeClipboardItem {
-  static supports = (type: string) => type === 'image/png'
+  static supports = (type: string): boolean => type === 'image/png'
   constructor(readonly items: Record<string, Blob | Promise<Blob>>) {}
 }
 const write = vi.fn(async (items: FakeClipboardItem[]) => {
@@ -70,6 +70,13 @@ describe('Copy image (spec 062)', () => {
 
   it('is not shown where images cannot be copied', () => {
     vi.unstubAllGlobals()
+    expect(mount(CopyImageButton).find('button').exists()).toBe(false)
+  })
+
+  it('is not shown where the clipboard takes images but not PNG', () => {
+    vi.stubGlobal('ClipboardItem', class extends FakeClipboardItem {
+      static override supports = () => false
+    })
     expect(mount(CopyImageButton).find('button').exists()).toBe(false)
   })
 

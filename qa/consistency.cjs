@@ -6,7 +6,8 @@
 //   - corner radii are the shape scale, and every field is the same height and radius;
 //   - a blurred shadow is an elevation token;
 //   - the buttons of one class look alike, and no input shows the browser's own grey;
-//   - nothing sticks out of its box, scrolls sideways or is cut without an ellipsis.
+//   - nothing sticks out of its box, scrolls sideways or is cut without an ellipsis;
+//   - the state of "Copy image" hangs over the page, not in the preview toolbar's row (spec 062).
 // The CV paper (templates, thumbnails, the phone's preview) sets its own type and is left out.
 // Usage: npm run qa:consistency (builds first). Report in .qa/consistency.json.
 const fs = require('node:fs')
@@ -46,6 +47,7 @@ const UI = {
     menu: /^Menú/,
     views: [/^Preferencias/, /^Importar/, /^Mis CVs/],
     newCv: /Nuevo CV/,
+    copyStates: ['Copiando…', 'Copiado', 'No se pudo copiar'],
   },
   de: {
     steps: ['Persönliche Daten', 'Profil', 'Berufserfahrung', 'Ausbildung', 'Kenntnisse', 'Sprachen', 'Eigene Abschnitte', 'Vorlage und Stil', 'Exportieren'],
@@ -60,6 +62,7 @@ const UI = {
     menu: /^Menü/,
     views: [/^Einstellungen/, /^Importieren/, /^Meine Lebensläufe/],
     newCv: /Neuer Lebenslauf/,
+    copyStates: ['Wird kopiert…', 'Kopiert', 'Kopieren fehlgeschlagen'],
   },
 }
 const SIZES = new Set(['11px', '12px', '14px', '16px', '22px', '24px', '28px', '32px', '36px'])
@@ -145,7 +148,7 @@ const COLLECT = `(() => {
   process.env.BASE = server.url
   const { chromium, check, results, open, settled, startSample, step } = require('./e2e/lib.cjs')
   const browser = await chromium.launch()
-  const seen = { btnHeight: new Map(), size: new Map(), weight: new Map(), radius: new Map(), shadow: new Map(), input: new Map(), overflow: new Map(), uneven: new Map(), covers: new Map(), btn: new Map(), field: new Map(), title: new Map() }
+  const seen = { btnHeight: new Map(), size: new Map(), weight: new Map(), radius: new Map(), shadow: new Map(), input: new Map(), overflow: new Map(), uneven: new Map(), covers: new Map(), btn: new Map(), field: new Map(), title: new Map(), copyState: new Map() }
   const note = (map, key, where) => { if (!map.has(key)) map.set(key, []); if (map.get(key).length < 3) map.get(key).push(where) }
   let views = 0
 
@@ -218,6 +221,25 @@ const COLLECT = `(() => {
       await grab(p, where(`step ${i + 1} ${STEPS[i]}`))
       if (!rail && i < STEPS.length - 1) await tap(p.getByRole('button', { name: ui.next }))
     }
+    // Each state of "Copy image" in the preview toolbar, written in as it would show (spec 062).
+    if (await p.locator('header.bar .copy-state').count()) {
+      const states = await p.evaluate((texts) => {
+        const bar = document.querySelector('header.bar')
+        const state = bar.querySelector('.copy-state')
+        const at = (text) => {
+          state.textContent = text
+          const b = bar.getBoundingClientRect(), r = state.getBoundingClientRect()
+          return { text, height: b.height, out: text ? Math.round(Math.max(r.right - b.right, b.left - r.left, 0)) : 0 }
+        }
+        return [at(''), ...texts.map(at)]
+      }, ui.copyStates)
+      for (const { text, height, out } of states.slice(1)) {
+        if (height !== states[0].height) note(seen.copyState, `«${text}» moves the bar ${states[0].height}→${height}px`, where('preview toolbar'))
+        if (out) note(seen.copyState, `«${text}» leaves the pane by ${out}px`, where('preview toolbar'))
+      }
+      await grab(p, where('preview toolbar copy state'))
+      await p.evaluate(() => { document.querySelector('header.bar .copy-state').textContent = '' })
+    }
     // The phone shows one pane at a time: the preview too.
     if (await shown(p, ui.preview)) {
       await tap(p.getByRole('button', { name: ui.preview }))
@@ -271,6 +293,7 @@ const COLLECT = `(() => {
   check('controls', 'the template cards of a row are one height', !seen.uneven.size, none(seen.uneven))
   check('controls', 'a pinned element paints over neither the step bar nor what follows it', !seen.covers.size, none(seen.covers))
   check('controls', 'nothing sticks out of its box or scrolls sideways', !seen.overflow.size, none(seen.overflow))
+  check('controls', 'a copy state in the preview toolbar neither moves the bar nor leaves the pane', !seen.copyState.size, none(seen.copyState))
   const variants = new Map()
   for (const key of seen.btn.keys()) { const [kind, look] = key.split(' | '); if (!variants.has(kind)) variants.set(kind, new Set()); variants.get(kind).add(look) }
   const varying = [...variants].filter(([, looks]) => looks.size > 1).map(([kind, looks]) => `${kind}: ${[...looks].map((look) => `${look} at ${seen.btn.get(`${kind} | ${look}`)[0]}`).join(' / ')}`)
