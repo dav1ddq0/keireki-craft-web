@@ -17,7 +17,7 @@ sync and offline first, one best-effort network call after.
    on any failure.
 3. `src/components/form/PhoneField.vue`: selector (button with flag + code, searchable listbox)
    and the number input; emits the joined string; accessible and usable by keyboard and on mobile.
-4. Flags: SVG files lazily loaded per country (see Decisions); a small `CountryFlag.vue` renders one.
+4. Flags: the `flag-icons` package (MIT, 4:3 SVGs), each flag a lazily loaded asset through `import.meta.glob('…/flags/4x3/??.svg')`; `components/ui/CountryFlag.vue` renders one.
 5. `StepPersonal.vue`: use `PhoneField` bound to `cv.data.personal.phone`.
 6. `vite.config.ts`: add `https://ipwho.is` to `connect-src` in the CSP. Note in the file why.
 7. `src/i18n/en.ts` and `es.ts`: strings for the selector (label, search, empty result).
@@ -33,13 +33,11 @@ sync and offline first, one best-effort network call after.
 - **`ipwho.is`**: free, HTTPS, no key, CORS-enabled, `fields=country_code` keeps the IP out of the
   response. Its limits and uptime are not verified; failure is silent and harmless by design.
 - **Phone stays a string**: no change to `src/types/cv.ts`, so no migration and no template change.
-- **SVG flags, not emoji**: emoji flags render as letters on Windows.
+- **SVG flags from the `flag-icons` package, not emoji, not copied files**: emoji flags render as letters on Windows; installing the package (approved by the owner) keeps the 1.7 MB out of git and updates with `npm update`. Discarded: copying the SVGs into `src/assets/flags/`.
 
 ## Risks
 
-- **Flag assets**: about 250 SVGs. Needs a source (proposal: copy the 4:3 SVGs of the MIT-licensed
-  `flag-icons` into `src/assets/flags/`, no dependency, loaded lazily with `import.meta.glob`).
-  Adds many files and a license notice: needs the owner's OK before it is done.
+- **Flag assets**: 257 two-letter SVGs (about 1.7 MB) end up in `dist`, loaded one by one only when shown. The glob is limited to the two-letter files, so the extras of the package (EU, UN, regions) stay out. Vite does not write the MIT notice into `dist`: it is credited in the README.
 - **Wrong country by IP (VPN, travel)**: the selector is always one click away; a user's choice
   wins.
 - **Privacy**: a third party sees the IP of whoever opens the step. Mitigated by the minimal use
