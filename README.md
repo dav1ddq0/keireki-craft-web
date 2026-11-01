@@ -7,9 +7,9 @@
 **A CV editor that runs entirely in your browser.**<br>
 No account, no server, no upload: write, preview and export your CV, and it never leaves your device.
 
-[**Open the app**](https://dav1ddq0.github.io/vue-cv-maker/) · [Features](#features) · [Templates](#templates) · [Development](#development)
+[**Open the app**](https://dav1ddq0.github.io/keireki-craft-web/) · [Features](#features) · [Templates](#templates) · [Development](#development)
 
-[![Deploy](https://github.com/dav1ddq0/vue-cv-maker/actions/workflows/deploy.yml/badge.svg)](https://github.com/dav1ddq0/vue-cv-maker/actions/workflows/deploy.yml)
+[![Deploy](https://github.com/dav1ddq0/keireki-craft-web/actions/workflows/deploy.yml/badge.svg)](https://github.com/dav1ddq0/keireki-craft-web/actions/workflows/deploy.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 ![Vue 3](https://img.shields.io/badge/Vue-3-42b883?logo=vuedotjs&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript&logoColor=white)
@@ -188,14 +188,15 @@ print engine, so it comes out the same everywhere; printing differs slightly bet
 
 ## Deployment
 
-Published at <https://dav1ddq0.github.io/vue-cv-maker/> by `.github/workflows/deploy.yml`: every
+Published at <https://dav1ddq0.github.io/keireki-craft-web/> by `.github/workflows/deploy.yml`: every
 push to `main` installs, runs the tests, builds and deploys to GitHub Pages. A red test suite blocks
 the deploy.
 
 - **One-time setup:** repository *Settings → Pages → Build and deployment → Source: GitHub Actions*.
-- **Base path:** `vite.config.ts` defaults to `/vue-cv-maker/`, the project-site path, so
-  `npm run preview` behaves like production. Set `BASE_PATH` to build for another location, for
-  example `BASE_PATH=/ npm run build` for a user site or a custom domain.
+- **Base path:** the workflow builds with `BASE_PATH=/<repository name>/`, so the site follows the
+  repository's name. Without it, `vite.config.ts` falls back to `/vue-cv-maker/`, the path
+  `npm run dev` and `npm run preview` serve locally. Set `BASE_PATH` to build for another location,
+  for example `BASE_PATH=/ npm run build` for a user site or a custom domain.
 - **Content-Security-Policy:** the build adds a CSP `<meta>` tag (GitHub Pages cannot send headers);
   it is not applied by `npm run dev`.
 
