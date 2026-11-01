@@ -96,14 +96,13 @@ describe('Monogram: a long list of skills (spec 052)', () => {
 })
 
 
-describe('GitHub icon (spec 058)', () => {
-  it('is GitHub’s own mark, drawn filled, and the other link icons stay stroked', () => {
-    expect(FILLED_ICONS).toEqual(new Set(['github']))
+describe('LinkedIn and GitHub icons (spec 058)', () => {
+  it('are the networks’ own marks, drawn filled, and the other icons stay stroked', () => {
+    expect(FILLED_ICONS).toEqual(new Set(['linkedin', 'github']))
     for (const template of [Monogram, Cobalt]) {
       const wrapper = mount(template, { props: { data: createSampleCV() } })
-      const github = wrapper.find(`path[d="${CONTACT_ICONS.github}"]`)
-      expect(github.classes()).toContain('filled')
-      expect(wrapper.find(`path[d="${CONTACT_ICONS.linkedin}"]`).classes()).not.toContain('filled')
+      for (const kind of ['linkedin', 'github'] as const) expect(wrapper.find(`path[d="${CONTACT_ICONS[kind]}"]`).classes()).toContain('filled')
+      expect(wrapper.find(`path[d="${CONTACT_ICONS.mail}"]`).classes()).not.toContain('filled')
     }
   })
 })
