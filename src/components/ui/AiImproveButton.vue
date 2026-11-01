@@ -1,16 +1,16 @@
 <script setup lang="ts">
 /**
- * "Improve with AI" for one text of the CV (spec 063). It copies a ready prompt (only this field's
- * text, in the CV's language) and opens the chosen assistant; the user pastes it there. Nothing is
- * sent by the app: no request, no text in a URL. If the clipboard is not available the prompt is
- * shown to be copied by hand. A popover on desktop, a bottom sheet on the phone.
+ * "Improve with AI" for one text of the CV (spec 063). It opens the chosen assistant with a ready
+ * prompt in its box (only this field's text, in the CV's language) and also copies it, in case the
+ * assistant ignores the link's prompt. The app makes no request itself. If the clipboard is not
+ * available the prompt is shown to be copied by hand. A popover on desktop, a bottom sheet on the phone.
  */
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId } from 'vue'
 import { useCvStore } from '@/stores/cv'
 import { useI18n } from '@/i18n'
 import { useIsPhone } from '@/composables/useIsPhone'
 import { buildImprovePrompt, type ImproveKind } from '@/core/aiPrompt'
-import { AI_ASSISTANTS, type AiAssistant } from '@/core/aiAssistants'
+import { AI_ASSISTANTS, assistantLink, type AiAssistant } from '@/core/aiAssistants'
 import BottomSheet from '@/components/ui/BottomSheet.vue'
 
 const props = defineProps<{ text?: string; kind: ImproveKind }>()
@@ -48,8 +48,8 @@ function closeMenu(refocus: boolean) {
   if (refocus) trigger.value?.focus()
 }
 
-function openAssistant(assistant: AiAssistant) {
-  window.open(assistant.url, '_blank', 'noopener,noreferrer')
+function openAssistant(assistant: AiAssistant, prompt: string) {
+  window.open(assistantLink(assistant, prompt), '_blank', 'noopener,noreferrer')
 }
 
 function announce(message: string) {
@@ -68,7 +68,7 @@ async function choose(assistant: AiAssistant) {
     return
   }
   closeMenu(false)
-  openAssistant(assistant)
+  openAssistant(assistant, prompt)
   announce(t('ai.copied', { name: assistant.name }))
 }
 
@@ -138,7 +138,7 @@ const external = 'M7 17L17 7M9 7h8v8'
         <div v-if="manual" class="manual">
           <p class="intro">{{ t('ai.copyFailed') }}</p>
           <textarea readonly rows="5" :aria-label="t('ai.promptLabel')" :value="manual.prompt" @focus="($event.target as HTMLTextAreaElement).select()" />
-          <button type="button" class="item item--primary m3-state" @click="openAssistant(manual.assistant)">
+          <button type="button" class="item item--primary m3-state" @click="openAssistant(manual.assistant, manual.prompt)">
             <span>{{ t('ai.openNamed', { name: manual.assistant.name }) }}</span>
             <svg class="out" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path :d="external" /></svg>
           </button>

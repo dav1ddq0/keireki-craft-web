@@ -8,7 +8,7 @@ import { useCvStore } from '@/stores/cv'
 const TEXT = 'Lideré un equipo de cuatro personas en el rediseño de la plataforma de pagos.'
 
 let copied: string[]
-let opened: Array<[string | URL | undefined, string | undefined, string | undefined]>
+let opened: Array<[string?, string?, string?]>
 
 function stubBrowser(clipboardWorks = true) {
   copied = []
@@ -38,7 +38,7 @@ beforeEach(() => {
 })
 
 describe('AiImproveButton (spec 063)', () => {
-  it('copies a CV-improvement prompt with this field only, and opens the assistant without a query', async () => {
+  it('copies a CV-improvement prompt with this field only, and opens the assistant with that same prompt', async () => {
     useCvStore().data.meta.language = 'es'
     const wrapper = mountButton()
     await wrapper.get('.trigger').trigger('click')
@@ -51,8 +51,10 @@ describe('AiImproveButton (spec 063)', () => {
     expect(copied[0]!.endsWith(`Texto:\n${TEXT}`)).toBe(true)
     expect(copied[0]).not.toMatch(/Europa ?Press|noticia|europapress/i)
 
-    expect(opened).toEqual([['https://claude.ai/new', '_blank', 'noopener,noreferrer']])
-    expect(wrapper.get('[role="status"]').text()).toBe('Prompt copiado. Pégalo en Claude.')
+    expect(opened).toEqual([
+      [`https://claude.ai/new?q=${encodeURIComponent(copied[0]!)}`, '_blank', 'noopener,noreferrer'],
+    ])
+    expect(wrapper.get('[role="status"]').text()).toBe('Claude abierto con el prompt. También está copiado: pégalo si no aparece.')
   })
 
   it('writes the prompt in the CV language, not the interface language', async () => {
@@ -62,7 +64,7 @@ describe('AiImproveButton (spec 063)', () => {
     await wrapper.findAll('[role="menuitem"]')[1]!.trigger('click')
     await flushPromises()
     expect(copied[0]).toContain('Antworte auf Deutsch')
-    expect(opened[0]![0]).toBe('https://chatgpt.com/')
+    expect(opened[0]![0]).toBe(`https://chatgpt.com/?q=${encodeURIComponent(copied[0]!)}`)
   })
 
   it('is disabled with a stated reason while the field is empty', () => {
@@ -81,7 +83,7 @@ describe('AiImproveButton (spec 063)', () => {
     const box = wrapper.get('.manual textarea').element as HTMLTextAreaElement
     expect(box.value).toContain(TEXT)
     await wrapper.get('.item--primary').trigger('click')
-    expect(opened[0]![0]).toBe('https://gemini.google.com/app')
+    expect(opened[0]![0]).toBe(`https://gemini.google.com/app?q=${encodeURIComponent(box.value)}`)
   })
 
   it('moves between the options with the arrows and closes with Escape', async () => {
