@@ -1,4 +1,4 @@
 # 060 · Tasks
 
 - [x] 1 · Headings, months, present words and levels in fr/it/pt/de — commit: 09a6add
-- [x] 2 · Months as whole words; no "resume" heading — commit: 
+- [x] 2 · Months as whole words; no "resume" heading — commit: 5614ce1
