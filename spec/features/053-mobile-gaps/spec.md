@@ -1,6 +1,6 @@
 # 053 · Visual gaps on the phone
 
-**Status:** in progress
+**Status:** done — the check on a real iPhone (Safari) is left to the user; WebKit cannot run on this machine
 
 Seen by the user on an iPhone 17 (Safari, iOS 26), two screenshots: something paints over a piece
 of the interface where nothing should. One commit each.

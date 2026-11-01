@@ -63,13 +63,12 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 - **050** · The PDF download looks like the page: stand-in fonts for Georgia/Arial/Times, SVG boxes, ring shadows, round strokes
 - **051** · What 050 left: Palatino, Tahoma and Verdana stand-ins, and soft shadows in the PDF
 - **052** · The open doubts, one at a time (long sidebars, fonts on screen, shadows, scans, palette…)
+- **053** · Visual gaps on the phone (the style preview over the step bar, a focus ring on the sheets' close button)
+- **054** · The preview's template button, only where it does something (hidden on the style step)
 
 ## Next 🔜
 
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
-
-- **053** · Visual gaps on the phone (the style preview over the step bar, a focus ring on the sheets' close button)
-- **054** · The preview's template button, only where it does something (hidden on the style step)
 
 
 ## Backlog / ideas 💡
