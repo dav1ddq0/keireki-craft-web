@@ -76,6 +76,8 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 
 ## Next 🔜
 
+- **063** · Improve a text with AI: per-field button that copies a ready prompt and opens Claude, ChatGPT or Gemini (proposed)
+
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
 
 
