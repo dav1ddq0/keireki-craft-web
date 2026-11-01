@@ -531,6 +531,10 @@ const fr: typeof es = {
     changeTemplate: 'Modèle {name} : changer',
     expand: 'Agrandir l’aperçu',
     collapse: 'Réduire l’aperçu',
+    copyImage: 'Copier l’image',
+    copying: 'Copie…',
+    copied: 'Copiée',
+    copyFailed: 'Copie impossible',
   },
   cv: {
     present: 'Aujourd’hui',

@@ -531,6 +531,10 @@ const it: typeof es = {
     changeTemplate: 'Modello {name}: cambia',
     expand: 'Espandi l’anteprima',
     collapse: 'Comprimi l’anteprima',
+    copyImage: 'Copia immagine',
+    copying: 'Copia in corso…',
+    copied: 'Copiata',
+    copyFailed: 'Impossibile copiare',
   },
   cv: {
     present: 'Oggi',

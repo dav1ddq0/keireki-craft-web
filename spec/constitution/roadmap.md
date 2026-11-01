@@ -72,10 +72,10 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 - **059** · The sample CV in the interface language, with a local person for each
 - **060** · PDF import in French, Italian, Portuguese and German (headings, months, levels)
 - **061** · An imported CV takes the language of its PDF's headings
+- **062** · The CV as an image: download as JPG, copy to the clipboard
 
 ## Next 🔜
 
-- **062** · The CV as an image: download as JPG, copy to the clipboard
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
 
 

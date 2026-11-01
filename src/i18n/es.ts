@@ -532,6 +532,10 @@ export default {
     changeTemplate: 'Plantilla {name}: cambiar',
     expand: 'Ampliar vista previa',
     collapse: 'Reducir vista previa',
+    copyImage: 'Copiar imagen',
+    copying: 'Copiando…',
+    copied: 'Copiado',
+    copyFailed: 'No se pudo copiar',
   },
   cv: {
     present: 'Actualidad',

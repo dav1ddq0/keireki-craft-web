@@ -8,6 +8,7 @@ import { useI18n } from '@/i18n'
 import { useIsCompact, useIsDesktop, useIsPhone } from '@/composables/useIsPhone'
 import { getTemplate } from '@/templates/registry'
 import CvRenderer from './CvRenderer.vue'
+import CopyImageButton from './CopyImageButton.vue'
 
 const cv = useCvStore()
 const ui = useUiStore()
@@ -113,6 +114,8 @@ const scaleStyle = computed(() => ({ transform: `scale(${effectiveZoom.value})` 
         <span class="swatch" :style="{ background: cv.data.style.accentColor }" aria-hidden="true" />
         {{ templateName }} <span class="chip-action">· {{ t('preview.change') }}</span>
       </button>
+      <!-- With the template button: what is done with the document, left; how it is seen, right (spec 062). -->
+      <CopyImageButton class="bar-copy" />
       <div v-if="!isCompact" class="zoom" role="group" aria-label="Zoom">
         <button type="button" class="zoom-btn m3-icon-btn m3-state m3-target" :aria-label="t('preview.zoomOut')" :disabled="zoom <= ZOOM_MIN" @click="zoomBy(-ZOOM_STEP)">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14" /></svg>
@@ -136,6 +139,8 @@ const scaleStyle = computed(() => ({ transform: `scale(${effectiveZoom.value})` 
         </button>
       </div>
     </header>
+    <!-- The phone has no toolbar: the copy button floats over the page's corner (spec 062). -->
+    <CopyImageButton v-if="isPhone" class="phone-copy" />
 
     <div ref="scroller" class="scroll">
       <div class="page-frame" :style="frameStyle">
@@ -151,6 +156,7 @@ const scaleStyle = computed(() => ({ transform: `scale(${effectiveZoom.value})` 
 
 <style scoped>
 .pane {
+  position: relative;
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -186,6 +192,11 @@ const scaleStyle = computed(() => ({ transform: `scale(${effectiveZoom.value})` 
   margin-inline-start: auto;
   font: var(--type-label-large);
   color: var(--md-on-surface-variant);
+}
+
+/* Beside the template button: the bar's own gap (16 px) would set it as far off as the zoom. */
+.chip + .bar-copy {
+  margin-inline-start: -8px;
 }
 
 .chip {
@@ -225,6 +236,21 @@ const scaleStyle = computed(() => ({ transform: `scale(${effectiveZoom.value})` 
   width: 12px;
   height: 12px;
   border-radius: 50%;
+}
+
+.phone-copy {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  padding-inline-start: 4px;
+  border-radius: var(--shape-full);
+  background: var(--md-surface-container-high);
+  box-shadow: var(--elevation-1);
+}
+
+.phone-copy :deep(.copy-state:not(:empty)) {
+  padding-inline-start: 8px;
 }
 
 .zoom-btn,

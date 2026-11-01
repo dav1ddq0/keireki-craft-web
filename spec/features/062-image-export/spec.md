@@ -1,6 +1,6 @@
 # 062 · The CV as an image: download as JPG, copy to the clipboard
 
-**Status:** in progress
+**Status:** done — Safari on a real iPhone is left to the user
 
 Asked for by the user: download the CV as an image (JPG) from the export options, and a button to
 copy the current CV to the clipboard as an image.
@@ -39,4 +39,28 @@ Verification:
 
 ## 2 · Copy to the clipboard
 
-Pending.
+- `composables/useCopyCvImage.ts`: `copy()` puts the task 1 image on the clipboard as PNG, the only
+  image type browsers accept there. `clipboard.write` is called at once, with the image as a
+  promise, so Safari still counts the click as the user's gesture while the image is built. The
+  state goes idle → copying → copied (2 s) or failed (4 s) → idle. `canCopyImages()`: the async
+  Clipboard API with `ClipboardItem` (and `supports('image/png')` where it exists).
+- `components/preview/CopyImageButton.vue`: an icon button (copy, a check once copied) with its
+  state beside it, read out by an `aria-live` output; not rendered where images cannot be copied.
+- In the preview toolbar it sits beside the template button: what is done with the document on
+  the left, how it is seen (zoom) on the right. At the end of the toolbar it did not fit the
+  1024 px laptop in German (the page scrolled 10 px sideways, caught by `qa:consistency`); beside
+  the template button it shares the row the zoom already wrapped under. On a tablet it is the
+  toolbar's only control. The phone has no toolbar: the button floats over the top right corner
+  of the preview.
+- Texts in the six languages.
+
+Verification:
+- `tests/copyCvImage.test.ts`: the clipboard gets one item, `image/png`, handed over as a promise
+  (fails if the image is awaited before the write); the states and their return to rest; the
+  failure message; hidden without `ClipboardItem`; in the preview toolbar.
+- `qa:e2e` (Chromium, clipboard permission granted): after "Copiar imagen" the clipboard holds a
+  PNG of the same size as the JPG of task 1 (1587 × 6777). 129/129.
+- Firefox: the button shows and copies ("Copiado").
+- Screenshots: desktop toolbar at rest and copied, the 1024 px laptop in Spanish and German, the
+  iPad toolbar, the phone with the floating button copied.
+- `qa:consistency` 12/12 over 365 views; `npm test` 832 passed.

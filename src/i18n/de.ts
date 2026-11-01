@@ -531,6 +531,10 @@ const de: typeof es = {
     changeTemplate: 'Vorlage {name}: ändern',
     expand: 'Vorschau vergrößern',
     collapse: 'Vorschau verkleinern',
+    copyImage: 'Bild kopieren',
+    copying: 'Wird kopiert…',
+    copied: 'Kopiert',
+    copyFailed: 'Kopieren fehlgeschlagen',
   },
   cv: {
     present: 'heute',

@@ -250,6 +250,20 @@ async function run(browser, outDir) {
   check(B, 'JPG: every page of the direct PDF, one under the other, at 192 dpi', bands.width === 1587 && Math.abs(bands.height - jpgHeight) <= 1, `${bands.width}×${bands.height}, expected 1587×${jpgHeight}`)
   check(B, 'JPG: no page drawn blank', bands.ink.every((share) => share > 0.003), bands.ink.map((share) => (share * 100).toFixed(1) + ' %').join(', '))
 
+  // ---- copy to the clipboard (spec 062) -----------------------------------------------------------
+  await p.context().grantPermissions(['clipboard-read', 'clipboard-write'], { origin: new URL(p.url()).origin })
+  t0 = Date.now()
+  await p.getByRole('button', { name: 'Copiar imagen' }).click()
+  const copied = await until(async () => (await p.locator('.copy-state').first().textContent()) === 'Copiado', { timeout: 30000 })
+  timing(B, 'Copiar imagen → on the clipboard (long CV)', Date.now() - t0, 4000)
+  const clip = await p.evaluate(async () => {
+    const [item] = await navigator.clipboard.read()
+    if (!item?.types.includes('image/png')) return { types: item?.types ?? [] }
+    const bitmap = await createImageBitmap(await item.getType('image/png'))
+    return { types: item.types, width: bitmap.width, height: bitmap.height }
+  })
+  check(B, 'Copiar imagen puts the whole CV on the clipboard as a PNG', copied && clip.width === bands.width && clip.height === bands.height, `${clip.types.join(',')} ${clip.width}×${clip.height}`)
+
   // ---- JSON / HTML downloads --------------------------------------------------------------------
   for (const kind of ['JSON', 'HTML']) {
     t0 = Date.now()

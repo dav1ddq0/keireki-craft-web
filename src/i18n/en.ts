@@ -531,6 +531,10 @@ const en: typeof es = {
     changeTemplate: 'Template {name}: change',
     expand: 'Expand preview',
     collapse: 'Collapse preview',
+    copyImage: 'Copy image',
+    copying: 'Copying…',
+    copied: 'Copied',
+    copyFailed: 'Could not copy',
   },
   cv: {
     present: 'Present',
