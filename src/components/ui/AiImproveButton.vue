@@ -93,7 +93,8 @@ onBeforeUnmount(() => {
   clearTimeout(noticeTimer)
 })
 
-const sparkle = 'M12 2l2.2 6.8L21 11l-6.8 2.2L12 20l-2.2-6.8L3 11l6.8-2.2z'
+const sparkle =
+  'M9 6.8Q10.92 12.88 17 14.8Q10.92 16.72 9 22.8Q7.08 16.72 1 14.8Q7.08 12.88 9 6.8ZM11.9 1.1Q12.6 3.3 14.8 4Q12.6 4.7 11.9 6.9Q11.2 4.7 9 4Q11.2 3.3 11.9 1.1ZM18.8 5.3Q19.71 8.19 22.6 9.1Q19.71 10.01 18.8 12.9Q17.89 10.01 15 9.1Q17.89 8.19 18.8 5.3Z'
 const external = 'M7 17L17 7M9 7h8v8'
 </script>
 
@@ -102,18 +103,20 @@ const external = 'M7 17L17 7M9 7h8v8'
     <button
       ref="trigger"
       type="button"
-      class="trigger m3-state"
+      class="trigger m3-icon-btn m3-state m3-target"
       aria-haspopup="menu"
       :aria-expanded="open"
+      :aria-label="t('ai.button')"
       :aria-describedby="hasText ? undefined : reasonId"
       :disabled="!hasText"
-      :title="hasText ? undefined : t('ai.empty')"
+      :title="hasText ? t('ai.button') : t('ai.empty')"
       @click="open ? closeMenu(false) : openMenu()"
     >
-      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path :d="sparkle" fill="currentColor" /></svg>
-      {{ t('ai.button') }}
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+        <path :d="sparkle" fill="currentColor" stroke="currentColor" stroke-width="0.8" stroke-linejoin="round" />
+      </svg>
     </button>
-    <span v-if="!hasText" :id="reasonId" class="notice">{{ t('ai.empty') }}</span>
+    <span v-if="!hasText" :id="reasonId" class="sr-only">{{ t('ai.empty') }}</span>
     <span class="notice" role="status">{{ notice }}</span>
 
     <component
@@ -158,17 +161,10 @@ const external = 'M7 17L17 7M9 7h8v8'
 }
 
 .trigger {
-  --container: transparent;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 40px;
-  padding: 0 12px;
+  width: 40px;
+  height: 40px;
   border: 0;
-  border-radius: var(--shape-full);
   color: var(--md-primary);
-  font: var(--type-label-large);
-  letter-spacing: var(--tracking-label-large);
   cursor: pointer;
 }
 
@@ -180,6 +176,15 @@ const external = 'M7 17L17 7M9 7h8v8'
 .notice {
   color: var(--md-on-surface-variant);
   font: var(--type-body-small);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .popup {

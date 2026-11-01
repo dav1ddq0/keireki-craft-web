@@ -67,10 +67,19 @@ describe('AiImproveButton (spec 063)', () => {
     expect(opened[0]![0]).toBe(`https://chatgpt.com/?q=${encodeURIComponent(copied[0]!)}`)
   })
 
+  it('is an icon-only button named by its label, with the same text as a tooltip', () => {
+    const trigger = mountButton().get('.trigger')
+    expect(trigger.text()).toBe('')
+    expect(trigger.attributes('aria-label')).toBe('Mejorar con IA')
+    expect(trigger.attributes('title')).toBe('Mejorar con IA')
+  })
+
   it('is disabled with a stated reason while the field is empty', () => {
     const wrapper = mountButton('   ')
-    expect(wrapper.get('.trigger').attributes('disabled')).toBeDefined()
-    expect(wrapper.text()).toContain('Escribe un texto para poder mejorarlo con IA')
+    const trigger = wrapper.get('.trigger')
+    expect(trigger.attributes('disabled')).toBeDefined()
+    expect(trigger.attributes('title')).toBe('Escribe un texto para poder mejorarlo con IA')
+    expect(wrapper.get(`#${trigger.attributes('aria-describedby')}`).text()).toBe('Escribe un texto para poder mejorarlo con IA')
   })
 
   it('shows the prompt to copy by hand when the clipboard fails, and opens nothing yet', async () => {
