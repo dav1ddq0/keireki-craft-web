@@ -157,3 +157,31 @@ describe('the language of an imported CV (spec 061)', () => {
     expect(headingLanguage([])).toBeNull()
   })
 })
+
+describe('words the new languages must not take (spec 060, task 2)', () => {
+  const experience = (line: string) =>
+    assembleCV(analyze(doc([{ text: 'JOHN DOE', fontSize: 22, bold: true }, heading('Experience'), { text: line }]))).experience[0]!
+
+  it.each([
+    ['Engineer — Outsystems 2019 - 2021', 'Outsystems'],
+    ['Developer — Maison 2018 - 2020', 'Maison'],
+    ['Developer — Dezign 2018 - 2020', 'Dezign'],
+    ['Analyst — Generali 2019 - 2021', 'Generali'],
+    ['Analyst — Magneti Marelli 2019 - 2021', 'Magneti Marelli'],
+  ])('a company that starts like a month is not a month: %s', (line, company) => {
+    expect(experience(line)).toMatchObject({ company, startDate: line.includes('2019') ? '2019' : '2018' })
+  })
+
+  it('still reads months written out or abbreviated, with or without a point', () => {
+    expect(parseDateRange('septiembre 2019 – marzo 2022')).toEqual({ start: '2019-09', end: '2022-03' })
+    expect(parseDateRange('Sept. 2019 – März 2022')).toEqual({ start: '2019-09', end: '2022-03' })
+    expect(parseDateRange('giugno 2019 - dicembre 2020')).toEqual({ start: '2019-06', end: '2020-12' })
+    expect(parseDateRange('março 2019 até dezembro 2020')).toEqual({ start: '2019-03', end: '2020-12' })
+  })
+
+  it('does not read the "Resume" title of an English CV as its summary', () => {
+    const draft = analyze(doc([{ text: 'JOHN DOE', fontSize: 22, bold: true }, { text: 'Resume', fontSize: 13 }, { text: 'Software engineer' }, { text: 'john@example.com' }, heading('Experience'), { text: 'Developer — Acme 2019 - 2021' }]))
+    expect(draft.sections.map((s) => s.kind)).toEqual(['experience'])
+    expect(draft.language).toBe('en')
+  })
+})

@@ -25,7 +25,22 @@ const MONTHS_DE = 'jan|feb|mär|maer|mrz|apr|mai|jun|jul|aug|sep|okt|nov|dez'
 export const PRESENT_WORDS =
   /actualidad|actualmente|presente|present|current|now|hoy|aujourd[’']hui|à ce jour|actuel(?:le)?|en cours|oggi|attuale|in corso|atual(?:mente)?|heute|derzeit|aktuell|laufend/i
 
-const MONTH_TOKEN = `(?:${MONTHS_ES}|${MONTHS_EN}|${MONTHS_FR}|${MONTHS_IT}|${MONTHS_PT}|${MONTHS_DE})\\p{L}*\\.?`
+/** The months written out, in the six languages. */
+const MONTH_NAMES = [
+  'enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|setiembre|octubre|noviembre|diciembre',
+  'january|february|march|april|june|july|august|september|october|november|december',
+  'janvier|février|fevrier|avril|juillet|septembre|octobre|novembre|décembre|decembre',
+  'gennaio|febbraio|aprile|maggio|giugno|luglio|settembre|ottobre|dicembre',
+  'janeiro|fevereiro|março|marco|maio|junho|julho|setembro|outubro|dezembro',
+  'januar|februar|märz|maerz|juni|juli|oktober|dezember',
+].join('|')
+
+/**
+ * A month is a word of its own, abbreviated or written out: "févr.", "März", "septiembre". Not the
+ * start of a longer word, or a company followed by a year ("Outsystems 2019", "Maison 2018",
+ * "Generali 2019") was read as a month and cut from the entry (spec 060, task 2).
+ */
+const MONTH_TOKEN = `(?<!\\p{L})(?:${MONTHS_ES}|${MONTHS_EN}|${MONTHS_FR}|${MONTHS_IT}|${MONTHS_PT}|${MONTHS_DE}|${MONTH_NAMES})\\.?(?!\\p{L})`
 // "03/2019", "03-2019" and the German "03.2019".
 const DATE_TOKEN = `(?:${MONTH_TOKEN}\\s*,?\\s*)?(?:\\d{1,2}[/.-])?\\d{4}`
 
@@ -77,7 +92,8 @@ const SECTION_WORDS: Record<HeadingLanguage, Record<SectionKind, string[]>> = {
     languages: ['languages', 'language skills'],
   },
   fr: {
-    summary: ['profil', 'profil professionnel', 'resume', 'a propos', 'a propos de moi', 'objectif'],
+    // Not "résumé": accent-free it is the "Resume" an English CV is titled with (spec 060, task 2).
+    summary: ['profil', 'profil professionnel', 'a propos', 'a propos de moi', 'objectif'],
     experience: ['experience', 'experiences', 'experience professionnelle', 'experiences professionnelles', 'parcours professionnel'],
     education: ['formation', 'formations', 'etudes', 'diplomes', 'formation academique', 'parcours academique'],
     skills: ['competences', 'competences techniques', 'savoir faire'],
