@@ -545,6 +545,17 @@ const fr: typeof es = {
     languages: 'Langues',
     contact: 'Contact',
   },
+  ai: {
+    button: 'Améliorer avec l’IA',
+    empty: 'Écrivez un texte pour l’améliorer avec l’IA',
+    title: 'Améliorer avec l’IA',
+    intro: 'Un prompt contenant ce texte est copié et l’assistant s’ouvre. Collez-le là-bas. Vérifiez le résultat : l’IA peut inventer des faits.',
+    item: 'Copier le prompt et ouvrir {name}',
+    copied: 'Prompt copié. Collez-le dans {name}.',
+    copyFailed: 'La copie automatique a échoué. Copiez ce prompt à la main :',
+    promptLabel: 'Prompt pour l’IA',
+    openNamed: 'Ouvrir {name}',
+  },
   progress: '{done} sur {total} sections remplies',
 }
 

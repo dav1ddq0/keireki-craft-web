@@ -545,6 +545,17 @@ const de: typeof es = {
     languages: 'Sprachen',
     contact: 'Kontakt',
   },
+  ai: {
+    button: 'Mit KI verbessern',
+    empty: 'Schreiben Sie einen Text, um ihn mit KI zu verbessern',
+    title: 'Mit KI verbessern',
+    intro: 'Ein Prompt mit diesem Text wird kopiert und der Assistent öffnet sich. Fügen Sie ihn dort ein. Prüfen Sie das Ergebnis: KI kann Fakten erfinden.',
+    item: 'Prompt kopieren und {name} öffnen',
+    copied: 'Prompt kopiert. Fügen Sie ihn in {name} ein.',
+    copyFailed: 'Das automatische Kopieren ist fehlgeschlagen. Kopieren Sie diesen Prompt von Hand:',
+    promptLabel: 'Prompt für die KI',
+    openNamed: '{name} öffnen',
+  },
   progress: '{done} von {total} Abschnitten ausgefüllt',
 }
 

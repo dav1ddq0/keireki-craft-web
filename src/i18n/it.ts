@@ -545,6 +545,17 @@ const it: typeof es = {
     languages: 'Lingue',
     contact: 'Contatti',
   },
+  ai: {
+    button: 'Migliora con l’IA',
+    empty: 'Scriva un testo per migliorarlo con l’IA',
+    title: 'Migliora con l’IA',
+    intro: 'Viene copiato un prompt con questo testo e si apre l’assistente. Lo incolli lì. Controlli il risultato: l’IA può inventare dati.',
+    item: 'Copia il prompt e apri {name}',
+    copied: 'Prompt copiato. Lo incolli in {name}.',
+    copyFailed: 'Non è stato possibile copiare in automatico. Copi questo prompt a mano:',
+    promptLabel: 'Prompt per l’IA',
+    openNamed: 'Apri {name}',
+  },
   progress: '{done} di {total} sezioni compilate',
 }
 

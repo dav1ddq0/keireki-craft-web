@@ -546,5 +546,16 @@ export default {
     languages: 'Idiomas',
     contact: 'Contacto',
   },
+  ai: {
+    button: 'Mejorar con IA',
+    empty: 'Escribe un texto para poder mejorarlo con IA',
+    title: 'Mejorar con IA',
+    intro: 'Se copia un prompt con este texto y se abre el asistente. Pégalo allí. Revisa el resultado: la IA puede inventar datos.',
+    item: 'Copiar prompt y abrir {name}',
+    copied: 'Prompt copiado. Pégalo en {name}.',
+    copyFailed: 'No se pudo copiar solo. Copia este prompt a mano:',
+    promptLabel: 'Prompt para la IA',
+    openNamed: 'Abrir {name}',
+  },
   progress: '{done} de {total} secciones con contenido',
 }

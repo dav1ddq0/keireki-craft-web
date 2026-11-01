@@ -545,6 +545,17 @@ const en: typeof es = {
     languages: 'Languages',
     contact: 'Contact',
   },
+  ai: {
+    button: 'Improve with AI',
+    empty: 'Write some text to improve it with AI',
+    title: 'Improve with AI',
+    intro: 'A prompt with this text is copied and the assistant opens. Paste it there. Check the result: AI can make up facts.',
+    item: 'Copy prompt and open {name}',
+    copied: 'Prompt copied. Paste it in {name}.',
+    copyFailed: 'It could not be copied automatically. Copy this prompt by hand:',
+    promptLabel: 'Prompt for the AI',
+    openNamed: 'Open {name}',
+  },
   progress: '{done} of {total} sections filled in',
 }
 
