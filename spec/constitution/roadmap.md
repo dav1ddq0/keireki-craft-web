@@ -65,6 +65,7 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 - **052** · The open doubts, one at a time (long sidebars, fonts on screen, shadows, scans, palette…)
 - **053** · Visual gaps on the phone (the style preview over the step bar, a focus ring on the sheets' close button)
 - **054** · The preview's template button, only where it does something (hidden on the style step)
+- **055** · The paginated view no longer turns the dark theme white (paged.js gets no print-only rules)
 
 ## Next 🔜
 

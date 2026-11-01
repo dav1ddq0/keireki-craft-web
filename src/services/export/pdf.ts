@@ -113,9 +113,94 @@ export function exportCss(): ExportCss {
   // rule it gets in a sheet of its own, where the copied font URLs no longer resolve. Being later,
   // those broken faces won, and the PDF came out in the system font (spec 026).
   return {
-    app: `.${APP_SHEET}{--cv-export-sheet:app}\n${collectDocumentCss({ fontFaces: false })}`,
-    print: `.${PRINT_SHEET}{--cv-export-sheet:print}\n${printCss}`,
+    app: `.${APP_SHEET}{--cv-export-sheet:app}\n${withoutPrintMedia(collectDocumentCss({ fontFaces: false }))}`,
+    print: `.${PRINT_SHEET}{--cv-export-sheet:print}\n${withoutPrintMedia(printCss)}`,
   }
+}
+
+/**
+ * `css` without its print-only `@media` blocks (`print`, `only print`, `print and (…)`).
+ *
+ * paged.js takes the rules out of every `@media print` and adds them unconditionally to the sheet it
+ * puts in `<head>`, where they hit the whole interface: print.css's `html, body { background: #fff }`
+ * turned the dark theme white for as long as the paginated view was open (spec 055). They are not
+ * needed there: when the pages are printed, the document's own print.css applies them.
+ * Comments are dropped; strings are kept whole, braces in them included.
+ */
+export function withoutPrintMedia(css: string): string {
+  let out = ''
+  let i = 0
+  while (i < css.length) {
+    const next = skipToken(css, i)
+    if (next > i) {
+      // A comment is dropped, a string copied.
+      if (css[i] !== '/') out += css.slice(i, next)
+      i = next
+    } else if (css.startsWith('@media', i) && /[\s(]/.test(css[i + 6] ?? '')) {
+      const open = findOutside(css, i, '{')
+      if (open < 0) return out + css.slice(i)
+      const prelude = css.slice(i + 6, open)
+      if (isPrintOnly(prelude)) {
+        i = blockEnd(css, open)
+      } else {
+        out += css.slice(i, open + 1)
+        i = open + 1
+      }
+    } else {
+      out += css[i]
+      i++
+    }
+  }
+  return out
+}
+
+/** A media query list every query of which is print only (`not print`, `screen, print` are not). */
+function isPrintOnly(prelude: string): boolean {
+  const queries = prelude.split(',').map((query) => query.trim().toLowerCase())
+  return queries.every((query) => /^(only\s+)?print\b/.test(query))
+}
+
+/** The end of a comment or a string starting at `i`, else `i`. */
+function skipToken(css: string, i: number): number {
+  if (css.startsWith('/*', i)) {
+    const end = css.indexOf('*/', i + 2)
+    return end < 0 ? css.length : end + 2
+  }
+  const quote = css[i]
+  if (quote === '"' || quote === "'") {
+    let j = i + 1
+    while (j < css.length && css[j] !== quote) j += css[j] === '\\' ? 2 : 1
+    return Math.min(j + 1, css.length)
+  }
+  return i
+}
+
+/** The index of `char` from `i` on, outside comments and strings; -1 if there is none. */
+function findOutside(css: string, i: number, char: string): number {
+  while (i < css.length) {
+    const next = skipToken(css, i)
+    if (next > i) i = next
+    else if (css[i] === char) return i
+    else i++
+  }
+  return -1
+}
+
+/** The index just past the `}` that closes the block opened at `open`. */
+function blockEnd(css: string, open: number): number {
+  let depth = 0
+  let i = open
+  while (i < css.length) {
+    const next = skipToken(css, i)
+    if (next > i) {
+      i = next
+      continue
+    }
+    if (css[i] === '{') depth++
+    else if (css[i] === '}' && --depth === 0) return i + 1
+    i++
+  }
+  return css.length
 }
 
 /**

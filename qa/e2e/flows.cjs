@@ -414,15 +414,21 @@ async function noLayoutShift(browser) {
   await startSample(p)
   await step(p, 'Exportar')
   const rects = () => p.evaluate(() => ['.editor', '.editor-rail', '.editor-form', '.editor-preview'].map((s) => { const r = document.querySelector(s)?.getBoundingClientRect(); return r ? [r.x, r.y, r.width, r.height].map(Math.round).join(',') : '-' }).join(' | '))
-  const watch = () => p.evaluate(() => { window.__rects = new Set(); const sel = ['.editor', '.editor-rail', '.editor-form', '.editor-preview']; const tick = () => { window.__rects.add(sel.map((s) => { const r = document.querySelector(s)?.getBoundingClientRect(); return r ? [r.x, r.y, r.width, r.height].map(Math.round).join(',') : '-' }).join(' | ')); window.__watch = requestAnimationFrame(tick) }; tick() })
+  // The page's background too: paged.js applied print.css's `html, body { background: #fff }` to the app (spec 055).
+  const backgrounds = () => p.evaluate(() => [document.documentElement, document.body].map((e) => getComputedStyle(e).backgroundColor).join(' / '))
+  const watch = () => p.evaluate(() => { window.__rects = new Set(); window.__bgs = new Set(); const sel = ['.editor', '.editor-rail', '.editor-form', '.editor-preview']; const tick = () => { window.__rects.add(sel.map((s) => { const r = document.querySelector(s)?.getBoundingClientRect(); return r ? [r.x, r.y, r.width, r.height].map(Math.round).join(',') : '-' }).join(' | ')); window.__bgs.add([document.documentElement, document.body].map((e) => getComputedStyle(e).backgroundColor).join(' / ')); window.__watch = requestAnimationFrame(tick) }; tick() })
   const seen = () => p.evaluate(() => { cancelAnimationFrame(window.__watch); return [...window.__rects] })
+  const seenBackgrounds = () => p.evaluate(() => [...window.__bgs])
   const before = await rects()
+  const bg = await backgrounds()
 
   await watch()
   await Promise.all([p.waitForEvent('download', { timeout: 30000 }), p.getByRole('button', { name: 'Descargar PDF' }).click()])
   await sleep(600)
   const during = await seen()
   check(B, 'building the direct PDF moves nothing on the page', during.length === 1 && during[0] === before, during.length > 1 ? `${during.length} different layouts: ${during.slice(0, 2).join(' ‖ ')}` : '')
+  const duringBg = await seenBackgrounds()
+  check(B, 'building the direct PDF leaves the page background alone', duringBg.length === 1 && duringBg[0] === bg, duringBg.join(' ‖ '))
 
   await watch()
   await p.getByRole('button', { name: 'Ver vista previa' }).click()
@@ -430,6 +436,8 @@ async function noLayoutShift(browser) {
   await sleep(800)
   const preview = await seen()
   check(B, 'the paginated view moves nothing either, opening or open', preview.length === 1 && preview[0] === before, preview.length > 1 ? `${preview.length} different layouts: ${preview.slice(0, 2).join(' ‖ ')}` : '')
+  const previewBg = await seenBackgrounds()
+  check(B, 'the paginated view leaves the page background alone, opening or open', previewBg.length === 1 && previewBg[0] === bg, previewBg.join(' ‖ '))
   check(B, 'no console errors', p.errs.length === 0, p.errs.join(' | '))
   await p.context().close()
 }
