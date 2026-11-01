@@ -85,7 +85,7 @@ const status = computed(() => (state.value === 'idle' ? '' : t(STATES[state.valu
 
 /* Without a Share button the bubble is just the words: even padding. */
 .copy--compact .state--shown:not(:has(.share-btn)) {
-  padding: 10px 16px;
+  padding: 12px 16px;
 }
 
 .share-btn {

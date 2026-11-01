@@ -15,7 +15,7 @@ beforeAll(() => {
 beforeEach(() => setActivePinia(createPinia()))
 
 const text = (wrapper: ReturnType<typeof mount>, label: string) =>
-  wrapper.findAll('button').find((b) => b.text().includes(label))!
+  wrapper.findAll('button').find((b) => b.text().includes(label) || b.attributes('aria-label') === label)!
 
 describe('MobileDock', () => {
   it('has one main action that goes to the next step, and exports on the last one (spec 027)', async () => {
@@ -42,17 +42,37 @@ describe('MobileDock', () => {
     await text(wrapper, 'Vista previa').trigger('click')
     expect(ui.previewOpen).toBe(true)
     expect(text(wrapper, 'Vista previa').attributes('aria-pressed')).toBe('true')
-    expect(wrapper.find('.action').text()).toBe('Exportar')
+    // In preview, Export is an icon named for screen readers (spec 064).
+    expect(wrapper.find('.action').attributes('aria-label')).toBe('Exportar')
+    expect(wrapper.find('.action').text()).toBe('')
 
     await text(wrapper, 'Editar').trigger('click')
     expect(ui.previewOpen).toBe(false)
     expect(wrapper.find('.action').text()).toBe('Siguiente')
   })
 
-  it('keeps both modes reachable by name when the unselected label is hidden', () => {
+  it('shows the switch as icons only, both named and with a tooltip (spec 064)', () => {
     const wrapper = mount(MobileDock)
-    const labels = wrapper.findAll('.mode').map((b) => b.attributes('aria-label'))
-    expect(labels).toEqual(['Editar', 'Vista previa'])
+    const modes = wrapper.findAll('.mode')
+    expect(modes.map((b) => b.attributes('aria-label'))).toEqual(['Editar', 'Vista previa'])
+    expect(modes.map((b) => b.attributes('title'))).toEqual(['Editar', 'Vista previa'])
+    expect(modes.map((b) => b.text())).toEqual(['', ''])
+  })
+
+  it('in preview, adds the template switch and copy image; in edit, neither (spec 064)', async () => {
+    const ui = useUiStore()
+    const wrapper = mount(MobileDock, { attachTo: document.body })
+    expect(wrapper.find('.template').exists()).toBe(false)
+    ui.previewOpen = true
+    await wrapper.vm.$nextTick()
+    const template = wrapper.find('.template')
+    expect(template.text()).toBe('Classic')
+    expect(template.attributes('aria-label')).toBe('Plantilla: Classic. Cambiar')
+    await template.trigger('click')
+    const sheet = wrapper.findAll('dialog').find((d) => d.attributes('open') !== undefined)!
+    expect(sheet.text()).toContain('Plantilla')
+    expect(sheet.findAll('.tile').length).toBeGreaterThan(5)
+    wrapper.unmount()
   })
 })
 
@@ -62,10 +82,12 @@ describe('MobileDock in preview mode', () => {
     ui.previewOpen = true
     const wrapper = mount(MobileDock)
     await wrapper.find('.action').trigger('click')
-    expect(wrapper.findAll('dialog li')).toHaveLength(5)
+    // The template sheet is a dialog too (spec 064): read the one Export opened.
+    const items = wrapper.findAll('dialog[open] li')
+    expect(items).toHaveLength(5)
     // The direct download comes first (spec 031), printing next to it.
-    expect(wrapper.findAll('dialog li')[0]!.text()).toContain('PDF (descargar)')
-    expect(wrapper.findAll('dialog li')[1]!.text()).toContain('PDF (imprimir)')
-    expect(wrapper.findAll('dialog li')[2]!.text()).toContain('Imagen (JPG)')
+    expect(items[0]!.text()).toContain('PDF (descargar)')
+    expect(items[1]!.text()).toContain('PDF (imprimir)')
+    expect(items[2]!.text()).toContain('Imagen (JPG)')
   })
 })

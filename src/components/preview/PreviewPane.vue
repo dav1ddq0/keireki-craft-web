@@ -140,8 +140,6 @@ const scaleStyle = computed(() => ({ transform: `scale(${effectiveZoom.value})` 
       </div>
     </header>
     <!-- The phone has no toolbar: the copy button floats over the page's corner (spec 062). -->
-    <CopyImageButton v-if="isPhone" class="phone-copy" />
-
     <div ref="scroller" class="scroll">
       <div class="page-frame" :style="frameStyle">
         <div ref="page" class="page-wrap cv-preview-paper" :style="scaleStyle" :data-highlight="highlight">
@@ -255,21 +253,6 @@ const scaleStyle = computed(() => ({ transform: `scale(${effectiveZoom.value})` 
   width: 12px;
   height: 12px;
   border-radius: 50%;
-}
-
-.phone-copy {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 1;
-  padding-inline-start: 4px;
-  border-radius: var(--shape-full);
-  background: var(--md-surface-container-high);
-  box-shadow: var(--elevation-1);
-}
-
-.phone-copy :deep(.copy-state:not(:empty)) {
-  padding-inline-start: 8px;
 }
 
 .zoom-btn,
