@@ -262,6 +262,17 @@ textarea {
   color: inherit;
 }
 
+/*
+ * The open list of a native select. The fields' selects are transparent and take the theme's text
+ * colour, so in the dark theme the browser drew that light text on its own white list. Give the
+ * options the theme's colours; browsers that draw a native list (Safari) follow `color-scheme`.
+ */
+option,
+optgroup {
+  background-color: var(--md-surface-container-high);
+  color: var(--md-on-surface);
+}
+
 :where(a) {
   color: var(--accent);
 }
