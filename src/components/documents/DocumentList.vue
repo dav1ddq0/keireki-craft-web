@@ -15,7 +15,7 @@ import type { CVSummary } from '@/types/cv'
 
 const cv = useCvStore()
 const ui = useUiStore()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const pendingDelete = ref<string | null>(null)
 const isPhone = useIsPhone()
@@ -38,7 +38,7 @@ async function open(id: string) {
 }
 
 async function loadSample() {
-  await cv.createNew({ seed: createSampleCV() })
+  await cv.createNew({ seed: createSampleCV(locale.value) })
   ui.goTo('personal')
 }
 

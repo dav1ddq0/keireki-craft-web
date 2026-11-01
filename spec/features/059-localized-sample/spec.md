@@ -1,0 +1,34 @@
+# 059 · The sample CV in the interface language
+
+**Status:** done
+
+Left out of spec 057: the sample CV ("From a sample") was Spanish whatever the interface language.
+
+Decisions (asked of the user):
+- **A local person per language**, not one person translated: a name, a city, a university and a
+  phone format of the country.
+- **The CV language follows too:** loaded with the interface in German, the sample's dates and
+  section titles are German.
+
+## Change
+
+- `core/sample.ts`: `createSampleCV(locale = 'es')` builds the sample from a per-language
+  `SampleText`; dates, skills, levels and the shape of every section are shared. `meta.language`
+  is the locale, `meta.title` is translated.
+  - es: Nadia Martín Reyes, Valencia — unchanged, so the tests and QA built on it keep working.
+  - en: Emma Clarke, Manchester (University of Manchester); fr: Claire Dubois, Lyon (INSA Lyon);
+    it: Giulia Ferri, Bologna (Università di Bologna); pt: Inês Carvalho, Porto (Universidade do
+    Porto); de: Lena Schneider, München (TU München). Companies are made up.
+  - Phones are made up: the UK (Ofcom 07700 900xxx) and French (ARCEP 01 99 xx xx xx) ones from
+    the ranges kept for fiction; the Italian, Portuguese and German ones start their subscriber
+    number with 0, which no line has. E-mails are at example.com.
+- `WelcomeView.vue` and `DocumentList.vue` pass the interface language.
+
+## Verification
+
+- `tests/sampleCv.test.ts`: Spanish unchanged; every other language has the same shape as Spanish,
+  its own CV language, no line of prose left in Spanish (fails if one is copied over), e-mails at
+  example.com.
+- Screenshots of the sample loaded from the interface: de (Monogram, Harbor), fr (Cobalt),
+  it (Modern), pt (Meridian), en (Classic).
+- `npm test` 768 passed; `qa:e2e` 125/125.

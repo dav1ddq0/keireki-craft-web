@@ -8,7 +8,7 @@ import { templates } from '@/templates/registry'
 
 const cv = useCvStore()
 const ui = useUiStore()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 /**
  * Stores the empty CV right away. cv.init's blank document is never saved until edited, so only
@@ -20,7 +20,7 @@ async function startBlank() {
 }
 
 async function startFromSample() {
-  await cv.createNew({ seed: createSampleCV() })
+  await cv.createNew({ seed: createSampleCV(locale.value) })
   ui.goTo('personal')
 }
 </script>

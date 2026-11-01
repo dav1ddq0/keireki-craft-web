@@ -69,6 +69,7 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 - **056** · Phone: a country code selector with the flag, the default country detected from the IP (language/time zone as fallback)
 - **057** · French, Italian, Portuguese and German: the CV and the interface
 - **058** · The GitHub and LinkedIn links show the networks' own marks
+- **059** · The sample CV in the interface language, with a local person for each
 
 ## Next 🔜
 
