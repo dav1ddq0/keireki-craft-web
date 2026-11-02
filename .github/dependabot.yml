@@ -1,0 +1,13 @@
+# Spec 069. npm: no routine version bumps (open-pull-requests-limit 0), only the security updates
+# GitHub opens for a vulnerable dependency. Actions: monthly, each still pinned by commit.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
