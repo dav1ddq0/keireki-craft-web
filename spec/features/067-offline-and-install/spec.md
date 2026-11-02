@@ -27,6 +27,12 @@ Installing it gives the phone a home-screen icon and a full-screen window.
   a deploy changes (their names carry a hash). Leaving the flags to be cached as shown was tried: offline,
   the phone field's flag then failed to load. Not precached: `og-image.png`, `robots.txt`, `sitemap.xml`.
 
+- **Review fixes (2026-11-02).** The files of `public/` keep their names when they change (the
+  favicon, the manifest, the icons): their content goes into the worker's version and they are
+  fetched again at every install, or a new icon would never reach an installed app. An install
+  stores nothing until every file has arrived with a success status: an error page is never kept
+  as the offline page.
+
 ## Acceptance criteria
 
 - [ ] After a first visit, with the network off, a reload opens the app, the sample CV opens and a

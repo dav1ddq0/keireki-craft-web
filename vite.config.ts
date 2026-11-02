@@ -1,5 +1,7 @@
 import { createHash } from 'node:crypto'
-import { readdirSync } from 'node:fs'
+import { execSync } from 'node:child_process'
+import { readdirSync, readFileSync, statSync } from 'node:fs'
+import { join } from 'node:path'
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig, type Plugin } from 'vitest/config'
 import vue from '@vitejs/plugin-vue'
@@ -38,7 +40,8 @@ function contentSecurityPolicy(): Plugin {
 
 /**
  * `sw.js` for the built site (spec 067), with the list of every emitted file and of `public/`.
- * Build-only: `npm run dev` has no worker.
+ * `public/` files keep their names when they change, so their content goes into the version and
+ * the worker fetches them again at each install. Build-only: `npm run dev` has no worker.
  */
 function serviceWorker(): Plugin {
   const publicDir = fileURLToPath(new URL('./public', import.meta.url))
@@ -46,10 +49,35 @@ function serviceWorker(): Plugin {
     name: 'keireki-craft:service-worker',
     apply: 'build',
     generateBundle(_options, bundle) {
-      const known = [...Object.keys(bundle), ...readdirSync(publicDir)].filter((f) => !f.endsWith('.map')).sort()
-      const version = createHash('sha256').update(known.join('\n')).digest('hex').slice(0, 12)
-      this.emitFile({ type: 'asset', fileName: 'sw.js', source: serviceWorkerSource({ version, known, precache: precacheOf(known) }) })
+      const publicFiles = (readdirSync(publicDir, { recursive: true }) as string[])
+        .map((f) => f.split('\\').join('/'))
+        .filter((f) => statSync(join(publicDir, f)).isFile())
+      const known = [...Object.keys(bundle), ...publicFiles].filter((f) => !f.endsWith('.map')).sort()
+      const hash = createHash('sha256').update(known.join('\n'))
+      for (const f of publicFiles.sort()) hash.update(readFileSync(join(publicDir, f)))
+      const precache = precacheOf(known)
+      this.emitFile({
+        type: 'asset',
+        fileName: 'sw.js',
+        source: serviceWorkerSource({
+          version: hash.digest('hex').slice(0, 12),
+          known,
+          precache,
+          fresh: precache.filter((f) => publicFiles.includes(f)),
+          commit: buildCommit(),
+        }),
+      })
     },
+  }
+}
+
+/** The commit being built: the workflow's, or the checkout's (`qa:live` waits for it, spec 068). */
+function buildCommit(): string {
+  if (process.env.GITHUB_SHA) return process.env.GITHUB_SHA
+  try {
+    return execSync('git rev-parse HEAD', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim()
+  } catch {
+    return 'unknown'
   }
 }
 
