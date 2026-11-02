@@ -13,7 +13,10 @@
   follows the form, an edit survives a reload, the service worker installs, the page is installable
   and opens offline; no errors, no 404, no request to another site but ipwho.is.
 
-The deploy workflow runs it in a last job, `verify`, once the site is live.
+The deploy workflow runs it in a last job, `verify`, once the site is live. With
+`QA_LIVE_COMMIT`, it first waits (up to 5 minutes) until `sw.js` names that commit: the first run,
+right after a deploy, failed while the same check passed minutes later, and nothing showed the CDN
+was already serving the new build.
 
 ## Why
 

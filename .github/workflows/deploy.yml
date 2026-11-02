@@ -61,3 +61,6 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run qa:live -- "${{ needs.deploy.outputs.page_url }}"
+        env:
+          # Waits for the CDN to serve this commit's build before checking it.
+          QA_LIVE_COMMIT: ${{ github.sha }}

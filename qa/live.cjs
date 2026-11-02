@@ -2,9 +2,12 @@
 // 067, then the app itself in Chromium on a laptop and a phone. Run after each deploy; the workflow
 // does it too.
 // Usage: npm run qa:live [-- <url>]   (default https://keireki-craft.eu/, or QA_LIVE_URL)
+// QA_LIVE_COMMIT=<sha> first waits, up to 5 minutes, until the site serves that commit's build: right
+// after a deploy the CDN may still answer with the previous one (or a 404 cached from before).
 const { chromium } = require('playwright')
 
 const GIVEN = new URL(process.argv[2] ?? process.env.QA_LIVE_URL ?? 'https://keireki-craft.eu/').href
+const COMMIT = process.env.QA_LIVE_COMMIT
 /** Where the given address ends (the workflow's deploy URL may be the http:// one). */
 let SITE = GIVEN
 const results = []
@@ -12,7 +15,7 @@ function check(name, ok, detail = '') {
   results.push({ name, ok: Boolean(ok), detail })
   console.log(`${ok ? 'PASS' : 'FAIL'} ${name}${detail ? ` — ${detail}` : ''}`)
 }
-const until = async (fn, timeout = 15000) => {
+const until = async (fn, timeout = 15000, every = 250) => {
   const t0 = Date.now()
   for (;;) {
     try {
@@ -20,12 +23,21 @@ const until = async (fn, timeout = 15000) => {
       if (v) return v
     } catch {}
     if (Date.now() - t0 > timeout) return false
-    await new Promise((r) => setTimeout(r, 250))
+    await new Promise((r) => setTimeout(r, every))
   }
 }
 
 ;(async () => {
   SITE = (await fetch(GIVEN)).url
+  if (COMMIT) {
+    // sw.js names the commit it was built from (spec 067).
+    const served = await until(async () => (await (await fetch(new URL('sw.js', SITE), { cache: 'no-store' })).text()).includes(`Commit ${COMMIT}.`), 5 * 60_000, 10_000)
+    check(`the site serves commit ${COMMIT.slice(0, 7)}`, served)
+    if (!served) {
+      process.exitCode = 1
+      return
+    }
+  }
   // ---- addresses: one home, over HTTPS.
   const site = new URL(SITE)
   if (site.protocol === 'https:' && !site.hostname.endsWith('localhost')) {
