@@ -5,7 +5,7 @@ const net = require('node:net')
 const path = require('node:path')
 
 const ROOT = path.resolve(__dirname, '../..')
-const BASE_PATH = '/vue-cv-maker/'
+const BASE_PATH = '/'
 
 function freePort() {
   return new Promise((resolve, reject) => {

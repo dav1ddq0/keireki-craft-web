@@ -65,7 +65,7 @@ describe('direct PDF helpers (spec 031)', () => {
     const names = [...css.matchAll(/url\('@fontsource\/[\w-]+\/files\/([\w-]+)\.woff2'\)/g)].map((m) => m[1]!)
     expect(names.length).toBe(69)
     for (const name of names) expect(WOFF[name], name).toBeTruthy()
-    expect(woffFor('/vue-cv-maker/assets/inter-latin-400-normal-C38fXH4l.woff2')).toBe(WOFF['inter-latin-400-normal'])
+    expect(woffFor('/assets/inter-latin-400-normal-C38fXH4l.woff2')).toBe(WOFF['inter-latin-400-normal'])
     expect(woffFor('/node_modules/@fontsource/inter/files/inter-latin-400-normal.woff2')).toBe(WOFF['inter-latin-400-normal'])
   })
 

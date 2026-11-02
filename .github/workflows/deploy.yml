@@ -27,8 +27,8 @@ jobs:
       - run: npm test
       - run: npm run build
         env:
-          # Project sites are served from /<repo>/; see vite.config.ts.
-          BASE_PATH: /${{ github.event.repository.name }}/
+          # Served from the root of the custom domain (keireki-craft.eu); see vite.config.ts.
+          BASE_PATH: /
       - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
         with:
           path: dist

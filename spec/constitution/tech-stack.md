@@ -7,7 +7,7 @@
 - **Storage:** IndexedDB via `idb-keyval`, behind the `StorageAdapter` interface in `src/services/storage/` — no backend in v1
 - **PDF:** `pdfjs-dist` for import/extraction, `pagedjs` for paginated preview/export layout
 - **Tests:** Vitest (`tests/**/*.test.ts`); validated with `npm test` + `npm run build` (type-check `vue-tsc --noEmit` + build), and for UI/UX changes, agent-driven design/QA reviews before a feature is considered done
-- **Deployment:** GitHub Pages, under the `/vue-cv-maker/` path (see `base` / `BASE_PATH` in `vite.config.ts`)
+- **Deployment:** GitHub Pages, on the custom domain keireki-craft.eu at the root path `/` (see `base` / `BASE_PATH` in `vite.config.ts`)
 
 ## Key files / modules
 

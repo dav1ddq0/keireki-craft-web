@@ -7,7 +7,7 @@
 **A CV editor that runs entirely in your browser.**<br>
 No account, no server, no upload: write, preview and export your CV, and it never leaves your device.
 
-[**Open the app**](https://dav1ddq0.github.io/keireki-craft-web/) · [Features](#features) · [Templates](#templates) · [Development](#development)
+[**Open the app**](https://keireki-craft.eu/) · [Features](#features) · [Templates](#templates) · [Development](#development)
 
 [![Deploy](https://github.com/dav1ddq0/keireki-craft-web/actions/workflows/deploy.yml/badge.svg)](https://github.com/dav1ddq0/keireki-craft-web/actions/workflows/deploy.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
@@ -73,7 +73,7 @@ clear site data when it runs out of space, and the app warns you about it.
 
 ```bash
 npm install
-npm run dev           # http://localhost:5173/vue-cv-maker/
+npm run dev           # http://localhost:5173/
 npm test              # unit tests (Vitest)
 npm run typecheck     # vue-tsc
 npm run build         # type-check + production bundle into dist/
@@ -188,15 +188,16 @@ print engine, so it comes out the same everywhere; printing differs slightly bet
 
 ## Deployment
 
-Published at <https://dav1ddq0.github.io/keireki-craft-web/> by `.github/workflows/deploy.yml`: every
-push to `main` installs, runs the tests, builds and deploys to GitHub Pages. A red test suite blocks
-the deploy.
+Published at <https://keireki-craft.eu/> by `.github/workflows/deploy.yml`: every push to `main`
+installs, runs the tests, builds and deploys to GitHub Pages. A red test suite blocks the deploy.
 
-- **One-time setup:** repository *Settings → Pages → Build and deployment → Source: GitHub Actions*.
-- **Base path:** the workflow builds with `BASE_PATH=/<repository name>/`, so the site follows the
-  repository's name. Without it, `vite.config.ts` falls back to `/vue-cv-maker/`, the path
-  `npm run dev` and `npm run preview` serve locally. Set `BASE_PATH` to build for another location,
-  for example `BASE_PATH=/ npm run build` for a user site or a custom domain.
+- **One-time setup:** repository *Settings → Pages → Build and deployment → Source: GitHub Actions*,
+  and the custom domain `keireki-craft.eu` in *Settings → Pages → Custom domain* (DNS: the four
+  GitHub Pages `A` records on the apex, `www` as a `CNAME` to `dav1ddq0.github.io`).
+- **Base path:** the workflow builds with `BASE_PATH=/`, since the custom domain serves the site from
+  its root, the same path `vite.config.ts` falls back to and `npm run dev` and `npm run preview`
+  serve locally. To publish on `<user>.github.io/<repository>/` instead, without
+  a custom domain, build with `BASE_PATH=/<repository name>/`.
 - **Content-Security-Policy:** the build adds a CSP `<meta>` tag (GitHub Pages cannot send headers);
   it is not applied by `npm run dev`.
 

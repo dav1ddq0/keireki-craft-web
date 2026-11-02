@@ -18,7 +18,7 @@ const OUT = path.join(ROOT, '.qa/pdf')
 const MODES = ['sample', 'photo', 'long', 'break']
 /** Spec 031, criterion 4: share of pixels differing (grey difference > 48) at 50 dpi. */
 const MAX_DIFF = 4
-const SRC = '/vue-cv-maker/src'
+const SRC = '/src'
 
 const results = []
 function check(name, ok, detail = '') {
