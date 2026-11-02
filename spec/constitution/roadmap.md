@@ -81,6 +81,10 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
 
+- **066** · A shared link shows a card (Open Graph), PNG icons, `robots.txt` and `sitemap.xml`
+- **067** · Works offline and installs like an app: a service worker of our own and a web manifest
+- **068** · `qa:live`: the published site checked after each deploy
+
 
 ## Backlog / ideas 💡
 

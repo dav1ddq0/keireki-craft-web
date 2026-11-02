@@ -35,6 +35,8 @@ No account, no server, no upload: write, preview and export your CV, and it neve
 - **Six languages.** The interface and the CV in English, Spanish, French, Italian, Portuguese and
   German, with a sample CV in each.
 - **Several CVs.** Keep as many as you need, each saved as you type.
+- **Offline, and installable.** After the first visit the app opens and works with no connection.
+  Install it from the browser to get its own window and a home-screen icon.
 - **Phone and tablet.** A layout of its own on small screens: one step at a time, the preview a tap
   away. Light and dark themes.
 - **Improve with AI, on your terms.** A button opens Claude, ChatGPT or Gemini in a new tab with a
@@ -57,7 +59,8 @@ see is what you export. [Adding one](#adding-a-template) takes one folder.
 ## Privacy
 
 Your CV is stored in your browser's IndexedDB and nowhere else. There is no backend, no account and
-no analytics. The app makes two requests of its own, both optional to how it works:
+no analytics. The site is served by GitHub Pages, which, like any web host, logs the IP address of
+each visit; the app itself makes two requests of its own, both optional to how it works:
 
 - The phone field asks [`ipwho.is`](https://ipwho.is) for the country of your connection to
   preselect the dialling code. The answer holds no IP address, nothing is stored, and if it fails the
@@ -89,6 +92,7 @@ Browser checks on the built site, with Playwright (each builds first):
 | `npm run qa:roundtrip` | Upload → export every way → import again, nothing lost |
 | `npm run qa:security` | Hostile JSON and PDF files: nothing runs, nothing leaves the page |
 | `npm run qa` | All of the above |
+| `npm run qa:live` | The published site: addresses, HTTPS, the app on a laptop and a phone, offline (run by the deploy too) |
 
 ### Stack
 
@@ -200,9 +204,14 @@ installs, runs the tests, builds and deploys to GitHub Pages. A red test suite b
   a custom domain, build with `BASE_PATH=/<repository name>/`.
 - **Content-Security-Policy:** the build adds a CSP `<meta>` tag (GitHub Pages cannot send headers);
   it is not applied by `npm run dev`.
+- **Service worker:** the build writes `sw.js` with the list of its files (`build/serviceWorker.ts`):
+  everything is cached after the first visit, and the page itself is always asked of the network
+  first, so a deploy shows at once. `npm run dev` registers none.
+- **After the deploy**, a last job runs `npm run qa:live` on the published site.
 
 The README's images are generated from the built app by `docs/readme-media.cjs`
-(`npm run build && node docs/readme-media.cjs`; it needs Python's Pillow for the GIF).
+(`npm run build && node docs/readme-media.cjs`; it needs Python's Pillow for the GIF). The site's
+own (the link card `og-image.png` and the icons in `public/`) by `docs/site-images.cjs`.
 
 ## License and credits
 

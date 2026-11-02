@@ -14,6 +14,7 @@
     "qa:security": "npm run build && node qa/security.cjs",
     "qa:roundtrip": "npm run build && node qa/roundtrip.cjs",
     "qa:consistency": "npm run build && node qa/consistency.cjs",
+    "qa:live": "node qa/live.cjs",
     "qa": "npm run build && node qa/e2e/run.cjs && node qa/security.cjs && node qa/roundtrip.cjs && node qa/consistency.cjs && node qa/pdf-compare.cjs"
   },
   "dependencies": {
