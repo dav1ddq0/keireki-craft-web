@@ -166,6 +166,7 @@ async function hostileJson(browser, name, origin, check, until) {
         }
       }
       return {
+        csp: document.querySelector('meta[http-equiv="Content-Security-Policy"]')?.getAttribute('content') ?? '',
         scripts: document.querySelectorAll('script').length,
         iframes: document.querySelectorAll('iframe, object, embed').length,
         handlers,
@@ -176,6 +177,7 @@ async function hostileJson(browser, name, origin, check, until) {
     })
     check(B, 'HTML export: no <script>/<iframe>, no on* attributes, only http(s) links', dom.scripts === 0 && dom.iframes === 0 && dom.handlers === 0 && dom.badHrefs.length === 0, JSON.stringify(dom).slice(0, 160))
     check(B, 'HTML export: images and CSS load nothing remote', dom.remoteSrcs.length === 0 && dom.cssUrls.length === 0, JSON.stringify({ src: dom.remoteSrcs, css: dom.cssUrls }).slice(0, 160))
+    check(B, 'HTML export: its own CSP forbids scripts and remote loads (spec 069)', /default-src 'none'/.test(dom.csp) && !/script-src|https?:/.test(dom.csp), dom.csp)
     check(B, 'HTML export opened: nothing ran, nothing fetched', (await hp.evaluate(() => window.__xss ?? null)) === null && htmlForeign.length === 0, htmlForeign.join(' , '))
     await hp.close()
   }

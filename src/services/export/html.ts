@@ -6,6 +6,21 @@ import { embeddedFontCss } from './fonts'
 import { fontStackWithStandIns } from '@/core/fontStandIns'
 
 /**
+ * The exported file's own Content-Security-Policy (spec 069). The file has no script and loads
+ * nothing remote (checked by `qa:security`); this is the second barrier, should a template ever let
+ * markup through: nothing may run, be framed, be submitted or be fetched; the styles and the
+ * `data:` photo and fonts it carries are all it may use.
+ */
+export const EXPORTED_HTML_CSP = [
+  "default-src 'none'",
+  "style-src 'unsafe-inline'",
+  'img-src data:',
+  'font-src data:',
+  "base-uri 'none'",
+  "form-action 'none'",
+].join('; ')
+
+/**
  * A single `.html` file with the CSS and the CV's font embedded, no external references.
  *
  * The app's own stylesheet is inlined wholesale rather than filtered down to the
@@ -25,6 +40,7 @@ export async function buildStandaloneHtml(data: CVData, templateId: string): Pro
 <html lang="${escapeHtml(data.meta.language || 'es')}">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="${EXPORTED_HTML_CSP}">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${title}</title>
 <style>
