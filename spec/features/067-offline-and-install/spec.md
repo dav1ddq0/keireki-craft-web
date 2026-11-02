@@ -1,6 +1,6 @@
 # 067 · Works offline, installs like an app
 
-**Status:** in progress
+**Status:** done
 
 ## What it does
 

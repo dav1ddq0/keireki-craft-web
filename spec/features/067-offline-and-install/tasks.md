@@ -5,4 +5,4 @@
 - [x] 3 · QA: service workers blocked in the shared context, a new `offline` block — commit: 1f69fbf
 - [x] 4 · Review: `public/` files fetched again at each install and in the version (subfolders
   too); no error answer stored at install; tests for error answers on install, navigation and files — commit: 237876c
-- [ ] 5 · Verification after the deploy (offline and install on a phone), and 067 to "Done"
+- [x] 5 · Verification after the deploy (offline and install on a phone), and 067 to "Done" — deploy run #49 (f126653), qa:live green (offline and installable in Chromium; the install on a real phone is still to try by hand)

@@ -1,6 +1,6 @@
 # 069 · Hardening the build and the exported HTML
 
-**Status:** in progress
+**Status:** done
 
 From the security review of 2026-11-02. The app itself had no exploitable flaw; the risks were in
 how it is built and published.

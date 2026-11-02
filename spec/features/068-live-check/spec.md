@@ -1,6 +1,6 @@
 # 068 · The published site, checked after each deploy
 
-**Status:** in progress
+**Status:** done
 
 ## What it does
 

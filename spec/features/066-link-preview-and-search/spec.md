@@ -1,6 +1,6 @@
 # 066 · A link that shows the app, and a site search engines can read
 
-**Status:** in progress
+**Status:** done
 
 ## What it does
 
