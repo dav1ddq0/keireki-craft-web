@@ -16,6 +16,7 @@ const { ROOT, startServer } = require('../lib/server.cjs')
   const flows = require('./flows.cjs')
   const transitions = require('./transitions.cjs')
   const fidelity = require('./fidelity.cjs')
+  const offline = require('./offline.cjs')
 
   const started = Date.now()
   const browser = await chromium.launch()
@@ -48,6 +49,7 @@ const { ROOT, startServer } = require('../lib/server.cjs')
       timed('widths', () => flows.widths(browser)),
       timed('transitions', () => transitions.run(browser)),
       timed('fidelity', () => fidelity.run(browser, outDir)),
+      timed('offline', () => offline.run(browser)),
     ]
     // Other engines are slower with every block at once, and the animation checks sample frames: one at a time there.
     if (ENGINE === 'chromium') await Promise.all(blocks.map((block) => block()))

@@ -36,7 +36,9 @@ async function until(fn, { timeout = 8000, every = 20 } = {}) {
 }
 
 async function open(browser, { initScript, ...opts } = {}) {
-  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: 'es-ES', acceptDownloads: true, ...opts })
+  // No service worker (spec 067) unless a block asks for one: the blocks measure the app, and the
+  // worker's 10 MB install in every parallel context would skew their timings. `offline` allows it.
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: 'es-ES', acceptDownloads: true, serviceWorkers: 'block', ...opts })
   // Runs in every page before the app does (a browser without an API, say).
   if (initScript) await ctx.addInitScript(initScript)
   const p = await ctx.newPage()
@@ -47,6 +49,8 @@ async function open(browser, { initScript, ...opts } = {}) {
   p.on('console', (m) => {
     // Playwright's own Firefox driver (juggler) logs warnings about itself; they are not the app's.
     if (/juggler/.test(m.text())) return
+    // The service worker refused by the context's `serviceWorkers: 'block'` above, logged by main.ts.
+    if (/Service Worker registration blocked by Playwright/.test(m.text())) return
     if (m.type() === 'error' || (m.type() === 'warning' && !/\[vite\]/.test(m.text()))) p.errs.push(m.type() + ': ' + m.text().slice(0, 200))
   })
   await p.goto(BASE, { waitUntil: 'networkidle' })

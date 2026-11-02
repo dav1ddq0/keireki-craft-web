@@ -1,6 +1,9 @@
+import { createHash } from 'node:crypto'
+import { readdirSync } from 'node:fs'
 import { fileURLToPath, URL } from 'node:url'
 import { defineConfig, type Plugin } from 'vitest/config'
 import vue from '@vitejs/plugin-vue'
+import { precacheOf, serviceWorkerSource } from './build/serviceWorker'
 
 /**
  * Content-Security-Policy for the built site (spec 017). A meta tag because GitHub Pages cannot send
@@ -33,12 +36,29 @@ function contentSecurityPolicy(): Plugin {
   }
 }
 
+/**
+ * `sw.js` for the built site (spec 067), with the list of every emitted file and of `public/`.
+ * Build-only: `npm run dev` has no worker.
+ */
+function serviceWorker(): Plugin {
+  const publicDir = fileURLToPath(new URL('./public', import.meta.url))
+  return {
+    name: 'keireki-craft:service-worker',
+    apply: 'build',
+    generateBundle(_options, bundle) {
+      const known = [...Object.keys(bundle), ...readdirSync(publicDir)].filter((f) => !f.endsWith('.map')).sort()
+      const version = createHash('sha256').update(known.join('\n')).digest('hex').slice(0, 12)
+      this.emitFile({ type: 'asset', fileName: 'sw.js', source: serviceWorkerSource({ version, known, precache: precacheOf(known) }) })
+    },
+  }
+}
+
 // `base` is the root, where the custom domain (keireki-craft.eu) serves the site, so local preview
 // matches production. Override with BASE_PATH to deploy under a path, e.g. a GitHub Pages project
 // site without the domain (/<repo>/).
 export default defineConfig({
   base: process.env.BASE_PATH ?? '/',
-  plugins: [vue(), contentSecurityPolicy()],
+  plugins: [vue(), contentSecurityPolicy(), serviceWorker()],
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },

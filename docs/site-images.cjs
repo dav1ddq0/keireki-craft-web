@@ -1,7 +1,8 @@
 // The site's own images (spec 066), into public/:
 //   - og-image.png, 1200×630: the card a shared link shows (logo, name, one sentence, the sample CV);
 //   - apple-touch-icon.png (180), icon-192.png, icon-512.png: public/favicon.svg as PNG, which is what
-//     phones and link crawlers read.
+//     phones and link crawlers read;
+//   - icon-maskable-512.png: the logo at 80 % on a white square, for Android's own icon shapes (spec 067).
 // Usage: npm run build && node docs/site-images.cjs
 const fs = require('node:fs')
 const path = require('node:path')
@@ -61,11 +62,17 @@ const LOGO = fs.readFileSync(path.join(PUBLIC, 'favicon.svg'), 'utf8')
       await p.screenshot({ path: path.join(PUBLIC, file), omitBackground: file !== 'apple-touch-icon.png' })
       await p.context().close()
     }
+    {
+      const p = await (await browser.newContext({ viewport: { width: 512, height: 512 } })).newPage()
+      await p.setContent(`<style>html, body { margin: 0; background: #fff; } svg { display: block; width: 410px; height: 410px; margin: 51px; }</style>${LOGO}`)
+      await p.screenshot({ path: path.join(PUBLIC, 'icon-maskable-512.png') })
+      await p.context().close()
+    }
   } finally {
     await browser.close()
     server.stop()
   }
-  for (const f of ['og-image.png', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png'])
+  for (const f of ['og-image.png', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png'])
     console.log(`${f}  ${(fs.statSync(path.join(PUBLIC, f)).size / 1024).toFixed(0)} KB`)
 })().catch((error) => {
   console.error(error)

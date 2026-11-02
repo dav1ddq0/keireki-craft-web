@@ -15,3 +15,10 @@ document.documentElement.dataset.theme = resolveTheme(readPrefs().theme, systemP
 
 if (isFramed()) showFramedNotice()
 else createApp(App).use(createPinia()).mount('#app')
+
+// Offline and installable (spec 067): the built site only, once the page has loaded.
+if (import.meta.env.PROD && 'serviceWorker' in navigator && !isFramed()) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`).catch((error) => console.warn('Service worker not registered', error))
+  })
+}
