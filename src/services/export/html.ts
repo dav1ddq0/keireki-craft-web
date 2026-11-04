@@ -8,7 +8,7 @@ import { fontStackWithStandIns } from '@/core/fontStandIns'
 /**
  * The exported file's own Content-Security-Policy (spec 069). The file has no script and loads
  * nothing remote (checked by `qa:security`); this is the second barrier, should a template ever let
- * markup through: nothing may run, be framed, be submitted or be fetched; the styles and the
+ * markup through: nothing may run, be fetched, be submitted or load a frame; the styles and the
  * `data:` photo and fonts it carries are all it may use.
  */
 export const EXPORTED_HTML_CSP = [

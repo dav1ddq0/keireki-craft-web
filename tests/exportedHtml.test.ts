@@ -12,7 +12,7 @@ import { buildStandaloneHtml, EXPORTED_HTML_CSP } from '@/services/export/html'
 import { createEmptyCV } from '@/core/factory'
 
 describe('Exported HTML (spec 069)', () => {
-  it('carries its own CSP, first in <head>, before anything it could apply to', async () => {
+  it('carries its own CSP in <head>, before the styles it applies to', async () => {
     const html = await buildStandaloneHtml(createEmptyCV(), 'classic')
     const head = html.slice(html.indexOf('<head>'), html.indexOf('<style>'))
     expect(head).toContain(`<meta http-equiv="Content-Security-Policy" content="${EXPORTED_HTML_CSP}">`)
