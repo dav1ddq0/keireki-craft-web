@@ -493,6 +493,11 @@ const SECTION_ICONS: Record<ResolvedSection['kind'] | 'contact', string> = {
   margin-bottom: 0.2em;
 }
 
+/* A word longer than the column breaks inside it: past the charcoal band, white text vanishes (spec 072). */
+.side .entry {
+  overflow-wrap: anywhere;
+}
+
 .side-meta {
   margin: 0.15em 0 0;
   font-size: 0.88em;
@@ -543,8 +548,10 @@ const SECTION_ICONS: Record<ResolvedSection['kind'] | 'contact', string> = {
   margin-bottom: 0;
 }
 
-/* `break-word`, not `anywhere`: the name must not shrink to a few letters before the marks wrap. */
+/* `break-word`, not `anywhere`: the name must not shrink to a few letters before the marks wrap.
+   `min-width: 0` lets a flex item narrower than its longest word, so that word breaks (spec 072). */
 .level-name {
+  min-width: 0;
   font-size: 0.92em;
   font-weight: 600;
   overflow-wrap: break-word;

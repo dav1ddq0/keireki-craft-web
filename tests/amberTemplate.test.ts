@@ -87,4 +87,12 @@ describe('Amber (spec 071)', () => {
     const size = /\.skill-category\s*\{[^}]*font-size:\s*([\d.]+)em/.exec(source)?.[1]
     expect(Number(size)).toBeLessThan(1)
   })
+
+  it('breaks a word longer than the side column inside it, where white text would vanish (spec 072)', () => {
+    expect(source).toMatch(/\.side \.entry\s*\{[^}]*overflow-wrap:\s*anywhere/)
+    expect(source).toMatch(/\.contact\s*\{[^}]*overflow-wrap:\s*anywhere/)
+    const levelName = /\.level-name\s*\{([^}]*)\}/.exec(source)?.[1] ?? ''
+    expect(levelName).toMatch(/overflow-wrap:\s*break-word/)
+    expect(levelName).toMatch(/min-width:\s*0/)
+  })
 })
