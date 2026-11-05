@@ -84,6 +84,7 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 ## Next 🔜
 
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
+- **070** · Catalan, Valencian and Basque: the CV, the interface and the PDF import
 
 
 ## Backlog / ideas 💡
