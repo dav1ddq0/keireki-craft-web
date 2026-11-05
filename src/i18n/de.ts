@@ -284,6 +284,10 @@ const de: typeof es = {
       description:
         'Lebenslauf in Serifenschrift mit diagonalem, zweifarbigem Kopf: ein Monogramm Ihrer Initialen oder Ihr Foto neben Name und Profil. Eine helle Seitenspalte für Kontakt und Kenntnisse.',
     },
+    amber: {
+      description:
+        'Eine dunkle Seitenspalte mit Ihrem Foto, Kontakt, Ausbildung und Sprachen, dazu eine Zeitleiste mit warmem Akzent. Ihr Nachname hebt sich in der Akzentfarbe ab.',
+    },
     cobalt: {
       description:
         'Farbiges Kopfband mit rundem Foto, eine helle Seitenspalte für Kontakt, Kenntnisse und Sprachen, der Werdegang rechts.',

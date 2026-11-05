@@ -101,7 +101,7 @@ async function run(browser, outDir) {
 
   // ---- template switching ----------------------------------------------------------------------
   await step(p, 'Plantilla y estilo')
-  const ids = ['aurora', 'banner', 'chevron', 'cobalt', 'classic', 'compact', 'editorial', 'facet', 'frame', 'harbor', 'ledger', 'meridian', 'modern', 'monogram', 'monograph']
+  const ids = ['amber', 'aurora', 'banner', 'chevron', 'cobalt', 'classic', 'compact', 'editorial', 'facet', 'frame', 'harbor', 'ledger', 'meridian', 'modern', 'monogram', 'monograph']
   const cold = []
   for (const id of ids) {
     const card = p.getByRole('button', { name: new RegExp('^' + id, 'i') }).first()

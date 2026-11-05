@@ -35,9 +35,12 @@ describe.each(templates)('$name renders', (definition) => {
     const wrapper = mount(component as any, { props: { data } })
 
     const flagged = wrapper.findAll('[data-page-break]').map((el) => el.attributes('data-section'))
-    expect(flagged).toContain('education')
+    // Amber keeps education in its side column (spec 071); its skills are in the main one.
+    const sideEducation = ['amber']
+    expect(flagged).toContain(sideEducation.includes(definition.id) ? 'skills' : 'education')
+    expect(flagged.includes('education')).toBe(!sideEducation.includes(definition.id))
     // These templates put languages in a sidebar, aside or block row; a break there would push the main column.
-    const twoColumn = ['aurora', 'banner', 'chevron', 'cobalt', 'facet', 'frame', 'harbor', 'meridian', 'modern', 'monogram']
+    const twoColumn = ['amber', 'aurora', 'banner', 'chevron', 'cobalt', 'facet', 'frame', 'harbor', 'meridian', 'modern', 'monogram']
     expect(flagged.includes('languages')).toBe(!twoColumn.includes(definition.id))
   })
 

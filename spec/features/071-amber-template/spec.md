@@ -8,18 +8,21 @@ A new template, **Amber**, inspired by a design the user shared (a PSD résumé 
 column and an amber accent). The idea is taken; the proportions, details and code are our own, and
 nothing from the PSD (images, icons, text) goes into the repository.
 
-- **Side column**, dark (charcoal), on the left, with an accent triangle in its top corner. It holds
-  the photo, contact, **education** and **languages**.
+- **Side column**, dark (charcoal), on the left, with an accent triangle in its top corner behind
+  the photo. It holds the photo, contact, **education** and **languages**.
 - **Photo** round, with one square corner (a drop), in a white ring, at the top of the side column.
-  Without a photo, the column starts with contact.
-- **Header** over a pale grey band beside the photo: the name in heavy capitals, its **last word in
-  the accent**, and the headline below in spaced capitals.
+  Without a photo, the column starts with contact and the accent runs along its top edge instead of
+  the triangle.
+- **Header** over a pale grey band beside the photo: the name in its heaviest weight, its **last
+  word in the accent**, and the headline below, letter-spaced. Neither is set in capitals: the PDF
+  would carry the capitals, and an import would read the name in them.
 - **Main column**: summary, experience, skills and the custom sections, in the CV's order.
 - **Timeline**: a thin vertical line runs down each column; every section title has a short accent
   bar on it, and every entry a dot.
 - **Section titles** in heavy capitals, with a small icon in a circle.
 - **Skills** in two columns, with the level as a bar (the existing `bars` indicator).
-- An accent triangle in the bottom right corner of the last page.
+- An accent triangle in the top right corner of the header (the bottom corner of the last page
+  cannot be placed reliably once paginated).
 - **Raleway**, new among the bundled fonts, is the default font, and is offered in the font select
   for every template.
 

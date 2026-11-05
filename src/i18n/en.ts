@@ -284,6 +284,10 @@ const en: typeof es = {
       description:
         "Serif résumé with a diagonal two-tone header: a monogram of your initials, or your photo, beside the name and summary. A pale sidebar for contact and skills.",
     },
+    amber: {
+      description:
+        "A dark side column with your photo, contact, education and languages, and a timeline with a warm accent. Your last name stands out in the accent colour.",
+    },
     cobalt: {
       description:
         'Colored header band with a round photo, a pale sidebar for contact, skills and languages, and the career on the right.',

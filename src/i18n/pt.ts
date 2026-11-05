@@ -285,6 +285,10 @@ const pt: typeof es = {
       description:
         'Currículo com serifa e um cabeçalho diagonal em dois tons: um monograma das suas iniciais, ou a sua fotografia, junto ao nome e ao perfil. Uma coluna lateral clara para o contacto e as competências.',
     },
+    amber: {
+      description:
+        'Uma coluna lateral escura com a sua fotografia, o contacto, a formação e os idiomas, e uma linha do tempo com um acento quente. O apelido destaca-se na cor de acento.',
+    },
     cobalt: {
       description:
         'Faixa de cabeçalho colorida com uma fotografia redonda, uma coluna lateral clara para o contacto, as competências e os idiomas, e o percurso à direita.',

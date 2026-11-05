@@ -284,6 +284,10 @@ const fr: typeof es = {
       description:
         'CV à empattements avec un en-tête diagonal bicolore : un monogramme de vos initiales, ou votre photo, à côté du nom et du profil. Une colonne latérale pâle pour le contact et les compétences.',
     },
+    amber: {
+      description:
+        'Une colonne latérale sombre avec votre photo, le contact, la formation et les langues, et une frise chronologique à l’accent chaleureux. Votre nom de famille ressort dans la couleur d’accent.',
+    },
     cobalt: {
       description:
         'Bandeau d’en-tête coloré avec une photo ronde, une colonne latérale pâle pour le contact, les compétences et les langues, et le parcours à droite.',

@@ -285,6 +285,10 @@ export default {
       description:
         "Currículum serif con cabecera diagonal de dos tonos: un monograma con tus iniciales, o tu foto, junto al nombre y el resumen. Barra lateral pálida para contacto y competencias.",
     },
+    amber: {
+      description:
+        "Columna lateral oscura con tu foto, el contacto, la formación y los idiomas, y una línea de tiempo con acento cálido. El último apellido destaca en el color de acento.",
+    },
     cobalt: {
       description:
         'Cabecera de color con foto redonda, barra lateral pálida para contacto, competencias e idiomas, y la trayectoria a la derecha.',

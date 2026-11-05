@@ -284,6 +284,10 @@ const eu: typeof es = {
       description:
         'Serif letrako CVa, bi koloreko goiburu diagonalarekin: zure inizialen monograma, edo zure argazkia, izenaren eta laburpenaren ondoan. Alboko barra argia kontakturako eta gaitasunetarako.',
     },
+    amber: {
+      description:
+        'Alboko zutabe iluna zure argazkiarekin, kontaktuarekin, prestakuntzarekin eta hizkuntzekin, eta azentu beroko denbora-lerroa. Abizena azentu-kolorean nabarmentzen da.',
+    },
     cobalt: {
       description:
         'Koloretako goiburua argazki biribilarekin, alboko barra argia kontakturako, gaitasunetarako eta hizkuntzetarako, eta ibilbidea eskuinean.',

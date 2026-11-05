@@ -284,6 +284,10 @@ const it: typeof es = {
       description:
         'CV con grazie e un’intestazione diagonale a due toni: un monogramma delle Sue iniziali, o la Sua foto, accanto al nome e al profilo. Una colonna laterale chiara per contatti e competenze.',
     },
+    amber: {
+      description:
+        'Una colonna laterale scura con la Sua foto, i contatti, la formazione e le lingue, e una linea del tempo con un accento caldo. Il cognome risalta nel colore d’accento.',
+    },
     cobalt: {
       description:
         'Fascia d’intestazione colorata con una foto rotonda, una colonna laterale chiara per contatti, competenze e lingue, e il percorso a destra.',

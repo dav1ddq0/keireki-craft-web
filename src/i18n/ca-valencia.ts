@@ -284,6 +284,10 @@ const caValencia: typeof es = {
       description:
         'Currículum serif amb capçalera diagonal de dos tons: un monograma amb les vostres inicials, o la vostra foto, al costat del nom i el resum. Barra lateral pàl·lida per al contacte i les competències.',
     },
+    amber: {
+      description:
+        'Columna lateral fosca amb la vostra foto, el contacte, la formació i els idiomes, i una línia de temps amb un accent càlid. El cognom destaca en el color d’accent.',
+    },
     cobalt: {
       description:
         'Capçalera de color amb foto rodona, barra lateral pàl·lida per al contacte, les competències i els idiomes, i la trajectòria a la dreta.',
