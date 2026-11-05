@@ -450,12 +450,14 @@ export function parseDateRange(text: string): ParsedRange | null {
 export function toPartialIso(token: string): string {
   const year = token.match(/\d{4}/)?.[0]
   if (!year) return ''
-  // Accents off: "févr." → "fevr", "März" → "marz", "août" → "aout".
+  // Accents off: "févr." → "fevr", "März" → "marz", "août" → "aout". The Basque year's "-ko"/"-eko"
+  // is not the month: "2019ko urt." → "urt" (spec 070); two letters are enough for the Catalan "ag.".
   const monthWord = token
     .toLowerCase()
     .normalize('NFD')
     .replace(/\p{M}/gu, '')
-    .match(/\p{L}{3,}/u)?.[0]
+    .replace(/(\d{4})(?:\(e\))?e?ko(?!\p{L})/u, '$1')
+    .match(/\p{L}{2,}/u)?.[0]
     ?.slice(0, 4)
   const numericMonth = token.match(/\b(\d{1,2})[/.-]\d{4}/)?.[1]
 

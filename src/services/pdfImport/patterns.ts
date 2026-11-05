@@ -22,10 +22,13 @@ const MONTHS_FR = 'janv|févr|fevr|mars|avr|mai|juin|juil|août|aout|sept|oct|no
 const MONTHS_IT = 'gen|feb|mar|apr|mag|giu|lug|ago|set|ott|nov|dic'
 const MONTHS_PT = 'jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez'
 const MONTHS_DE = 'jan|feb|mär|maer|mrz|apr|mai|jun|jul|aug|sep|okt|nov|dez'
+// Spec 070: Catalan and Valencian. "ag." and "des." only with their point: "Siemens AG 2019" and a
+// French "des" before a year are not months.
+const MONTHS_CA = 'gen|febr|feb|març|abr|maig|juny|jul|ag(?=\\.)|set|oct|nov|des(?=\\.)'
 export const PRESENT_WORDS =
-  /actualidad|actualmente|presente|present|current|now|hoy|aujourd[’']hui|à ce jour|actuel(?:le)?|en cours|oggi|attuale|in corso|atual(?:mente)?|heute|derzeit|aktuell|laufend/i
+  /actualidad|actualmente|presente|present|current|now|hoy|aujourd[’']hui|à ce jour|actuel(?:le)?|en cours|oggi|attuale|in corso|atual(?:mente)?|heute|derzeit|aktuell|laufend|actualitat|actualment|fins ara|avui|gaur egun|orain arte/i
 
-/** The months written out, in the six languages. */
+/** The months written out, in the seven languages that put the month before the year. */
 const MONTH_NAMES = [
   'enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|setiembre|octubre|noviembre|diciembre',
   'january|february|march|april|june|july|august|september|october|november|december',
@@ -33,16 +36,24 @@ const MONTH_NAMES = [
   'gennaio|febbraio|aprile|maggio|giugno|luglio|settembre|ottobre|dicembre',
   'janeiro|fevereiro|março|marco|maio|junho|julho|setembro|outubro|dezembro',
   'januar|februar|märz|maerz|juni|juli|oktober|dezember',
+  'gener|febrer|abril|juliol|agost|setembre|octubre|novembre|desembre',
 ].join('|')
+
+/**
+ * Basque writes the year first, with "-ko"/"-eko" ("2019ko urt.", "2021eko ekaina"), and declines the
+ * month ("urtarrilatik", "ekainera"): any word that starts like one of its abbreviations. Only after
+ * such a year, so "API 2019" or "Ira" before a year is never read as a month (spec 070).
+ */
+const BASQUE_DATE = `\\d{4}(?:\\(e\\))?e?ko\\s+(?:urt|ots|mar|api|mai|eka|uzt|abu|ira|urr|aza|abe)\\p{L}*\\.?(?!\\p{L})`
 
 /**
  * A month is a word of its own, abbreviated or written out: "févr.", "März", "septiembre". Not the
  * start of a longer word, or a company followed by a year ("Outsystems 2019", "Maison 2018",
  * "Generali 2019") was read as a month and cut from the entry (spec 060, task 2).
  */
-const MONTH_TOKEN = `(?<!\\p{L})(?:${MONTHS_ES}|${MONTHS_EN}|${MONTHS_FR}|${MONTHS_IT}|${MONTHS_PT}|${MONTHS_DE}|${MONTH_NAMES})\\.?(?!\\p{L})`
-// "03/2019", "03-2019" and the German "03.2019".
-const DATE_TOKEN = `(?:${MONTH_TOKEN}\\s*,?\\s*)?(?:\\d{1,2}[/.-])?\\d{4}`
+const MONTH_TOKEN = `(?<!\\p{L})(?:${MONTHS_ES}|${MONTHS_EN}|${MONTHS_FR}|${MONTHS_IT}|${MONTHS_PT}|${MONTHS_DE}|${MONTHS_CA}|${MONTH_NAMES})\\.?(?!\\p{L})`
+// "03/2019", "03-2019" and the German "03.2019"; or a Basque year and month.
+const DATE_TOKEN = `(?:${BASQUE_DATE}|(?:${MONTH_TOKEN}\\s*,?\\s*)?(?:\\d{1,2}[/.-])?\\d{4})`
 
 /** "2020 - 2023", "Mar 2021 – actualidad", "03/2019 a 06/2021", "Okt. 2020 bis heute", "2019 à 2021". */
 export const DATE_RANGE_RE = new RegExp(
@@ -52,24 +63,24 @@ export const DATE_RANGE_RE = new RegExp(
 
 /** By the first four, else three, letters of the month, accents removed (`toPartialIso`). */
 export const MONTH_INDEX: Record<string, number> = {
-  ene: 1, jan: 1, gen: 1,
-  feb: 2, fev: 2,
+  ene: 1, jan: 1, gen: 1, urt: 1,
+  feb: 2, fev: 2, ots: 2,
   mar: 3, mae: 3, mrz: 3,
-  abr: 4, apr: 4, avr: 4,
+  abr: 4, apr: 4, avr: 4, api: 4,
   may: 5, mai: 5, mag: 5,
-  jun: 6, juin: 6, giu: 6,
-  jul: 7, juil: 7, lug: 7,
-  ago: 8, aug: 8, aou: 8,
-  sep: 9, set: 9, sept: 9,
-  oct: 10, ott: 10, out: 10, okt: 10,
-  nov: 11,
-  dic: 12, dec: 12, dez: 12,
+  jun: 6, juin: 6, giu: 6, eka: 6,
+  jul: 7, juil: 7, lug: 7, uzt: 7,
+  ago: 8, aug: 8, aou: 8, ag: 8, abu: 8,
+  sep: 9, set: 9, sept: 9, ira: 9,
+  oct: 10, ott: 10, out: 10, okt: 10, urr: 10,
+  nov: 11, aza: 11,
+  dic: 12, dec: 12, dez: 12, des: 12, abe: 12,
 }
 
 export type SectionKind = 'summary' | 'experience' | 'education' | 'skills' | 'languages'
 
 /** The languages whose headings are known; also the CV languages an import can be set to (spec 061). */
-export type HeadingLanguage = 'es' | 'en' | 'fr' | 'it' | 'pt' | 'de'
+export type HeadingLanguage = 'es' | 'en' | 'fr' | 'it' | 'pt' | 'de' | 'ca' | 'eu'
 
 /**
  * Section headers per language (spec §7.2, spec 060), matched on a normalized, accent-free string.
@@ -119,6 +130,21 @@ const SECTION_WORDS: Record<HeadingLanguage, Record<SectionKind, string[]>> = {
     education: ['ausbildung', 'bildung', 'bildungsweg', 'studium', 'schulbildung', 'akademischer werdegang'],
     skills: ['kenntnisse', 'fahigkeiten', 'kompetenzen', 'fachkenntnisse', 'it kenntnisse', 'edv kenntnisse'],
     languages: ['sprachen', 'sprachkenntnisse', 'fremdsprachen'],
+  },
+  // Spec 070. Valencian heads its sections with the same words: an import in it is read as Catalan.
+  ca: {
+    summary: ['perfil', 'perfil professional', 'resum', 'sobre mi', 'objectiu'],
+    experience: ['experiencia', 'experiencia laboral', 'experiencia professional', 'trajectoria', 'trajectoria professional'],
+    education: ['formacio', 'formacio academica', 'educacio', 'estudis', 'titulacio'],
+    skills: ['competencies', 'habilitats', 'coneixements', 'aptituds', 'tecnologies'],
+    languages: ['idiomes', 'llengues'],
+  },
+  eu: {
+    summary: ['profila', 'laburpena', 'niri buruz', 'aurkezpena', 'helburua'],
+    experience: ['esperientzia', 'lan esperientzia', 'esperientzia profesionala', 'ibilbide profesionala', 'lan ibilbidea'],
+    education: ['prestakuntza', 'prestakuntza akademikoa', 'ikasketak', 'hezkuntza', 'titulazioak'],
+    skills: ['gaitasunak', 'trebetasunak', 'ezagutzak', 'konpetentziak', 'teknologiak'],
+    languages: ['hizkuntzak', 'hizkuntza gaitasunak'],
   },
 }
 

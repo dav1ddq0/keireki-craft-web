@@ -87,9 +87,42 @@ const CVS = {
     { text: 'Deutsch · Muttersprache' },
     { text: 'Englisch · verhandlungssicher' },
   ],
+  ca: [
+    { text: 'LAIA PUIG', fontSize: 22, bold: true },
+    { text: 'laia.puig@example.com' },
+    heading('Perfil'),
+    { text: 'Desenvolupadora full-stack des de fa sis anys.' },
+    heading('Experiència professional'),
+    { text: 'Desenvolupadora sènior — Cartograf març 2022 – actualitat' },
+    { text: 'Desenvolupadora full-stack — Estudi Núvol set. 2019 – febr. 2022' },
+    heading('Formació'),
+    { text: 'Grau en Enginyeria — Universitat de Girona 2014 - 2018' },
+    heading('Competències'),
+    { text: 'Llenguatges: TypeScript, Python' },
+    heading('Idiomes'),
+    { text: 'Català · Llengua materna' },
+    { text: 'Anglès · C1' },
+  ],
+  // Basque writes the year first (spec 070).
+  eu: [
+    { text: 'ANE ETXEBERRIA', fontSize: 22, bold: true },
+    { text: 'ane.etxeberria@example.com' },
+    heading('Profila'),
+    { text: 'Full-stack garatzailea, sei urtez.' },
+    heading('Lan esperientzia'),
+    { text: 'Garatzaile seniorra — Cartograf 2022ko mar. – gaur egun' },
+    { text: 'Full-stack garatzailea — Hodei Estudioa 2019ko iraila – 2022ko otsaila' },
+    heading('Prestakuntza'),
+    { text: 'Gradua — UPV/EHU 2014 - 2018' },
+    heading('Gaitasunak'),
+    { text: 'Lengoaiak: TypeScript, Python' },
+    heading('Hizkuntzak'),
+    { text: 'Euskara · Ama hizkuntza' },
+    { text: 'Ingelesa · C1' },
+  ],
 }
 
-describe('PDF import of a CV in French, Italian, Portuguese or German (spec 060)', () => {
+describe('PDF import of a CV in French, Italian, Portuguese, German, Catalan or Basque (specs 060, 070)', () => {
   it.each(Object.entries(CVS))('%s: finds every section, the dates and the levels', (_lang, lines) => {
     const draft = analyze(doc(lines))
     expect(draft.sections.map((s) => s.kind)).toEqual(['summary', 'experience', 'education', 'skills', 'languages'])
@@ -112,6 +145,11 @@ describe('dates in the new languages (spec 060)', () => {
     ['lug 2020', '2020-07'], ['ott 2020', '2020-10'], ['fev 2020', '2020-02'], ['out 2020', '2020-10'],
     ['dez 2020', '2020-12'], ['März 2020', '2020-03'], ['Mrz. 2020', '2020-03'], ['Okt. 2020', '2020-10'],
     ['03.2020', '2020-03'],
+    // Spec 070: Catalan and Valencian, then Basque, year first.
+    ['gener 2020', '2020-01'], ['febr. 2020', '2020-02'], ['març 2020', '2020-03'], ['maig 2020', '2020-05'],
+    ['juny 2020', '2020-06'], ['juliol 2020', '2020-07'], ['ag. 2020', '2020-08'], ['des. 2020', '2020-12'],
+    ['2020ko urt.', '2020-01'], ['2020ko otsaila', '2020-02'], ['2021eko apirila', '2021-04'], ['2020ko eka.', '2020-06'],
+    ['2020ko uzt.', '2020-07'], ['2020(e)ko abu.', '2020-08'], ['2020ko urria', '2020-10'], ['2021eko abendua', '2021-12'],
   ])('reads %s', (token, expected) => {
     expect(toPartialIso(token)).toBe(expected)
   })
@@ -123,6 +161,10 @@ describe('dates in the new languages (spec 060)', () => {
     ['fev 2019 até atualmente', { start: '2019-02', end: null }],
     ['Okt. 2020 bis heute', { start: '2020-10', end: null }],
     ['10.2020 – derzeit', { start: '2020-10', end: null }],
+    ['set. 2019 a juny 2021', { start: '2019-09', end: '2021-06' }],
+    ['gener 2021 – actualitat', { start: '2021-01', end: null }],
+    ['2019ko urtarrila – 2021eko ekaina', { start: '2019-01', end: '2021-06' }],
+    ['2021eko urr. – gaur egun', { start: '2021-10', end: null }],
   ])('reads the range %s', (text, expected) => {
     expect(parseDateRange(text)).toEqual(expected)
   })
@@ -154,6 +196,9 @@ describe('the language of an imported CV (spec 061)', () => {
     expect(headingLanguage(['Profil', 'Expérience', 'Formation'])).toBe('fr')
     expect(headingLanguage(['Perfil', 'Experiência', 'Idiomas'])).toBe('es')
     expect(headingLanguage(['E X P E R I E N C E', 'EDUCATION'])).toBe('en')
+    // Catalan and Valencian share their headings; "Perfil" and "Experiència" alone tie with Spanish.
+    expect(headingLanguage(['Perfil', 'Experiència', 'Formació', 'Competències', 'Idiomes'])).toBe('ca')
+    expect(headingLanguage(['Profila', 'Esperientzia', 'Prestakuntza'])).toBe('eu')
     expect(headingLanguage([])).toBeNull()
   })
 })
@@ -168,6 +213,8 @@ describe('words the new languages must not take (spec 060, task 2)', () => {
     ['Developer — Dezign 2018 - 2020', 'Dezign'],
     ['Analyst — Generali 2019 - 2021', 'Generali'],
     ['Analyst — Magneti Marelli 2019 - 2021', 'Magneti Marelli'],
+    ['Engineer — Siemens AG 2019 - 2021', 'Siemens AG'],
+    ['Engineer — Payments API 2019 - 2021', 'Payments API'],
   ])('a company that starts like a month is not a month: %s', (line, company) => {
     expect(experience(line)).toMatchObject({ company, startDate: line.includes('2019') ? '2019' : '2018' })
   })
