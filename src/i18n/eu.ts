@@ -108,7 +108,7 @@ const eu: typeof es = {
     end: 'Amaiera',
     month: 'Hilabetea',
     year: 'Urtea',
-    current: 'Gaur egun hemen',
+    current: 'Gaur egun hemen nago',
     description: 'Deskribapena',
     highlights: 'Lorpenak',
     addHighlight: 'Gehitu lorpena',
@@ -124,7 +124,7 @@ const eu: typeof es = {
   },
   education: {
     degree: 'Titulazioa',
-    institution: 'Ikastetxea',
+    institution: 'Ikastegia',
     add: 'Gehitu prestakuntza',
     empty: 'Oraindik ez dago prestakuntzarik.',
   },
@@ -185,7 +185,7 @@ const eu: typeof es = {
     next: 'Hurrengoa: {step}',
     template: 'Txantiloia: {name}. Aldatu',
     templatesTitle: 'Txantiloia',
-    templatesHint: 'Ukitu bat zure CVan ikusteko. Orria irekita geratzen da beste bat probatzeko.',
+    templatesHint: 'Ukitu bat zure CVan ikusteko. Panela irekita geratzen da beste bat probatzeko.',
   },
   rail: {
     label: 'CVaren urratsak',
@@ -258,7 +258,7 @@ const eu: typeof es = {
     },
     frame: {
       description:
-        'Goiburu markoduna argazkiarekin, izenarekin eta kontaktuarekin, zutabe bakarreko serif baten gainean. Gaitasunek eta hizkuntzek ixten dute orria, mailak barretan. Argazkia onartzen du.',
+        'Goiburu markoduna argazkiarekin, izenarekin eta kontaktuarekin, serif letrako zutabe bakar baten gainean. Gaitasunek eta hizkuntzek ixten dute orria, mailak barretan. Argazkia onartzen du.',
     },
     harbor: {
       description:
@@ -278,11 +278,11 @@ const eu: typeof es = {
     },
     editorial: {
       description:
-        'Zutabe bakarreko serifa, goiburua erdian eta marra finekin. Tipografiak ematen dio pisua, ez koloreak.',
+        'Serif letra, zutabe bakarrean, goiburua erdian eta marra finekin. Tipografiak ematen dio pisua, ez koloreak.',
     },
     monogram: {
       description:
-        'Serif CVa bi koloreko goiburu diagonalarekin: zure inizialen monograma, edo zure argazkia, izenaren eta laburpenaren ondoan. Alboko barra argia kontakturako eta gaitasunetarako.',
+        'Serif letrako CVa, bi koloreko goiburu diagonalarekin: zure inizialen monograma, edo zure argazkia, izenaren eta laburpenaren ondoan. Alboko barra argia kontakturako eta gaitasunetarako.',
     },
     cobalt: {
       description:
@@ -331,7 +331,7 @@ const eu: typeof es = {
     colorNames: {
       'ffd86f': 'Horia',
       '7c55e4': 'Morea',
-      'f2614c': 'Koralezkoa',
+      'f2614c': 'Korala',
       '10cf65': 'Berdea',
       '334fdc': 'Urdina',
       '2f3a45': 'Grafitoa',
@@ -350,14 +350,14 @@ const eu: typeof es = {
       sourceSans: 'Trinkoa eta oso irakurgarria',
       inter: 'Modernoa eta neutroa',
       georgia: 'Serif klasikoa',
-      jetbrainsMono: 'Tarte bakarreko teknikoa',
+      jetbrainsMono: 'Tarte finkokoa, teknikoa',
       iowan: 'Liburu-serifa, nortasunduna',
       calibri: 'Argia eta profesionala',
-      cambria: 'Enpresa-serif klasikoa',
+      cambria: 'Serif klasikoa, enpresetarako',
       helvetica: 'Sans neutroa',
       arial: 'Sans unibertsala',
       timesNewRoman: 'Serif tradizionala',
-      garamond: 'Dotorea, liburukoa',
+      garamond: 'Dotorea, liburuetakoa',
       palatino: 'Serif literarioa',
       tahoma: 'Sans trinkoa',
       verdana: 'Irekia eta irakurgarria',
@@ -403,7 +403,7 @@ const eu: typeof es = {
       headline: 'Gehitu titulu bat zure izenaren azpian, adibidez zure lanpostua.',
       links: 'Gehitu gutxienez esteka bat, adibidez LinkedIn edo portfolio bat.',
       summary: 'Idatzi bizpahiru esaldiko laburpena.',
-      summaryShort: 'Laburpenak {n} karaktere ditu; {min} inguru izanda hobeto ulertzen da nor zaren.',
+      summaryShort: 'Laburpenak {n} karaktere ditu; {min} inguru izanez gero, hobeto ulertzen da nor zaren.',
       summaryLong: 'Laburpenak {n} karaktere ditu; {max} baino gehiagorekin zaila da begirada batean irakurtzea.',
       experience: 'Gehitu zure esperientzia, praktikak, boluntariotza edo proiektuak badira ere.',
       experienceDates: 'Berrikusi «{entry}» sarreraren datak: hasiera falta da edo hasi baino lehen amaitzen da.',
@@ -464,9 +464,9 @@ const eu: typeof es = {
   importView: {
     title: 'Inportatu',
     json: 'JSONetik',
-    jsonHint: 'Esportatutako CV baten berreraikitze zehatza.',
+    jsonHint: 'Esportatutako CV baten berreraikuntza zehatza.',
     pdf: 'PDFtik',
-    pdfHint: 'Zure nabigatzailean ateratzen da. Laguntza bat da, ez bihurketa automatikoa.',
+    pdfHint: 'Testua zure nabigatzailean bertan ateratzen da. Laguntza bat da, ez bihurketa automatikoa.',
     dropzone: 'Arrastatu fitxategi bat edo egin klik aukeratzeko',
     analyzing: 'PDFa aztertzen…',
     reviewTitle: 'Berrikusi hautemandakoa',
@@ -474,12 +474,12 @@ const eu: typeof es = {
     lowConfidence: 'Konfiantza txikia',
     unclassified: 'Sailkatu gabeko blokeak',
     unclassifiedHint: 'Esleitu bloke bakoitza atal bati, edo baztertu.',
-    assignTo: 'Esleitu hemen',
+    assignTo: 'Esleitu hona',
     discard: 'Baztertu',
     rawText: 'Ateratako testu osoa',
     apply: 'Inportatu CV berri batera',
     applyToCurrent: 'Irauli uneko CVra',
-    noText: 'PDF honek ez du testu ateragarririk: eskaneatze bat dirudi. OCRa 1. bertsiotik kanpo geratzen da.',
+    noText: 'PDF honek ez du testu ateragarririk: eskaneatutako dokumentu bat dirudi. OCRa 1. bertsiotik kanpo geratzen da.',
     parseError: 'Ezin izan da fitxategia irakurri.',
     schemaError: 'Fitxategia aplikazio honek ulertzen ez duen bertsio batekoa da.',
     replaceWarning: 'Irekita dagoen CVaren datuak gainidatziko dira.',

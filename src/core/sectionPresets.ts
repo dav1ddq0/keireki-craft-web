@@ -52,7 +52,7 @@ const PRESETS: Record<SectionPresetId, SectionPreset> = {
       de: 'Ich willige in die Verarbeitung meiner personenbezogenen Daten zum Zweck der Personalauswahl ein.',
       ca: 'Dono el meu consentiment per al tractament de les meves dades personals amb finalitats de selecció de personal.',
       'ca-valencia': 'Done el meu consentiment per al tractament de les meues dades personals amb finalitats de selecció de personal.',
-      eu: 'Baimena ematen dut nire datu pertsonalak langileak hautatzeko helburuarekin trata daitezen.',
+      eu: 'Baimena ematen dut nire datu pertsonalak langileak hautatzeko helburuz trata daitezen.',
     },
   },
 }
