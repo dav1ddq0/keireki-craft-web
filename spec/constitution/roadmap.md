@@ -86,6 +86,7 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 ## Next 🔜
 
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
+- **072** · Fixes from the Amber stress test: direct PDF baseline on wrapped inline text, long words in Amber's side column
 
 
 ## Backlog / ideas 💡
