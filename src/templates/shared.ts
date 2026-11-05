@@ -16,12 +16,35 @@ const MONTHS: Record<string, string[]> = {
   it: ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'],
   pt: ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'],
   de: ['Jan.', 'Feb.', 'März', 'Apr.', 'Mai', 'Juni', 'Juli', 'Aug.', 'Sept.', 'Okt.', 'Nov.', 'Dez.'],
+  ca: ['gen.', 'febr.', 'març', 'abr.', 'maig', 'juny', 'jul.', 'ag.', 'set.', 'oct.', 'nov.', 'des.'],
+  'ca-valencia': ['gen.', 'febr.', 'març', 'abr.', 'maig', 'juny', 'jul.', 'ag.', 'set.', 'oct.', 'nov.', 'des.'],
+  eu: ['urt.', 'ots.', 'mar.', 'api.', 'mai.', 'eka.', 'uzt.', 'abu.', 'ira.', 'urr.', 'aza.', 'abe.'],
 }
 
-const PRESENT: Record<string, string> = { es: 'Actualidad', en: 'Present', fr: 'Aujourd’hui', it: 'Oggi', pt: 'Presente', de: 'heute' }
+const PRESENT: Record<string, string> = { es: 'Actualidad', en: 'Present', fr: 'Aujourd’hui', it: 'Oggi', pt: 'Presente', de: 'heute', ca: 'Actualitat', 'ca-valencia': 'Actualitat', eu: 'Gaur egun' }
 
 /** German writes the day of a date as an ordinal: "12. März 1992". */
 const DAY_SUFFIX: Record<string, string> = { de: '.' }
+
+/** Basque months in the genitive, for a full date: "1992ko martxoaren 12a" (spec 070). */
+const BASQUE_MONTHS_OF = [
+  'urtarrilaren', 'otsailaren', 'martxoaren', 'apirilaren', 'maiatzaren', 'ekainaren',
+  'uztailaren', 'abuztuaren', 'irailaren', 'urriaren', 'azaroaren', 'abenduaren',
+]
+
+/**
+ * Basque writes the year first, with "-ko" or "-eko" as the year ends when read aloud (spec 070):
+ * "-eko" after a consonant (…1 "bat", …5 "bost", …10 "hamar", …00 "ehun"), "-ko" after a vowel
+ * (…11 "hamaika", …20 "hogei", …000 "mila" and the rest).
+ */
+export function basqueYear(year: string): string {
+  const value = Number(year)
+  const lastTwo = value % 100
+  const lastTwenty = lastTwo % 20
+  const consonant =
+    lastTwo === 0 ? value % 1000 !== 0 : lastTwenty === 10 || lastTwenty === 1 || lastTwenty === 5 || lastTwenty === 15
+  return `${year}${consonant ? 'eko' : 'ko'}`
+}
 
 /** Renders a partial ISO date ("2023-04" / "2023") in the CV's content language. */
 export function formatPartialDate(value: string, language = 'es'): string {
@@ -31,7 +54,8 @@ export function formatPartialDate(value: string, language = 'es'): string {
   const months = MONTHS[language] ?? MONTHS.es
   const index = Number(month) - 1
   const name = months[index]
-  return name ? `${name} ${year}` : value
+  if (!name) return value
+  return language === 'eu' ? `${basqueYear(year!)} ${name}` : `${name} ${year}`
 }
 
 /** "1992-03-12" → "12 mar 1992". Anything else (partial, typed by hand) is shown as written. */
@@ -42,6 +66,7 @@ export function formatBirthDate(value: string, language = 'es'): string {
   const [, year, month, day] = match
   const name = (MONTHS[language] ?? MONTHS.es)![Number(month) - 1]
   if (!name || Number(day) < 1 || Number(day) > 31) return text
+  if (language === 'eu') return `${basqueYear(year!)} ${BASQUE_MONTHS_OF[Number(month) - 1]} ${Number(day)}a`
   return `${Number(day)}${DAY_SUFFIX[language] ?? ''} ${name} ${year}`
 }
 
@@ -52,6 +77,9 @@ const EXTRA_LABELS: Record<string, { birth: string; nationality: string; licence
   it: { birth: 'Nascita', nationality: 'Nazionalità', licence: 'Patente di guida', status: 'Stato civile' },
   pt: { birth: 'Nascimento', nationality: 'Nacionalidade', licence: 'Carta de condução', status: 'Estado civil' },
   de: { birth: 'Geboren', nationality: 'Staatsangehörigkeit', licence: 'Führerschein', status: 'Familienstand' },
+  ca: { birth: 'Naixement', nationality: 'Nacionalitat', licence: 'Permís de conduir', status: 'Estat civil' },
+  'ca-valencia': { birth: 'Naixement', nationality: 'Nacionalitat', licence: 'Permís de conduir', status: 'Estat civil' },
+  eu: { birth: 'Jaiotze-data', nationality: 'Nazionalitatea', licence: 'Gidabaimena', status: 'Egoera zibila' },
 }
 
 const MARITAL_LABELS: Record<string, Record<MaritalStatus, string>> = {
@@ -61,6 +89,9 @@ const MARITAL_LABELS: Record<string, Record<MaritalStatus, string>> = {
   it: { single: 'Celibe/Nubile', married: 'Coniugato/a', partner: 'Unione civile', divorced: 'Divorziato/a', widowed: 'Vedovo/a' },
   pt: { single: 'Solteiro/a', married: 'Casado/a', partner: 'União de facto', divorced: 'Divorciado/a', widowed: 'Viúvo/a' },
   de: { single: 'Ledig', married: 'Verheiratet', partner: 'Lebenspartnerschaft', divorced: 'Geschieden', widowed: 'Verwitwet' },
+  ca: { single: 'Solter/a', married: 'Casat/ada', partner: 'Parella de fet', divorced: 'Divorciat/ada', widowed: 'Vidu/vídua' },
+  'ca-valencia': { single: 'Fadrí/ina', married: 'Casat/ada', partner: 'Parella de fet', divorced: 'Divorciat/ada', widowed: 'Viudo/a' },
+  eu: { single: 'Ezkongabea', married: 'Ezkondua', partner: 'Izatezko bikotea', divorced: 'Dibortziatua', widowed: 'Alarguna' },
 }
 
 /** Label of a marital-status code in the CV's content language. */
@@ -179,14 +210,14 @@ export interface ResolvedSection {
 }
 
 const BUILTIN_TITLES: Record<string, Record<string, string>> = {
-  summary: { es: 'Resumen', en: 'Summary', fr: 'Profil', it: 'Profilo', pt: 'Perfil', de: 'Profil' },
-  experience: { es: 'Experiencia', en: 'Experience', fr: 'Expérience', it: 'Esperienza', pt: 'Experiência', de: 'Berufserfahrung' },
-  education: { es: 'Formación', en: 'Education', fr: 'Formation', it: 'Formazione', pt: 'Formação', de: 'Ausbildung' },
-  skills: { es: 'Competencias', en: 'Skills', fr: 'Compétences', it: 'Competenze', pt: 'Competências', de: 'Kenntnisse' },
-  languages: { es: 'Idiomas', en: 'Languages', fr: 'Langues', it: 'Lingue', pt: 'Idiomas', de: 'Sprachen' },
+  summary: { es: 'Resumen', en: 'Summary', fr: 'Profil', it: 'Profilo', pt: 'Perfil', de: 'Profil', ca: 'Perfil', 'ca-valencia': 'Perfil', eu: 'Profila' },
+  experience: { es: 'Experiencia', en: 'Experience', fr: 'Expérience', it: 'Esperienza', pt: 'Experiência', de: 'Berufserfahrung', ca: 'Experiència', 'ca-valencia': 'Experiència', eu: 'Esperientzia' },
+  education: { es: 'Formación', en: 'Education', fr: 'Formation', it: 'Formazione', pt: 'Formação', de: 'Ausbildung', ca: 'Formació', 'ca-valencia': 'Formació', eu: 'Prestakuntza' },
+  skills: { es: 'Competencias', en: 'Skills', fr: 'Compétences', it: 'Competenze', pt: 'Competências', de: 'Kenntnisse', ca: 'Competències', 'ca-valencia': 'Competències', eu: 'Gaitasunak' },
+  languages: { es: 'Idiomas', en: 'Languages', fr: 'Langues', it: 'Lingue', pt: 'Idiomas', de: 'Sprachen', ca: 'Idiomes', 'ca-valencia': 'Idiomes', eu: 'Hizkuntzak' },
 }
 
-const CONTACT_TITLES: Record<string, string> = { es: 'Contacto', en: 'Contact', fr: 'Contact', it: 'Contatti', pt: 'Contacto', de: 'Kontakt' }
+const CONTACT_TITLES: Record<string, string> = { es: 'Contacto', en: 'Contact', fr: 'Contact', it: 'Contatti', pt: 'Contacto', de: 'Kontakt', ca: 'Contacte', 'ca-valencia': 'Contacte', eu: 'Kontaktua' }
 
 /** The heading of a template's contact block, in the CV's content language. */
 export function contactHeading(language = 'es'): string {
@@ -280,6 +311,12 @@ const LEVEL_SCORES: Record<string, number> = {
   // German
   muttersprache: 5, muttersprachlich: 5, zweisprachig: 5, 'fließend': 4, fliessend: 4, verhandlungssicher: 4,
   'gute kenntnisse': 3, mittelstufe: 3, grundkenntnisse: 2, anfanger: 1,
+  // Catalan and Valencian
+  'llengua materna': 5, nadiu: 5, natiu: 5, avancat: 4, fluid: 4, 'intermedi alt': 4, intermedi: 3,
+  principiant: 1, nocions: 1,
+  // Basque
+  'ama hizkuntza': 5, 'ama-hizkuntza': 5, natiboa: 5, elebiduna: 5, aurreratua: 4, jariakorra: 4,
+  ertaina: 3, 'erdi-maila': 3, oinarrizkoa: 2, hasiberria: 1,
 }
 
 const CEFR_SCORES: Record<string, number> = { a1: 1, a2: 2, b1: 3, b2: 4, c1: 5, c2: 5 }
@@ -308,6 +345,9 @@ const LEVEL_LABELS: Record<string, (score: number) => string> = {
   it: (score) => `Livello ${score} su 5`,
   pt: (score) => `Nível ${score} de 5`,
   de: (score) => `Stufe ${score} von 5`,
+  ca: (score) => `Nivell ${score} de 5`,
+  'ca-valencia': (score) => `Nivell ${score} de 5`,
+  eu: (score) => `5etik ${score}. maila`,
 }
 
 /** Every per-language table of this module, for the test that keeps them complete (spec 056). */

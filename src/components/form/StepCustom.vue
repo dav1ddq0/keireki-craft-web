@@ -5,6 +5,7 @@ import { useCvStore } from '@/stores/cv'
 import { useI18n } from '@/i18n'
 import { createCustomEntry } from '@/core/factory'
 import { SECTION_PRESET_IDS, createSectionFromPreset } from '@/core/sectionPresets'
+import { CV_LANGUAGES } from '@/core/stylePresets'
 import BaseField from '@/components/ui/BaseField.vue'
 import AiImproveButton from '@/components/ui/AiImproveButton.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
@@ -45,6 +46,11 @@ const isBuiltin = (id: string) => BUILTIN.includes(id)
 function reorderSections(rows: { id: string }[]) {
   cv.data.sectionOrder = rows.map((row) => row.id)
 }
+
+/** The CV language named in itself: a code like "CA-VALENCIA" reads as noise (spec 070). */
+const cvLanguageName = computed(
+  () => CV_LANGUAGES.find((option) => option.code === cv.data.meta.language)?.label ?? cv.data.meta.language,
+)
 
 function addPreset(id: (typeof SECTION_PRESET_IDS)[number]) {
   cv.addCustomSection(createSectionFromPreset(id, cv.data.meta.language || 'es'))
@@ -122,7 +128,7 @@ function addBlank() {
       </div>
 
       <BottomSheet :open="pickerOpen" :title="t('custom.pick')" @close="pickerOpen = false">
-        <p class="sheet-hint">{{ t('custom.pickHint', { language: cv.data.meta.language.toUpperCase() }) }}</p>
+        <p class="sheet-hint">{{ t('custom.pickHint', { language: cvLanguageName }) }}</p>
         <div class="tiles">
           <button v-for="id in SECTION_PRESET_IDS" :key="id" type="button" class="tile" @click="addPreset(id)">
             <span class="tile-icon">

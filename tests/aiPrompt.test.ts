@@ -23,7 +23,7 @@ describe('improve prompt (spec 063)', () => {
       for (const kind of kinds) {
         const prompt = buildImprovePrompt(kind, 'x', code)
         expect(prompt.split('\n\n')[0]!.length).toBeGreaterThan(150)
-        expect(prompt.toLowerCase()).toMatch(/invent|inventes|inventare|inventar|erfinde|n’invente/)
+        expect(prompt.toLowerCase()).toMatch(/invent|inventes|inventare|inventar|erfinde|n’invente|asmatu/)
       }
   })
 
@@ -31,6 +31,9 @@ describe('improve prompt (spec 063)', () => {
     expect(buildImprovePrompt('summary', 'x', 'es')).toContain('Responde en español')
     expect(buildImprovePrompt('summary', 'x', 'de')).toContain('Antworte auf Deutsch')
     expect(buildImprovePrompt('summary', 'x', 'fr')).toContain('Réponds en français')
+    expect(buildImprovePrompt('summary', 'x', 'ca')).toContain('Respon en català')
+    expect(buildImprovePrompt('summary', 'x', 'ca-valencia')).toContain('Respon en valencià')
+    expect(buildImprovePrompt('summary', 'x', 'eu')).toContain('Erantzun euskaraz')
   })
 
   it('fences the text as data, so instructions inside it are not followed', () => {

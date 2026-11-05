@@ -79,7 +79,7 @@ const palette = computed(() => getTemplate(cv.templateId).palette ?? PALETTE)
 
         <BaseField v-slot="{ id }" :label="t('style.cvLanguage')" :hint="t('style.cvLanguageHint')">
           <select :id="id" v-model="cv.data.meta.language">
-            <option v-for="language in CV_LANGUAGES" :key="language.code" :value="language.code">
+            <option v-for="language in CV_LANGUAGES" :key="language.code" :value="language.code" :lang="language.code">
               {{ language.label }}
             </option>
           </select>
