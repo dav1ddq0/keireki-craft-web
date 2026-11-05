@@ -435,18 +435,29 @@ function drawSvg(c: Ctx, svg: SVGSVGElement) {
   }
 }
 
-/** Where the baseline of `el`'s text sits under its line box, measured, not guessed from metrics. */
+/**
+ * How far `el`'s text box reaches under its baseline, measured, not guessed from metrics. Measured
+ * off the line, in a hidden copy of the font (spec 072): a probe in the text's own line is a break
+ * opportunity, and when the text wraps to a new line the probe stayed on the line before, a whole
+ * line off. Inserted where the text starts, so the element's children are what they were before.
+ */
 const descentCache = new WeakMap<Element, number>()
-function descentOf(el: Element, firstRect: DOMRect): number {
+function descentOf(el: Element): number {
   const cached = descentCache.get(el)
   if (cached !== undefined) return cached
   const probe = document.createElement('span')
-  probe.style.cssText = 'display:inline-block;width:0;height:0;vertical-align:baseline'
+  probe.style.cssText = 'position:absolute;left:0;top:0;visibility:hidden;white-space:nowrap'
+  const letter = document.createTextNode('x')
+  const marker = document.createElement('span')
+  marker.style.cssText = 'display:inline-block;width:0;height:0;vertical-align:baseline'
+  probe.append(letter, marker)
   const firstText = Array.from(el.childNodes).find((n) => n.nodeType === Node.TEXT_NODE && n.textContent?.trim())
   el.insertBefore(probe, firstText ?? el.firstChild)
-  const baseline = probe.getBoundingClientRect().bottom
+  const range = document.createRange()
+  range.selectNodeContents(letter)
+  const descent = range.getBoundingClientRect().bottom - marker.getBoundingClientRect().bottom
+  range.detach()
   probe.remove()
-  const descent = firstRect.bottom - baseline
   descentCache.set(el, descent)
   return descent
 }
@@ -476,7 +487,7 @@ async function drawText(c: Ctx, node: Text, style: CSSStyleDeclaration, el: Elem
       range.setEnd(node, end)
       const rects = Array.from(range.getClientRects()).filter((r) => r.width > 0)
       if (!rects.length) return
-      if (descent === null) descent = descentOf(el, rects[0]!)
+      if (descent === null) descent = descentOf(el)
       // A word broken across lines (overflow-wrap) yields one rect per line: draw it per character.
       if (rects.length > 1 && end - segStart > 1) {
         for (let i = segStart; i < end; i++) {
@@ -622,7 +633,7 @@ function drawMarker(c: Ctx, li: Element) {
   const rect = range.getClientRects()[0]
   range.detach()
   if (!rect) return
-  const baseline = rect.bottom - descentOf(text.parentElement!, rect)
+  const baseline = rect.bottom - descentOf(text.parentElement!)
   const ascent = baseline - rect.top
   const contentLeft = li.getBoundingClientRect().left + (parseFloat(getComputedStyle(li).paddingLeft) || 0)
   const px = Math.max(1, Math.round(ascent / 3))

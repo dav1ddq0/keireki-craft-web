@@ -1,7 +1,8 @@
 // The direct PDF (spec 031) against the printed one, in Chromium, on the dev server (it imports the
 // app's modules by URL). Three parts:
-//   1. every template × sample / photo / long / page break: same page count, no text missing,
-//      at most MAX_DIFF % of pixels differing;
+//   1. every template × sample / photo / long / page break / long name: same page count, no text
+//      missing, at most MAX_DIFF % of pixels differing; with the long name, every word where the print
+//      has it (spec 072: text that wraps to a new line was drawn a line too high);
 //   2. a fixture page (half-opaque box, list bullet, dashed and dotted borders) printed by Chromium
 //      and converted, compared shape by shape, which the whole-page threshold is too coarse to see;
 //   3. the side-column warning (spec 033): off for the sample, on for a side column longer than a page.
@@ -15,7 +16,7 @@ const { ROOT, startServer } = require('./lib/server.cjs')
 const { renderPages, diffPercent } = require('./lib/images.cjs')
 
 const OUT = path.join(ROOT, '.qa/pdf')
-const MODES = ['sample', 'photo', 'long', 'break']
+const MODES = ['sample', 'photo', 'long', 'break', 'longname']
 /** Spec 031, criterion 4: share of pixels differing (grey difference > 48) at 50 dpi. */
 const MAX_DIFF = 4
 const SRC = '/src'
@@ -29,6 +30,33 @@ function check(name, ok, detail = '') {
 /** A page with no ink at all. */
 const isBlank = (img) => img.pixels.every((v) => v > 250)
 const pdfText = (pdf) => execFileSync('pdftotext', [pdf, '-']).toString().replace(/\s+/g, '').toLowerCase()
+
+/** Each word of a PDF with its page and top-left corner, in points. */
+function pdfWords(pdf) {
+  const html = execFileSync('pdftotext', ['-bbox', pdf, '-']).toString()
+  const words = []
+  let page = -1
+  for (const m of html.matchAll(/<page |<word xMin="([\d.]+)" yMin="([\d.]+)"[^>]*>([^<]*)<\/word>/g)) {
+    if (m[0] === '<page ') page++
+    else words.push({ page, x: Number(m[1]), y: Number(m[2]), text: m[3] })
+  }
+  return words
+}
+
+/**
+ * Words of the print that the direct PDF draws more than `tolerance` points away (spec 072). Words
+ * of four letters or more: letter-spaced headings come out of pdftotext as single letters.
+ */
+function misplacedWords(printPdf, directPdf, tolerance = 3) {
+  const direct = pdfWords(directPdf)
+  return pdfWords(printPdf)
+    .filter((word) => word.text.length >= 4)
+    .filter((word) => {
+      const same = direct.filter((other) => other.page === word.page && other.text === word.text)
+      return same.length > 0 && Math.min(...same.map((o) => Math.hypot(o.x - word.x, o.y - word.y))) > tolerance
+    })
+    .map((word) => `${word.text} (p${word.page + 1})`)
+}
 
 /** Characters of `reference` absent from `text`, counted as a multiset (order-insensitive). */
 function missingChars(reference, text) {
@@ -77,6 +105,18 @@ async function compareTemplates(page, url, ids) {
               cv.experience = [0, 1, 2, 3].flatMap((n) => entries.map((e) => ({ ...e, id: e.id + n })))
             }
             if (mode === 'break') cv.pageBreaks = ['education']
+            if (mode === 'longname') {
+              // A last name too long for the line, and positions and companies growing until what follows
+              // them on the line (" · company", the location) starts a new one.
+              cv.personal.fullName = 'Maximiliana Wolfeschlegelsteinhausen-Bergerdorff'
+              const entry = cv.experience[0]
+              cv.experience = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => ({
+                ...entry,
+                id: entry.id + n,
+                position: 'Desarrolladora ' + 'senior '.repeat(n),
+                company: entry.company + ' Geoespacial'.repeat(n),
+              }))
+            }
             if (mode === 'photo') cv.personal.photo = photo
             window.__cv = cv
             window.__done = printCv(cv, id, { paginate: true })
@@ -119,6 +159,10 @@ async function compareTemplates(page, url, ids) {
           pages[0] === pages[1] && missing === 0 && worst <= MAX_DIFF,
           `pages ${pages.join('/')}, missing ${missing}, diff ${diffs.map((d) => d.toFixed(1)).join(',')} %`,
         )
+        if (mode === 'longname') {
+          const misplaced = misplacedWords(printPdf, directPdf)
+          check(`${key}: every word where the print has it`, misplaced.length === 0, misplaced.slice(0, 6).join(', '))
+        }
       } catch (error) {
         check(`${key}: converts`, false, String(error.message).split('\n')[0])
         await openApp(page, url)
