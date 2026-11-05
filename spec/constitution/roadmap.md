@@ -81,11 +81,11 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 - **068** · `qa:live`: the published site checked after each deploy
 - **069** · Supply chain: no dependency install scripts in CI, Dependabot, a CSP in the exported HTML
 - **070** · Catalan, Valencian and Basque: the CV, the interface and the PDF import
+- **071** · Amber: a dark side column with a timeline and a warm accent; Raleway among the bundled fonts
 
 ## Next 🔜
 
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
-- **071** · Amber: a dark side column with a timeline and a warm accent; Raleway among the bundled fonts
 
 
 ## Backlog / ideas 💡

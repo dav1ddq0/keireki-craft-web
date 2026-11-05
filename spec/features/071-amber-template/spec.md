@@ -1,6 +1,6 @@
 # 071 · Amber, a dark side column with a timeline and a warm accent
 
-**Status:** proposed
+**Status:** done
 
 ## What it does
 
@@ -44,34 +44,53 @@ The user asked for it: a bold two-column CV with a warm accent that the gallery 
 ## Acceptance criteria
 
 ### The template
-- [ ] It registers itself and shows in the gallery with its own thumbnail and a description in the
+- [x] It registers itself and shows in the gallery with its own thumbnail and a description in the
       nine interface languages.
-- [ ] Contact, education and languages are in the side column; summary, experience, skills and the
+- [x] Contact, education and languages are in the side column; summary, experience, skills and the
       custom sections in the main one, in the order the user set.
-- [ ] With a photo it shows in the drop frame; without one there is no empty frame. With an empty
+- [x] With a photo it shows in the drop frame; without one there is no empty frame. With an empty
       name, no header text is left behind.
-- [ ] The last word of the name is in the accent; a one-word name is all in ink.
-- [ ] The accent picker and the font select apply (`accentColor`, `customFont`); with a light accent
+- [x] The last word of the name is in the accent; a one-word name is all in ink.
+- [x] The accent picker and the font select apply (`accentColor`, `customFont`); with a light accent
       (e.g. `#ffd86f`) the accented name stays readable on the white page (`--cv-accent-text`), and
       text on the accent shapes uses the readable ink.
-- [ ] Skills show a bar with a level and the name alone without one (`skillLevels`).
-- [ ] The side column reaches the foot of every page; if it cannot fit page one, the existing warning
+- [x] Skills show a bar with a level and the name alone without one (`skillLevels`).
+- [x] The side column reaches the foot of every page; if it cannot fit page one, the existing warning
       shows (spec 033).
-- [ ] LinkedIn, GitHub and other links get their own icons (shared `contactIcons.ts`).
+- [x] LinkedIn, GitHub and other links get their own icons (shared `contactIcons.ts`).
 
 ### Raleway
-- [ ] It is served from the app (Latin and Latin Extended, with `unicode-range`), no third-party
+- [x] It is served from the app (Latin and Latin Extended, with `unicode-range`), no third-party
       request; the CSP is unchanged.
-- [ ] The font select offers it, marked as bundled; the direct PDF embeds it.
+- [x] The font select offers it, marked as bundled; the direct PDF embeds it.
 
 ### Output
-- [ ] The direct PDF and the print match the paged preview (`qa:pdf`), the diagonals included.
-- [ ] An Amber PDF imports back complete (`qa:roundtrip`).
-- [ ] Nothing overflows on the 360 px phone or the 1024 px laptop (`qa:consistency`).
+- [x] The direct PDF and the print match the paged preview (`qa:pdf`), the diagonals included.
+- [x] An Amber PDF imports back complete (`qa:roundtrip`).
+- [x] Nothing overflows on the 360 px phone or the 1024 px laptop (`qa:consistency`; it checks the
+      interface, the CV paper is the template's own and is checked by `qa:pdf`).
 
 ### Quality
-- [ ] `npm test`, `npm run build`, `qa:e2e`, `qa:pdf`, `qa:roundtrip`, `qa:consistency` pass.
-- [ ] Screenshots with the sample CV, with and without a photo, light and dark accent.
+- [x] `npm test`, `npm run build`, `qa:e2e`, `qa:pdf`, `qa:roundtrip`, `qa:consistency` pass.
+- [x] Screenshots with the sample CV, with and without a photo, light and dark accent.
+
+## Verification
+
+`npm test` 959 passed (`amberTemplate.test.ts`: name split, accented last word, one-word and empty
+names, columns, photo frame and corner, skills with and without levels, contact icons), `vue-tsc`,
+`npm run build`. `qa:e2e` 156/156, `qa:security` 57/57, `qa:roundtrip` 448/448 (Amber direct and print:
+experience 2/2, education 1/1, skills 12/12, languages 3/3, phone, summary), `qa:consistency` 13/13
+over 425 views, `qa:pdf` 136/136 (Amber sample, photo, long and break: same pages, no text missing,
+1.6 % at most). The direct PDF of the sample in Amber embeds Raleway ExtraBold, Bold, SemiBold, Regular
+and Italic. A CV with seven education entries shows the spec 033 warning in Export; the sample does
+not. Screenshots of the sample with and without a photo, with the default accent and with `#ffd86f`
+(the last word of the name drawn in `#806c38`), of the gallery card, and of pages 1–2 of the long
+CV's direct PDF (the band and the timeline continue on page 2).
+
+Beyond the plan: the space between the name and its accented last word was dropped by Vue's
+whitespace handling ("Nadia MartínReyes"); it is written explicitly, and the test reads the whole name.
+The page-break test assumed education in the main column of every template; it now knows Amber's is
+in the side column.
 
 ## Out of scope
 
