@@ -5,6 +5,9 @@ import fr from '@/i18n/fr'
 import it_ from '@/i18n/it'
 import pt from '@/i18n/pt'
 import de from '@/i18n/de'
+import ca from '@/i18n/ca'
+import caValencia from '@/i18n/ca-valencia'
+import eu from '@/i18n/eu'
 
 /** Every leaf of a dictionary, as path → text. */
 function leaves(obj: object, prefix = ''): Map<string, string> {
@@ -27,6 +30,9 @@ describe('UI dictionaries (spec 057)', () => {
     ['it', it_],
     ['pt', pt],
     ['de', de],
+    ['ca', ca],
+    ['ca-valencia', caValencia],
+    ['eu', eu],
   ])('%s has every key of Spanish, none empty, with the same placeholders', (_code, dictionary) => {
     const own = leaves(dictionary)
     expect([...own.keys()].sort()).toEqual([...base.keys()].sort())

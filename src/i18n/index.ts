@@ -6,8 +6,11 @@ import fr from './fr'
 import it from './it'
 import pt from './pt'
 import de from './de'
+import ca from './ca'
+import caValencia from './ca-valencia'
+import eu from './eu'
 
-export const LOCALES = ['es', 'en', 'fr', 'it', 'pt', 'de'] as const
+export const LOCALES = ['es', 'en', 'fr', 'it', 'pt', 'de', 'ca', 'ca-valencia', 'eu'] as const
 export type Locale = (typeof LOCALES)[number]
 export type Messages = typeof es
 
@@ -19,12 +22,28 @@ export const LOCALE_NAMES: Record<Locale, string> = {
   it: 'Italiano',
   pt: 'Português',
   de: 'Deutsch',
+  ca: 'Català',
+  'ca-valencia': 'Valencià',
+  eu: 'Euskara',
 }
 
-/** The tag for `Intl` and `lang`: the Portuguese of the interface is European (spec 057). */
-export const LOCALE_TAGS: Record<Locale, string> = { es: 'es', en: 'en', fr: 'fr', it: 'it', pt: 'pt-PT', de: 'de' }
+/**
+ * The tag for `Intl` and `lang`: the Portuguese of the interface is European (spec 057); Valencian is
+ * Catalan's `valencia` variant, which `Intl` reads as Catalan (spec 070).
+ */
+export const LOCALE_TAGS: Record<Locale, string> = {
+  es: 'es',
+  en: 'en',
+  fr: 'fr',
+  it: 'it',
+  pt: 'pt-PT',
+  de: 'de',
+  ca: 'ca',
+  'ca-valencia': 'ca-valencia',
+  eu: 'eu',
+}
 
-const dictionaries: Record<Locale, Messages> = { es, en, fr, it, pt, de }
+const dictionaries: Record<Locale, Messages> = { es, en, fr, it, pt, de, ca, 'ca-valencia': caValencia, eu }
 
 export function isLocale(value: unknown): value is Locale {
   return (LOCALES as readonly unknown[]).includes(value)

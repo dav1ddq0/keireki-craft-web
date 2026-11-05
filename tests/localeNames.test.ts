@@ -14,16 +14,19 @@ const NAMES = [
   ['Italiano', 'it'],
   ['Português', 'pt-PT'],
   ['Deutsch', 'de'],
+  ['Català', 'ca'],
+  ['Valencià', 'ca-valencia'],
+  ['Euskara', 'eu'],
 ]
 
-describe('UI language options (specs 027, 057)', () => {
+describe('UI language options (specs 027, 057, 070)', () => {
   it('names each language in itself, with its lang, instead of "ES" / "EN"', () => {
     const wrapper = mount(PreferencesPopover)
     const options = wrapper.findAll('select option[lang]')
     expect(options.map((o) => [o.text(), o.attributes('lang')])).toEqual(NAMES)
   })
 
-  it('offers the same six in the phone menu', () => {
+  it('offers the same nine in the phone menu', () => {
     const wrapper = mount(AppMenuSheet, { props: { open: true }, global: { stubs: { BottomSheet: { template: '<div><slot /></div>' } } } })
     expect(wrapper.findAll('select option[lang]').map((o) => [o.text(), o.attributes('lang')])).toEqual(NAMES)
   })
@@ -38,6 +41,10 @@ describe('stored UI language (spec 057)', () => {
     }
     setLocale('pt')
     expect(document.documentElement.lang).toBe('pt-PT')
+    localStorage.setItem('keireki-craft:prefs', JSON.stringify({ uiLanguage: 'ca-valencia' }))
+    expect(storedLocale()).toBe('ca-valencia')
+    setLocale('ca-valencia')
+    expect(document.documentElement.lang).toBe('ca-valencia')
     setLocale('es')
   })
 })

@@ -50,7 +50,9 @@ function closeMenu(refocus: boolean) {
 
 /** Opens the tab in the click itself: browsers only allow it there, not after waiting for the clipboard. */
 function openAssistant(assistant: AiAssistant, prompt: string) {
-  window.open(assistantLink(assistant, prompt, locale.value), '_blank', 'noopener,noreferrer')
+  // Gemini's `hl` takes a bare language: Valencian ("ca-valencia") is asked for as Catalan (spec 070).
+  const language = locale.value.split('-')[0]!
+  window.open(assistantLink(assistant, prompt, language), '_blank', 'noopener,noreferrer')
 }
 
 function announce(message: string) {

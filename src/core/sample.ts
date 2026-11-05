@@ -347,6 +347,153 @@ const SAMPLES: Record<Locale, SampleText> = {
       description: 'Über Performance-Budgets in Viewern für Geodaten.',
     },
   },
+  ca: {
+    title: 'CV d’exemple',
+    fullName: 'Laia Puig Ferrer',
+    headline: 'Desenvolupadora Full-Stack',
+    email: 'laia.puig@example.com',
+    phone: '+34 600 345 678',
+    location: 'Girona',
+    handle: 'laiapuig',
+    summary:
+      'Desenvolupadora full-stack amb sis anys construint productes web en equips petits. ' +
+      'Treballo sobretot amb TypeScript i Python, i gaudeixo de la part on el producte i la ' +
+      'infraestructura es toquen. Busco un equip que es prengui seriosament la qualitat del codi.',
+    jobs: [
+      {
+        position: 'Desenvolupadora sènior',
+        company: 'Cartograf',
+        location: 'En remot',
+        description: 'Plataforma d’anàlisi geoespacial per a administracions públiques.',
+        highlights: [
+          'Vaig reduir el temps de càrrega del visor de mapes de 4,2 s a 1,1 s reescrivint la capa de tessel·les.',
+          'Vaig dissenyar la migració a un monorepo que va deixar el desplegament en una sola ordre.',
+          'Vaig fer de mentora de dues persones júnior fins que van portar funcionalitats a producció de manera autònoma.',
+        ],
+      },
+      {
+        position: 'Desenvolupadora Full-Stack',
+        company: 'Estudi Núvol',
+        location: 'Girona',
+        description: 'Agència de producte digital: sis projectes de client de principi a fi.',
+        highlights: [
+          'Vaig construir el sistema de disseny compartit que van fer servir quatre projectes simultanis.',
+          'Vaig automatitzar el procés de QA visual i vaig reduir a la meitat les regressions de maquetació.',
+        ],
+      },
+    ],
+    degree: 'Grau en Enginyeria Informàtica',
+    institution: 'Universitat de Girona',
+    city: 'Girona',
+    degreeNote: 'Menció en Enginyeria del Programari. Projecte final sobre visualització de dades.',
+    skillGroups: ['Llenguatges', 'Frontend', 'Backend'],
+    modernCss: 'CSS modern',
+    languages: [['Català', 'Llengua materna'], ['Anglès', 'C1'], ['Francès', 'B1']],
+    talksTitle: 'Xerrades',
+    talk: {
+      title: 'Renderitzar mapes sense morir en l’intent',
+      subtitle: 'GironaJS',
+      description: 'Sobre pressupostos de rendiment en visors de dades geoespacials.',
+    },
+  },
+  'ca-valencia': {
+    title: 'CV d’exemple',
+    fullName: 'Empar Llorens Martí',
+    headline: 'Desenvolupadora Full-Stack',
+    email: 'empar.llorens@example.com',
+    phone: '+34 600 456 789',
+    location: 'Castelló de la Plana',
+    handle: 'emparllorens',
+    summary:
+      'Desenvolupadora full-stack amb sis anys construint productes web en equips menuts. ' +
+      'Treballe sobretot amb TypeScript i Python, i gaudisc de la part on el producte i la ' +
+      'infraestructura es toquen. Busque un equip que es prenga seriosament la qualitat del codi.',
+    jobs: [
+      {
+        position: 'Desenvolupadora sènior',
+        company: 'Cartograf',
+        location: 'A distància',
+        description: 'Plataforma d’anàlisi geoespacial per a administracions públiques.',
+        highlights: [
+          'Vaig reduir el temps de càrrega del visor de mapes de 4,2 s a 1,1 s reescrivint la capa de tessel·les.',
+          'Vaig dissenyar la migració a un monorepo que va deixar el desplegament en una sola ordre.',
+          'Vaig fer de mentora de dues persones júnior fins que van portar funcionalitats a producció de manera autònoma.',
+        ],
+      },
+      {
+        position: 'Desenvolupadora Full-Stack',
+        company: 'Estudi Núvol',
+        location: 'Castelló de la Plana',
+        description: 'Agència de producte digital: sis projectes de client de principi a fi.',
+        highlights: [
+          'Vaig construir el sistema de disseny compartit que van utilitzar quatre projectes simultanis.',
+          'Vaig automatitzar el procés de QA visual i vaig reduir a la meitat les regressions de maquetació.',
+        ],
+      },
+    ],
+    degree: 'Grau en Enginyeria Informàtica',
+    institution: 'Universitat Jaume I',
+    city: 'Castelló de la Plana',
+    degreeNote: 'Menció en Enginyeria del Programari. Projecte final sobre visualització de dades.',
+    skillGroups: ['Llenguatges', 'Frontend', 'Backend'],
+    modernCss: 'CSS modern',
+    languages: [['Valencià', 'Llengua materna'], ['Anglés', 'C1'], ['Italià', 'B1']],
+    talksTitle: 'Xarrades',
+    talk: {
+      title: 'Renderitzar mapes sense morir en l’intent',
+      subtitle: 'CastellóJS',
+      description: 'Sobre pressupostos de rendiment en visors de dades geoespacials.',
+    },
+  },
+  eu: {
+    title: 'Adibidezko CVa',
+    fullName: 'Ane Etxeberria Goikoetxea',
+    headline: 'Full-Stack garatzailea',
+    email: 'ane.etxeberria@example.com',
+    phone: '+34 600 567 890',
+    location: 'Donostia',
+    handle: 'aneetxeberria',
+    summary:
+      'Full-stack garatzailea naiz, eta sei urte daramatzat web produktuak eraikitzen talde txikietan. ' +
+      'Batez ere TypeScript eta Pythonekin lan egiten dut, eta produktua eta azpiegitura elkartzen diren ' +
+      'zatiaz gozatzen dut. Kodearen kalitatea serio hartzen duen talde baten bila nabil.',
+    jobs: [
+      {
+        position: 'Garatzaile seniorra',
+        company: 'Cartograf',
+        location: 'Urrunetik',
+        description: 'Administrazio publikoentzako analisi geoespazialeko plataforma.',
+        highlights: [
+          'Mapa-ikustailearen karga-denbora 4,2 s-tik 1,1 s-ra murriztu nuen, lauzen geruza berridatzita.',
+          'Monorepo baterako migrazioa diseinatu nuen, eta hedapena komando bakarrera mugatu zen.',
+          'Bi junior gidatu nituen, funtzionalitateak produkziora modu autonomoan eraman zituzten arte.',
+        ],
+      },
+      {
+        position: 'Full-Stack garatzailea',
+        company: 'Hodei Estudioa',
+        location: 'Donostia',
+        description: 'Produktu digitalen agentzia: bezeroentzako sei proiektu, hasieratik amaierara.',
+        highlights: [
+          'Lau proiektuk aldi berean erabili zuten diseinu-sistema partekatua eraiki nuen.',
+          'QA bisualeko prozesua automatizatu nuen, eta maketazio-erregresioak erdira jaitsi nituen.',
+        ],
+      },
+    ],
+    degree: 'Informatika Ingeniaritzako gradua',
+    institution: 'Euskal Herriko Unibertsitatea (UPV/EHU)',
+    city: 'Donostia',
+    degreeNote: 'Software Ingeniaritzako aipamena. Gradu amaierako proiektua, datuen bistaratzeari buruz.',
+    skillGroups: ['Lengoaiak', 'Frontend', 'Backend'],
+    modernCss: 'CSS modernoa',
+    languages: [['Euskara', 'Ama hizkuntza'], ['Ingelesa', 'C1'], ['Frantsesa', 'B1']],
+    talksTitle: 'Hitzaldiak',
+    talk: {
+      title: 'Mapak errendatu, saiakeran hil gabe',
+      subtitle: 'DonostiaJS',
+      description: 'Datu geoespazialen ikustaileetako errendimendu-aurrekontuei buruz.',
+    },
+  },
 }
 
 /**

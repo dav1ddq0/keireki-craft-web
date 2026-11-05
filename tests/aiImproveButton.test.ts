@@ -96,6 +96,20 @@ describe('AiImproveButton (spec 063)', () => {
     expect(opened[0]![0]).toMatch(/^https:\/\/gemini\.google\.com\/app\?hl=es&q=/)
   })
 
+  it('asks Gemini for Catalan when the interface is in Valencian (spec 070)', async () => {
+    const { setLocale } = await import('@/i18n')
+    setLocale('ca-valencia')
+    try {
+      const wrapper = mountButton()
+      await wrapper.get('.trigger').trigger('click')
+      await wrapper.findAll('[role="menuitem"]')[2]!.trigger('click')
+      await flushPromises()
+      expect(opened[0]![0]).toMatch(/^https:\/\/gemini\.google\.com\/app\?hl=ca&q=/)
+    } finally {
+      setLocale('es')
+    }
+  })
+
   it('moves between the options with the arrows and closes with Escape', async () => {
     const wrapper = mountButton()
     await wrapper.get('.trigger').trigger('click')
