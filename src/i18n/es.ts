@@ -362,6 +362,7 @@ export default {
       palatino: 'Serif literaria',
       tahoma: 'Sans compacta',
       verdana: 'Abierta y legible',
+      raleway: 'Elegante, de títulos con carácter',
     },
     fontFamily: 'Tipografía',
     systemFont: 'según el equipo',

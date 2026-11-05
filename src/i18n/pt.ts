@@ -362,6 +362,7 @@ const pt: typeof es = {
       palatino: 'Serifa literária',
       tahoma: 'Sem serifa compacta',
       verdana: 'Aberta e legível',
+      raleway: 'Elegante, com títulos marcantes',
     },
     fontFamily: 'Tipo de letra',
     systemFont: 'depende do computador',

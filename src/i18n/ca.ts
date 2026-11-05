@@ -361,6 +361,7 @@ const ca: typeof es = {
       palatino: 'Serif literària',
       tahoma: 'Sans compacta',
       verdana: 'Oberta i llegible',
+      raleway: 'Elegant, amb títols marcats',
     },
     fontFamily: 'Tipografia',
     systemFont: 'segons l’equip',

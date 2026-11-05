@@ -361,6 +361,7 @@ const fr: typeof es = {
       palatino: 'Empattements littéraires',
       tahoma: 'Sans empattements compacte',
       verdana: 'Ouverte et lisible',
+      raleway: 'Élégante, aux titres marqués',
     },
     fontFamily: 'Police',
     systemFont: 'dépend de l’ordinateur',

@@ -73,6 +73,16 @@ import f65 from '@fontsource/tinos/files/tinos-latin-400-italic.woff?url'
 import f66 from '@fontsource/dejavu-sans/files/dejavu-sans-latin-400-normal.woff?url'
 import f67 from '@fontsource/dejavu-sans/files/dejavu-sans-latin-700-normal.woff?url'
 import f68 from '@fontsource/dejavu-sans/files/dejavu-sans-latin-400-italic.woff?url'
+import f69 from '@fontsource/raleway/files/raleway-latin-ext-400-normal.woff?url'
+import f70 from '@fontsource/raleway/files/raleway-latin-400-normal.woff?url'
+import f71 from '@fontsource/raleway/files/raleway-latin-ext-600-normal.woff?url'
+import f72 from '@fontsource/raleway/files/raleway-latin-600-normal.woff?url'
+import f73 from '@fontsource/raleway/files/raleway-latin-ext-700-normal.woff?url'
+import f74 from '@fontsource/raleway/files/raleway-latin-700-normal.woff?url'
+import f75 from '@fontsource/raleway/files/raleway-latin-ext-800-normal.woff?url'
+import f76 from '@fontsource/raleway/files/raleway-latin-800-normal.woff?url'
+import f77 from '@fontsource/raleway/files/raleway-latin-ext-400-italic.woff?url'
+import f78 from '@fontsource/raleway/files/raleway-latin-400-italic.woff?url'
 
 /** Face file name (`inter-latin-400-normal`) → WOFF URL. */
 export const WOFF: Record<string, string> = {
@@ -145,4 +155,14 @@ export const WOFF: Record<string, string> = {
   'dejavu-sans-latin-400-normal': f66,
   'dejavu-sans-latin-700-normal': f67,
   'dejavu-sans-latin-400-italic': f68,
+  'raleway-latin-ext-400-normal': f69,
+  'raleway-latin-400-normal': f70,
+  'raleway-latin-ext-600-normal': f71,
+  'raleway-latin-600-normal': f72,
+  'raleway-latin-ext-700-normal': f73,
+  'raleway-latin-700-normal': f74,
+  'raleway-latin-ext-800-normal': f75,
+  'raleway-latin-800-normal': f76,
+  'raleway-latin-ext-400-italic': f77,
+  'raleway-latin-400-italic': f78,
 }

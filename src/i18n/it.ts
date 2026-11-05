@@ -361,6 +361,7 @@ const it: typeof es = {
       palatino: 'Con grazie letterario',
       tahoma: 'Senza grazie compatto',
       verdana: 'Aperto e leggibile',
+      raleway: 'Elegante, con titoli di carattere',
     },
     fontFamily: 'Carattere',
     systemFont: 'dipende dal computer',

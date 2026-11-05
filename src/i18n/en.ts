@@ -361,6 +361,7 @@ const en: typeof es = {
       palatino: 'Literary serif',
       tahoma: 'Compact sans',
       verdana: 'Open and legible',
+      raleway: 'Elegant, with striking headings',
     },
     fontFamily: 'Typeface',
     systemFont: 'depends on the computer',

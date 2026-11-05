@@ -361,6 +361,7 @@ const eu: typeof es = {
       palatino: 'Serif literarioa',
       tahoma: 'Sans trinkoa',
       verdana: 'Irekia eta irakurgarria',
+      raleway: 'Dotorea, izenburu indartsuekin',
     },
     fontFamily: 'Tipografia',
     systemFont: 'gailuaren arabera',

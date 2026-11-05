@@ -21,8 +21,8 @@ Monogram already use (side column first in the markup, full-height side band, `c
    system-ui, sans-serif", bundled: true }` in `FONT_OPTIONS`.
 5. Tests: `bundledFonts.test.ts` already checks the faces are Latin / Latin Extended from installed
    packages, each with its `unicode-range`, and that an option is marked bundled exactly when it
-   ships; it gets Raleway through the data. A new case checks every face in `fonts.css` has its
-   `.woff` twin in `pdfFonts.ts`.
+   ships; Raleway joins its list of CV families. `pdfDirect.test.ts` already checks every face has
+   its `.woff` twin; its face count goes from 69 to 79.
 
 ### 2 · The template
 1. `src/templates/amber/index.ts`: `id: 'amber'`, supports `photo`, `sidebar`, `accentColor`,

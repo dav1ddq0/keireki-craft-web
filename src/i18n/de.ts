@@ -361,6 +361,7 @@ const de: typeof es = {
       palatino: 'Literarische Serifenschrift',
       tahoma: 'Kompakte Groteskschrift',
       verdana: 'Offen und gut lesbar',
+      raleway: 'Elegant, mit markanten Überschriften',
     },
     fontFamily: 'Schriftart',
     systemFont: 'hängt vom Computer ab',
