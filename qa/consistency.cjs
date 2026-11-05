@@ -30,6 +30,9 @@ const PROFILES = [
   // German has the longest words of the six UI languages: the narrowest phone and laptop again (spec 057).
   { name: 'phone 360×640 (de)', lang: 'de', opts: { viewport: { width: 360, height: 640 }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 }, themes: ['light'] },
   { name: 'small laptop 1024×768 (de)', lang: 'de', opts: { viewport: { width: 1024, height: 768 } }, themes: ['light'] },
+  // Basque's long agglutinated words, on the same two (spec 070).
+  { name: 'phone 360×640 (eu)', lang: 'eu', opts: { viewport: { width: 360, height: 640 }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 }, themes: ['light'] },
+  { name: 'small laptop 1024×768 (eu)', lang: 'eu', opts: { viewport: { width: 1024, height: 768 } }, themes: ['light'] },
 ]
 
 const OUT = path.join(ROOT, '.qa')
@@ -63,6 +66,20 @@ const UI = {
     views: [/^Einstellungen/, /^Importieren/, /^Meine Lebensläufe/],
     newCv: /Neuer Lebenslauf/,
     copyStates: ['Wird kopiert…', 'Kopiert', 'Kopieren fehlgeschlagen'],
+  },
+  eu: {
+    steps: ['Datu pertsonalak', 'Laburpena', 'Esperientzia', 'Prestakuntza', 'Gaitasunak', 'Hizkuntzak', 'Atal propioak', 'Txantiloia eta estiloa', 'Esportatu'],
+    sample: /Adibide batetik/,
+    sampleName: 'Ane Etxeberria Goikoetxea',
+    next: /Hurrengoa|Hurrengo urratsa/,
+    preview: /^Aurrebista$/,
+    edit: /^Editatu$/,
+    back: /Aurreko urratsa|Atzera|Txantiloia eta estiloa|Atal propioak/,
+    export: /^Esportatu/,
+    menu: /^Menua/,
+    views: [/^Hobespenak/, /^Inportatu/, /^Nire CVak/],
+    newCv: /CV berria/,
+    copyStates: ['Kopiatzen…', 'Kopiatuta', 'Ezin izan da kopiatu'],
   },
 }
 const SIZES = new Set(['11px', '12px', '14px', '16px', '22px', '24px', '28px', '32px', '36px'])

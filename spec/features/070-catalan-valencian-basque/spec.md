@@ -1,6 +1,6 @@
 # 070 · Catalan, Valencian and Basque
 
-**Status:** proposed
+**Status:** done
 
 ## What it does
 
@@ -29,38 +29,50 @@ Basque Country is often asked for in the local language, and the app should be u
 ## Acceptance criteria
 
 ### The CV
-- [ ] The CV language select offers Català, Valencià and Euskara, each with its own `lang`.
-- [ ] Every per-language table (`LANGUAGE_TABLES`, `PRESET_TABLES`, `NATIVE_LEVEL`, the AI prompt
+- [x] The CV language select offers Català, Valencià and Euskara, each with its own `lang`.
+- [x] Every per-language table (`LANGUAGE_TABLES`, `PRESET_TABLES`, `NATIVE_LEVEL`, the AI prompt
       texts) has the three; `cvLanguages.test.ts` fails if one is missing.
-- [ ] Dates read naturally: Catalan and Valencian "març 2023", "12 març 1992"; Basque writes the
+- [x] Dates read naturally: Catalan and Valencian "març 2023", "12 març 1992"; Basque writes the
       year first, with *-ko* or *-eko* as the year is pronounced ("2023ko mar.", "2021eko urr.",
       "1992ko martxoaren 12a"). A unit test covers the suffix over a table of years.
-- [ ] "Present", section titles, contact heading, extra contact labels, marital status and the
+- [x] "Present", section titles, contact heading, extra contact labels, marital status and the
       accessible level label in the three.
-- [ ] Levels typed in the three are recognised for the dots (*llengua materna*, *nadiu*, *avançat*,
+- [x] Levels typed in the three are recognised for the dots (*llengua materna*, *nadiu*, *avançat*,
       *intermedi*, *bàsic*; *ama hizkuntza*, *aurreratua*, *ertaina*, *oinarrizkoa*…).
-- [ ] The custom-section presets, the data-protection clause included, and the "native" chip.
-- [ ] "Improve with AI" writes its prompt in the CV's language for the three.
-- [ ] The sample CV exists in the three interface languages, with a local person for each.
+- [x] The custom-section presets, the data-protection clause included, and the "native" chip.
+- [x] "Improve with AI" writes its prompt in the CV's language for the three.
+- [x] The sample CV exists in the three interface languages, with a local person for each.
 
 ### The interface
-- [ ] `i18n/ca.ts`, `ca-valencia.ts`, `eu.ts` have every key of `es.ts`, typed as `typeof es`;
+- [x] `i18n/ca.ts`, `ca-valencia.ts`, `eu.ts` have every key of `es.ts`, typed as `typeof es`;
       `i18nDictionaries.test.ts` passes (same keys, none empty, same placeholders).
-- [ ] Both language selects offer nine languages, each named in itself; the choice is kept, and
+- [x] Both language selects offer nine languages, each named in itself; the choice is kept, and
       `<html lang>` follows it (`ca`, `ca-valencia`, `eu`).
-- [ ] Dates, months and country names in the interface (month field, phone country list) use the
+- [x] Dates, months and country names in the interface (month field, phone country list) use the
       language's tag through `Intl`.
-- [ ] Nothing overflows or breaks on the 360 px phone or the 1024 px laptop in Basque, whose words
+- [x] Nothing overflows or breaks on the 360 px phone or the 1024 px laptop in Basque, whose words
       are long (`qa:consistency`).
 
 ### PDF import
-- [ ] Headings, months and "present" words in Catalan/Valencian and Basque are recognised; Basque's
+- [x] Headings, months and "present" words in Catalan/Valencian and Basque are recognised; Basque's
       year-first dates ("2019ko urtarrila – 2021eko ekaina") are read as a range.
-- [ ] A CV with Catalan headings is imported with its language set to `ca`; with Basque ones, `eu`.
+- [x] A CV with Catalan headings is imported with its language set to `ca`; with Basque ones, `eu`.
 
 ### Quality
-- [ ] `npm test`, `npm run build`, `qa:e2e`, `qa:pdf`, `qa:consistency` pass.
-- [ ] Screenshots of the interface and of a CV in each of the three.
+- [x] `npm test`, `npm run build`, `qa:e2e`, `qa:pdf`, `qa:consistency` pass.
+- [x] Screenshots of the interface and of a CV in each of the three.
+
+## Verification
+
+`npm test` 942 passed; `npm run build`. `qa:e2e` 156/156, `qa:pdf` 128/128, `qa:consistency` 13/13
+over 425 views, Basque walked on the 360 px phone and the 1024 px laptop (added to the script, as
+German was in 057). Screenshots of the welcome, the editor and the CV in the three languages, on a
+1280 px laptop and a 360 px phone: nothing overflows; Basque dates read "2022ko mar. – Gaur egun".
+`Intl` with `ca`, `ca-valencia` and `eu` writes "França", "març", "Frantzia", "martxoa".
+
+Beyond the plan: the custom-section hint named the CV language by its code ("CA-VALENCIA") and
+now by its name, for every language; Gemini's `hl` gets `ca` for Valencian; the import had its own
+list of language levels besides the templates', which gained the levels of the three.
 
 ## Out of scope
 

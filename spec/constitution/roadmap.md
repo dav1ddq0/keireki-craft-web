@@ -80,11 +80,11 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 - **067** · Works offline and installs like an app: a service worker of our own and a web manifest
 - **068** · `qa:live`: the published site checked after each deploy
 - **069** · Supply chain: no dependency install scripts in CI, Dependabot, a CSP in the exported HTML
+- **070** · Catalan, Valencian and Basque: the CV, the interface and the PDF import
 
 ## Next 🔜
 
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
-- **070** · Catalan, Valencian and Basque: the CV, the interface and the PDF import
 
 
 ## Backlog / ideas 💡
