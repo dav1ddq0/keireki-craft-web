@@ -79,5 +79,7 @@ list of language levels besides the templates', which gained the levels of the t
 - **A native review** of the three translations: for the owner, before or soon after publishing.
 - **Telling Valencian from Catalan in an import**: their headings are the same words; an import
   in either is set to `ca`, and the user can change it in Template and style.
+- **Basque ranges written with case endings and no dash** ("2019ko urtarrilatik 2021eko
+  ekainera"): not read as a range; "2019ko urtarrila – 2021eko ekaina" is.
 - **Galician**: not asked for; the same work would add it later.
 - **Android**: after the web, in its own spec.
