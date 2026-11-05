@@ -82,11 +82,11 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 - **069** · Supply chain: no dependency install scripts in CI, Dependabot, a CSP in the exported HTML
 - **070** · Catalan, Valencian and Basque: the CV, the interface and the PDF import
 - **071** · Amber: a dark side column with a timeline and a warm accent; Raleway among the bundled fonts
+- **072** · Fixes from the Amber stress test: the direct PDF keeps wrapped inline text on its line, long words stay in Amber's side column
 
 ## Next 🔜
 
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
-- **072** · Fixes from the Amber stress test: direct PDF baseline on wrapped inline text, long words in Amber's side column
 
 
 ## Backlog / ideas 💡

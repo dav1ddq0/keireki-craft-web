@@ -1,6 +1,6 @@
 # 072 · Fixes from the Amber stress test
 
-**Status:** proposed
+**Status:** done
 
 ## What it does
 
@@ -29,14 +29,33 @@ Both lose text the user wrote, in the file they send: one overlaps it, the other
 
 ## Acceptance criteria
 
-- [ ] In the direct PDF, a long last name in Amber and a wrapped " · company" in Ledger sit on their
+- [x] In the direct PDF, a long last name in Amber and a wrapped " · company" in Ledger sit on their
       own line, as in the print; a check in the stress script finds no element whose baseline probe
       lands on another line than its text, in any template.
-- [ ] Every other template's direct PDF is unchanged (`qa:pdf` passes with the same differences).
-- [ ] `qa:pdf` gains a case with a long name and long positions, so the fault cannot come back.
-- [ ] In Amber, a word longer than the side column breaks inside it: nothing leaves the charcoal band
+- [x] Every other template's direct PDF is unchanged (`qa:pdf` passes with the same differences).
+- [x] `qa:pdf` gains a case with a long name and long positions, so the fault cannot come back.
+- [x] In Amber, a word longer than the side column breaks inside it: nothing leaves the charcoal band
       (education title, institution, dates, description, language names, contact).
-- [ ] `npm test`, `npm run build`, `qa:pdf`, `qa:roundtrip` pass.
+- [x] `npm test`, `npm run build`, `qa:pdf`, `qa:roundtrip` pass.
+
+## Verification
+
+`npm test` 960 passed (`amberTemplate.test.ts`: the side entries break with `anywhere`, level names
+with `break-word` and `min-width: 0`), `vue-tsc`, `npm run build`. `qa:pdf` 184/184: the new
+`longname` case (a last name too long for a line, ten positions and companies that grow) checks that
+every word of the direct PDF sits where the print has it, in all 16 templates; with the old
+`descentOf` it fails in Amber and Ledger. Every other case keeps its difference except Amber
+(1.5 → 1.0 %) and Editorial (2.1 → 1.5 %), whose flex titles the old probe also shifted. `qa:roundtrip`
+448/448. Amber's stress test, 11 extreme CVs, 22/23 as before: the one left is `pdftotext` splitting the
+e-mail's hyphen at a line break, not a fault. Its overflow check now measures each text, not each box
+(the box of a title stays in the column while its text does not): without the fix it finds the degree
+and the institution past the band, with it nothing. Screenshots of the long-name header (print and
+direct alike) and of the side column with a long degree, institution and one-word language name.
+
+Beyond the plan: a language name of one long word still left the band, because `break-word` does not
+narrow a flex item below its longest word; `.level-name` gets `min-width: 0`. The check of the first
+criterion lives in `qa:pdf` (word positions, every template) rather than in the stress script, so it
+runs with the rest; and two templates' differences shrank instead of staying the same.
 
 ## Out of scope
 
