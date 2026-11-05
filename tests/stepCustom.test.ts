@@ -62,6 +62,15 @@ describe('StepCustom section picker on phones', () => {
     expect(wrapper.find('dialog').attributes('open')).toBeUndefined()
   })
 
+  it('names the CV language in itself in the hint, not by its code (spec 070)', async () => {
+    useCvStore().data.meta.language = 'ca-valencia'
+    const wrapper = mount(StepCustom, { attachTo: document.body })
+    await wrapper.find('.add-phone').trigger('click')
+    const hint = wrapper.get('dialog .sheet-hint').text()
+    expect(hint).toContain('(Valencià)')
+    expect(hint).not.toContain('CA-VALENCIA')
+  })
+
   it('adds a blank section from the sheet footer', async () => {
     const cv = useCvStore()
     const wrapper = mount(StepCustom, { attachTo: document.body })

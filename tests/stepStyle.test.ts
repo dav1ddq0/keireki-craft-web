@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import StepStyle from '@/components/form/StepStyle.vue'
-import { PALETTE } from '@/core/stylePresets'
+import { CV_LANGUAGES, PALETTE } from '@/core/stylePresets'
 import { useCvStore } from '@/stores/cv'
 import { getTemplate } from '@/templates/registry'
 
@@ -30,5 +30,18 @@ describe('the accent swatches of the style step (spec 052)', () => {
       const rgb = [1, 3, 5].map((k) => parseInt(color.slice(k, k + 2), 16)).join(', ')
       expect(shown[i]).toContain(`rgb(${rgb})`)
     })
+  })
+})
+
+describe('the CV language select of the style step (spec 070)', () => {
+  beforeEach(() => setActivePinia(createPinia()))
+
+  it('names each language in itself, with its own lang', () => {
+    const select = mount(StepStyle)
+      .findAll('select')
+      .find((candidate) => candidate.findAll('option').some((option) => option.attributes('value') === 'ca-valencia'))!
+    expect(select.findAll('option').map((o) => [o.attributes('value'), o.text(), o.attributes('lang')])).toEqual(
+      CV_LANGUAGES.map((language) => [language.code, language.label, language.code]),
+    )
   })
 })
