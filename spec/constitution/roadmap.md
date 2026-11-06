@@ -88,6 +88,8 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
 
+- **073** · The file name, where the CV is exported: a "File name" field in Export, the header's document name as text, Rename in My CVs
+
 
 ## Backlog / ideas 💡
 
