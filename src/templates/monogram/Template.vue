@@ -317,6 +317,8 @@ const contactTitle = computed(() => contactHeading(language.value))
 
 /* Explicit columns: a continuation page holding only one of them must not move it to the other track (spec 022). */
 .sidebar {
+  /* A word longer than the column breaks inside it, and only where it cannot fit (spec 074). */
+  overflow-wrap: break-word;
   grid-column: 1;
   background: var(--tint);
   padding: var(--cv-page-margin) calc(var(--cv-page-margin) * 0.5) var(--cv-page-margin) var(--cv-page-margin);
@@ -422,6 +424,11 @@ const contactTitle = computed(() => contactHeading(language.value))
   justify-content: space-between;
   gap: 0.8em;
   margin-bottom: 0.35em;
+}
+
+/* The name gives way to its level marks: a flex item is otherwise as wide as its longest word (spec 074). */
+.level-row > span:first-child {
+  min-width: 0;
 }
 
 .entry {

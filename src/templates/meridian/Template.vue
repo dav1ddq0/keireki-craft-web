@@ -178,6 +178,8 @@ const languages = computed(() => resolveLanguages(props.data))
 
 /* Explicit column: on a continuation page holding only this column, auto-placement would move it to the other track (spec 022). */
 .sidebar {
+  /* A word longer than the column breaks inside it, and only where it cannot fit (spec 074). */
+  overflow-wrap: break-word;
   grid-column: 1;
   background: var(--cv-accent);
   color: var(--cv-on-accent);
@@ -244,8 +246,10 @@ const languages = computed(() => resolveLanguages(props.data))
 }
 
 /* `overflow-wrap: anywhere` (from .side-item) would let the name shrink to a few letters
-   before the level marks wrapped below it; break-word only breaks a word that cannot fit. */
+   before the level marks wrapped below it; break-word only breaks a word that cannot fit, and
+   `min-width: 0` lets it be narrower than that word, so the word breaks (spec 074). */
 .lang-name {
+  min-width: 0;
   margin: 0;
   overflow-wrap: break-word;
 }

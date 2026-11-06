@@ -211,6 +211,8 @@ const languages = computed(() => resolveLanguages(props.data))
 
 .main,
 .aside {
+  /* A word longer than the column breaks inside it, and only where it cannot fit (spec 074). */
+  overflow-wrap: break-word;
   padding-top: calc(var(--cv-page-margin) * 0.5);
 }
 
@@ -305,7 +307,9 @@ const languages = computed(() => resolveLanguages(props.data))
   break-inside: avoid;
 }
 
+/* It gives way to its level marks: a flex item is otherwise as wide as its longest word (spec 074). */
 .lang-name {
+  min-width: 0;
   font-size: 0.92em;
 }
 </style>
