@@ -90,6 +90,7 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
 
 - **074** · Long words stay in their column, in every template
+- **075** · Nothing is lost at a page break: paged.js measures again after the cut; ledger, monogram and cobalt keep every section
 
 
 ## Backlog / ideas 💡
