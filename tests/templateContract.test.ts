@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync, statSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { formatDateRange, formatPartialDate, resolveSections, styleVars } from '@/templates/shared'
@@ -52,6 +52,19 @@ describe.each(templateDirs)('template contract: %s', (dir) => {
 
   it('protects entries from page breaks', () => {
     expect(source).toMatch(/break-inside:\s*avoid/)
+  })
+})
+
+/**
+ * Tests that walk the registry (palette names, contrast, rendering) only see what its
+ * `import.meta.glob` found. A stale Vitest module cache once kept a new template out of it locally,
+ * so those tests passed here and failed in CI; this names the template that is missing.
+ */
+describe('template registry', () => {
+  it('registers every template folder, under the folder name', async () => {
+    const { templates } = await import('@/templates/registry')
+    const folders = templateDirs.filter((dir) => existsSync(join(TEMPLATES_DIR, dir, 'index.ts')))
+    expect(templates.map((t) => t.id).sort()).toEqual(folders.sort())
   })
 })
 
