@@ -83,12 +83,11 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 - **070** · Catalan, Valencian and Basque: the CV, the interface and the PDF import
 - **071** · Amber: a dark side column with a timeline and a warm accent; Raleway among the bundled fonts
 - **072** · Fixes from the Amber stress test: the direct PDF keeps wrapped inline text on its line, long words stay in Amber's side column
+- **073** · The file name, where the CV is exported: a "File name" field in Export, the header's document name as text, Rename in My CVs
 
 ## Next 🔜
 
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
-
-- **073** · The file name, where the CV is exported: a "File name" field in Export, the header's document name as text, Rename in My CVs
 
 
 ## Backlog / ideas 💡
