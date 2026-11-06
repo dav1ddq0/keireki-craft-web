@@ -1,8 +1,9 @@
 // The direct PDF (spec 031) against the printed one, in Chromium, on the dev server (it imports the
 // app's modules by URL). Three parts:
-//   1. every template × sample / photo / long / page break / long name: same page count, no text
-//      missing, at most MAX_DIFF % of pixels differing; with the long name, every word where the print
-//      has it (spec 072: text that wraps to a new line was drawn a line too high);
+//   1. every template × sample / photo / long / page break / long name / long words: same page count,
+//      no text missing, at most MAX_DIFF % of pixels differing; with the long name and the long words,
+//      every word where the print has it (spec 072: text that wraps to a new line was drawn a line too
+//      high); with the long words, no text out of its column or the page (spec 074);
 //   2. a fixture page (half-opaque box, list bullet, dashed and dotted borders) printed by Chromium
 //      and converted, compared shape by shape, which the whole-page threshold is too coarse to see;
 //   3. the side-column warning (spec 033): off for the sample, on for a side column longer than a page.
@@ -16,7 +17,13 @@ const { ROOT, startServer } = require('./lib/server.cjs')
 const { renderPages, diffPercent } = require('./lib/images.cjs')
 
 const OUT = path.join(ROOT, '.qa/pdf')
-const MODES = ['sample', 'photo', 'long', 'break', 'longname']
+const MODES = ['sample', 'photo', 'long', 'break', 'longname', 'longword', 'longword64']
+/**
+ * Spec 074: one word with no break, the length of `longword` a real German compound, `longword64`
+ * longer still. Each field gets its own, starting with a tag (Name, Skil…) so an overflow names its
+ * field; real letters, as a run of one letter is narrower than text.
+ */
+const LONG_WORDS = { longword: 39, longword64: 64 }
 /** Spec 031, criterion 4: share of pixels differing (grey difference > 48) at 50 dpi. */
 const MAX_DIFF = 4
 const SRC = '/src'
@@ -84,6 +91,32 @@ async function openApp(page, url) {
   })
 }
 
+/**
+ * In the paginated print, the text that runs past the right edge of its column (the nearest aside,
+ * main or header) or of the page, as "column:field" (spec 074). The field is the tag a long word
+ * starts with, or "text" for any other text pushed out (a column widened by the word).
+ */
+function textOutside() {
+  const out = new Set()
+  for (const sheet of document.querySelectorAll('.pagedjs_page')) {
+    const edge = sheet.getBoundingClientRect().right
+    const walker = document.createTreeWalker(sheet, NodeFilter.SHOW_TEXT)
+    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+      const text = node.textContent.trim()
+      if (!text) continue
+      const column = node.parentElement.closest('aside, main, header')
+      const right = Math.min(edge, column ? column.getBoundingClientRect().right : edge)
+      const range = document.createRange()
+      range.selectNodeContents(node)
+      if ([...range.getClientRects()].some((r) => r.width && r.right > right + 1)) {
+        const field = text.match(/^(Name|Summ|Posi|Comp|High|Degr|Inst|Edes|Skil|Lang)rechts/)?.[1] ?? 'text'
+        out.add(`${column ? column.tagName.toLowerCase() : 'page'}:${field}`)
+      }
+    }
+  }
+  return [...out]
+}
+
 async function compareTemplates(page, url, ids) {
   const photo = 'data:image/jpeg;base64,' + fs.readFileSync(path.join(__dirname, 'fixtures/portrait.jpg')).toString('base64')
   for (const id of ids) {
@@ -92,7 +125,7 @@ async function compareTemplates(page, url, ids) {
       try {
         // Reference: the print path, with window.print stubbed so Playwright can print instead.
         await page.evaluate(
-          async ([id, mode, photo, SRC]) => {
+          async ([id, mode, photo, SRC, LONG_WORD]) => {
             window.__printed = false
             window.print = () => {
               window.__printed = true
@@ -117,13 +150,24 @@ async function compareTemplates(page, url, ids) {
                 company: entry.company + ' Geoespacial'.repeat(n),
               }))
             }
+            if (LONG_WORD) {
+              const word = (tag) => (tag + 'rechtsschutzversicherungsgesellschaften'.repeat(3)).slice(0, LONG_WORD)
+              cv.personal.fullName = word('Name')
+              cv.summary = word('Summ')
+              Object.assign(cv.experience[0], { position: word('Posi'), company: word('Comp') })
+              cv.experience[0].highlights[0] = word('High')
+              Object.assign(cv.education[0], { degree: word('Degr'), institution: word('Inst'), description: word('Edes') })
+              cv.skills[0].items[0].name = word('Skil')
+              cv.languages[0].name = word('Lang')
+            }
             if (mode === 'photo') cv.personal.photo = photo
             window.__cv = cv
             window.__done = printCv(cv, id, { paginate: true })
           },
-          [id, mode, photo, SRC],
+          [id, mode, photo, SRC, LONG_WORDS[mode]],
         )
         await page.waitForFunction(() => window.__printed, null, { timeout: 60_000 })
+        const outside = LONG_WORDS[mode] ? await page.evaluate(textOutside) : []
         const printed = await page.pdf({ preferCSSPageSize: true, printBackground: true })
         await page.evaluate(() => {
           window.dispatchEvent(new Event('afterprint'))
@@ -159,7 +203,8 @@ async function compareTemplates(page, url, ids) {
           pages[0] === pages[1] && missing === 0 && worst <= MAX_DIFF,
           `pages ${pages.join('/')}, missing ${missing}, diff ${diffs.map((d) => d.toFixed(1)).join(',')} %`,
         )
-        if (mode === 'longname') {
+        if (LONG_WORDS[mode]) check(`${key}: no text leaves its column or the page`, outside.length === 0, outside.join(', '))
+        if (mode === 'longname' || LONG_WORDS[mode]) {
           const misplaced = misplacedWords(printPdf, directPdf)
           check(`${key}: every word where the print has it`, misplaced.length === 0, misplaced.slice(0, 6).join(', '))
         }
