@@ -1,5 +1,5 @@
 export { printCv, printTitle, fileName, paginateInto, releasePagination, exportCss } from './pdf'
 export { exportHtml, buildStandaloneHtml } from './html'
 export { exportJson, importJsonFile, toExportableJson, blobToDataUrl, dataUrlToBlob } from './json'
-export { downloadBlob, safeFileName, slugify } from './download'
+export { downloadBlob, safeFileName } from './download'
 export { renderTemplateHtml, resolvePhoto, collectDocumentCss, sideColumnOverflows } from './render'
