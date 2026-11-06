@@ -217,6 +217,27 @@ describe('per-CV template (spec 021)', () => {
     const copy = await cv.duplicate(source)
     expect(saved.get(copy)?.meta.templateId).toBe('meridian')
   })
+
+  it('renames the open CV like an edit, another one in storage, and never to blank (spec 073)', async () => {
+    const cv = useCvStore()
+    await cv.createNew()
+    const first = cv.data.meta.id
+    await cv.createNew()
+    const open = cv.data.meta.id
+
+    await cv.rename(open, '  CV Frontend 2026 ')
+    expect(cv.data.meta.title).toBe('CV Frontend 2026')
+    await idle(1500)
+    expect(saved.get(open)?.meta.title).toBe('CV Frontend 2026')
+    expect(cv.canUndo).toBe(true)
+
+    await cv.rename(first, 'CV Backend')
+    expect(saved.get(first)?.meta.title).toBe('CV Backend')
+    expect(cv.data.meta.title).toBe('CV Frontend 2026')
+
+    await cv.rename(first, '   ')
+    expect(saved.get(first)?.meta.title).toBe('CV Backend')
+  })
 })
 
 describe('cv store custom sections (spec 028)', () => {

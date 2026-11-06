@@ -63,6 +63,18 @@ describe('DocumentActionsSheet', () => {
   const button = (wrapper: ReturnType<typeof mount>, text: string) =>
     wrapper.findAll('dialog button').find((b) => b.text() === text)!
 
+  it('renames in the sheet: the field holds the current name, and a blank one is not saved (spec 073)', async () => {
+    const wrapper = open()
+    await button(wrapper, 'Renombrar').trigger('click')
+    const field = wrapper.find('dialog input[type="text"]')
+    expect((field.element as HTMLInputElement).value).toBe('CV Ana')
+    await field.setValue('  ')
+    expect(button(wrapper, 'Guardar').attributes('disabled')).toBeDefined()
+    await field.setValue('CV Frontend 2026')
+    await wrapper.find('dialog form').trigger('submit')
+    expect(wrapper.emitted('rename')).toEqual([['cv1', 'CV Frontend 2026']])
+  })
+
   it('duplicates straight away', async () => {
     const wrapper = open()
     await button(wrapper, 'Duplicar').trigger('click')

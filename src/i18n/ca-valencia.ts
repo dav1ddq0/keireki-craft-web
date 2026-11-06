@@ -17,6 +17,7 @@ const caValencia: typeof es = {
     remove: 'Elimina',
     removeNamed: 'Elimina {name}',
     duplicate: 'Duplica',
+    rename: 'Canvia el nom',
     cancel: 'Cancel·la',
     confirm: 'Confirma',
     back: 'Enrere',

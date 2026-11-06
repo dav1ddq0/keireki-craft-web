@@ -9,13 +9,17 @@ import { useCvStore } from '@/stores/cv'
 beforeEach(() => setActivePinia(createPinia()))
 
 describe('DesktopHeader', () => {
-  it('shows the breadcrumb with an editable document name in the editor', async () => {
+  it('shows the document name in the breadcrumb as the current page, not as a field (spec 073)', async () => {
     const cv = useCvStore()
+    cv.data.meta.title = 'CV para Cartograf'
     const wrapper = mount(DesktopHeader)
-    const input = wrapper.find('input.doc-title')
-    expect(input.attributes('aria-label')).toBe('Nombre del documento')
-    await input.setValue('CV para Cartograf')
-    expect(cv.data.meta.title).toBe('CV para Cartograf')
+    expect(wrapper.find('nav input').exists()).toBe(false)
+    const name = wrapper.find('.doc-title')
+    expect(name.text()).toBe('CV para Cartograf')
+    expect(name.attributes('aria-current')).toBe('page')
+    cv.data.meta.title = '  '
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('.doc-title').text()).toBe('Sin título')
   })
 
   it('names undo and redo with their shortcut and emits export', async () => {

@@ -17,6 +17,7 @@ const eu: typeof es = {
     remove: 'Ezabatu',
     removeNamed: 'Ezabatu {name}',
     duplicate: 'Bikoiztu',
+    rename: 'Aldatu izena',
     cancel: 'Utzi',
     confirm: 'Berretsi',
     back: 'Atzera',

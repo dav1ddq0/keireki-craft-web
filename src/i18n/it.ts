@@ -17,6 +17,7 @@ const it: typeof es = {
     remove: 'Elimina',
     removeNamed: 'Elimina {name}',
     duplicate: 'Duplica',
+    rename: 'Rinomina',
     cancel: 'Annulla',
     confirm: 'Conferma',
     back: 'Indietro',

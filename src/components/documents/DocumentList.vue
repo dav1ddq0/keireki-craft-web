@@ -6,6 +6,7 @@ import { useUiStore } from '@/stores/ui'
 import { formatDate, useI18n } from '@/i18n'
 import { createSampleCV } from '@/core/sample'
 import BaseButton from '@/components/ui/BaseButton.vue'
+import BaseField from '@/components/ui/BaseField.vue'
 import NoticeBar from '@/components/ui/NoticeBar.vue'
 import { useIsPhone } from '@/composables/useIsPhone'
 import DocumentCard from './DocumentCard.vue'
@@ -21,6 +22,14 @@ const pendingDelete = ref<string | null>(null)
 const isPhone = useIsPhone()
 const menuDoc = ref<CVSummary | null>(null)
 const query = ref('')
+
+/** Focuses a field as it appears, its text selected to be typed over. */
+const vFocusSelect = {
+  mounted: (el: HTMLInputElement) => {
+    el.focus()
+    el.select()
+  },
+}
 
 const label = (doc: CVSummary) => doc.fullName || doc.title || t('documents.untitled')
 
@@ -50,6 +59,27 @@ async function createBlank() {
 async function duplicateFromMenu(id: string) {
   await cv.duplicate(id)
   menuDoc.value = null
+}
+
+async function renameFromMenu(id: string, title: string) {
+  await cv.rename(id, title)
+  menuDoc.value = null
+}
+
+/** Desktop: the tile being renamed and the name typed in it (spec 073). */
+const renamingId = ref<string | null>(null)
+const newTitle = ref('')
+
+function startRename(doc: CVSummary) {
+  pendingDelete.value = null
+  newTitle.value = doc.title
+  renamingId.value = doc.id
+}
+
+async function confirmRename(id: string) {
+  if (!newTitle.value.trim()) return
+  await cv.rename(id, newTitle.value)
+  renamingId.value = null
 }
 
 async function removeFromMenu(id: string) {
@@ -114,7 +144,19 @@ async function confirmDelete(id: string) {
             <DocumentTemplateTag :doc="doc" />
           </button>
 
-          <div v-if="pendingDelete === doc.id" class="confirm">
+          <form v-if="renamingId === doc.id" class="rename" @submit.prevent="confirmRename(doc.id)">
+            <!-- Focused as it opens, the name selected; Esc gives up. -->
+            <BaseField v-slot="{ id }" :label="t('header.docTitle')">
+              <input :id="id" v-model="newTitle" v-focus-select type="text" autocomplete="off" @keydown.esc.stop="renamingId = null" />
+            </BaseField>
+            <div class="confirm">
+              <BaseButton size="sm" @click="renamingId = null">{{ t('actions.cancel') }}</BaseButton>
+              <BaseButton size="sm" variant="primary" type="submit" :disabled="!newTitle.trim()">
+                {{ t('actions.save') }}
+              </BaseButton>
+            </div>
+          </form>
+          <div v-else-if="pendingDelete === doc.id" class="confirm">
             <span class="confirm-text">{{ t('documents.deleteConfirm', { title: doc.title }) }}</span>
             <BaseButton size="sm" @click="pendingDelete = null">{{ t('actions.cancel') }}</BaseButton>
             <BaseButton size="sm" variant="danger" @click="confirmDelete(doc.id)">
@@ -123,6 +165,7 @@ async function confirmDelete(id: string) {
           </div>
           <div v-else class="actions">
             <BaseButton size="sm" @click="open(doc.id)">{{ t('actions.open') }}</BaseButton>
+            <BaseButton size="sm" @click="startRename(doc)">{{ t('actions.rename') }}</BaseButton>
             <BaseButton size="sm" @click="cv.duplicate(doc.id)">{{ t('actions.duplicate') }}</BaseButton>
             <BaseButton size="sm" variant="danger" @click="pendingDelete = doc.id">
               {{ t('actions.remove') }}
@@ -144,6 +187,7 @@ async function confirmDelete(id: string) {
       :open="menuDoc !== null"
       :doc="menuDoc"
       @close="menuDoc = null"
+      @rename="renameFromMenu"
       @duplicate="duplicateFromMenu"
       @remove="removeFromMenu"
     />
@@ -308,6 +352,12 @@ async function confirmDelete(id: string) {
   align-items: center;
   gap: 4px;
   flex-wrap: wrap;
+}
+
+.rename {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .list--cards {

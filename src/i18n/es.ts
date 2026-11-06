@@ -18,6 +18,7 @@ export default {
     /** Screen-reader name of a Remove button: the visible word plus what it removes (spec 027). */
     removeNamed: 'Eliminar {name}',
     duplicate: 'Duplicar',
+    rename: 'Renombrar',
     cancel: 'Cancelar',
     confirm: 'Confirmar',
     back: 'Atrás',

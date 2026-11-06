@@ -17,6 +17,7 @@ const de: typeof es = {
     remove: 'Löschen',
     removeNamed: '{name} löschen',
     duplicate: 'Duplizieren',
+    rename: 'Umbenennen',
     cancel: 'Abbrechen',
     confirm: 'Bestätigen',
     back: 'Zurück',

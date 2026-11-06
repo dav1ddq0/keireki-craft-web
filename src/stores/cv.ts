@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { computed, ref, watch } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import type { CustomSection, CVData, CVSummary } from '@/types/cv'
 import { SECTION_IDS } from '@/types/cv'
 import { createCustomSection, createEmptyCV } from '@/core/factory'
@@ -158,6 +158,25 @@ export const useCvStore = defineStore('cv', () => {
     await storage.save(copy)
     await refreshDocuments()
     return copy.meta.id
+  }
+
+  /**
+   * Renames a CV from My CVs (spec 073). The open one changes like any edit (autosave, undo); another
+   * one is changed in storage. A name that is only spaces is not saved.
+   */
+  async function rename(id: string, title: string) {
+    const next = title.trim()
+    if (!next) return
+    if (id === data.value.meta.id) {
+      data.value.meta.title = next
+      await nextTick()
+      await flush()
+      return
+    }
+    const stored = await storage.load(id)
+    stored.meta = { ...stored.meta, title: next, updatedAt: new Date().toISOString() }
+    await storage.save(stored)
+    await refreshDocuments()
   }
 
   async function remove(id: string) {
@@ -345,6 +364,7 @@ export const useCvStore = defineStore('cv', () => {
     open,
     createNew,
     duplicate,
+    rename,
     remove,
     refreshDocuments,
     importData,

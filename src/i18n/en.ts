@@ -17,6 +17,7 @@ const en: typeof es = {
     remove: 'Remove',
     removeNamed: 'Remove {name}',
     duplicate: 'Duplicate',
+    rename: 'Rename',
     cancel: 'Cancel',
     confirm: 'Confirm',
     back: 'Back',

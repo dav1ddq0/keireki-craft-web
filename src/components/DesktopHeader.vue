@@ -42,7 +42,8 @@ const saveText = computed(() => {
     <nav v-if="ui.view === 'editor'" class="crumbs" :aria-label="t('header.breadcrumb')">
       <button type="button" class="crumb m3-state" @click="ui.view = 'documents'">{{ t('nav.documents') }}</button>
       <span class="sep" aria-hidden="true">/</span>
-      <input v-model="cv.data.meta.title" class="doc-title" :aria-label="t('header.docTitle')" :placeholder="t('documents.untitled')" />
+      <!-- The page you are on, not a field: the CV is renamed in My CVs (spec 073). -->
+      <span class="doc-title" aria-current="page">{{ cv.data.meta.title.trim() || t('documents.untitled') }}</span>
       <span class="state" :class="{ 'state--error': cv.saveState === 'error' }" role="status">
         <span v-if="cv.saveState === 'saved'" class="dot" aria-hidden="true" />{{ saveText }}
       </span>
@@ -141,23 +142,15 @@ const saveText = computed(() => {
 }
 
 .doc-title {
-  /* Grows with its text where supported; the max keeps a long name from pushing the actions out. */
-  field-sizing: content;
-  min-width: 6ch;
+  /* Text, not a field: a long name is cut with "…" so it never pushes the actions out. */
   max-width: 28ch;
-  min-height: 40px;
-  padding: 0 12px;
-  border: 1px solid transparent;
-  border-radius: var(--shape-md);
-  background: transparent;
+  padding: 0 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   color: var(--md-on-surface);
   font: var(--type-title-medium);
   letter-spacing: var(--tracking-title-medium);
-}
-
-.doc-title:hover,
-.doc-title:focus-visible {
-  border-color: var(--md-outline);
 }
 
 .state {

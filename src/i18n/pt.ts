@@ -18,6 +18,7 @@ const pt: typeof es = {
     remove: 'Eliminar',
     removeNamed: 'Eliminar {name}',
     duplicate: 'Duplicar',
+    rename: 'Mudar o nome',
     cancel: 'Cancelar',
     confirm: 'Confirmar',
     back: 'Voltar',

@@ -17,6 +17,7 @@ const fr: typeof es = {
     remove: 'Supprimer',
     removeNamed: 'Supprimer {name}',
     duplicate: 'Dupliquer',
+    rename: 'Renommer',
     cancel: 'Annuler',
     confirm: 'Confirmer',
     back: 'Retour',
