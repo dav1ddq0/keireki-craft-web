@@ -1,7 +1,7 @@
 import type { CVData } from '@/types/cv'
 import printCss from '@/styles/print.css?raw'
 import { collectDocumentCss, renderTemplateHtml, resolvePhoto } from './render'
-import { downloadBlob, slugify } from './download'
+import { downloadBlob } from './download'
 import { embeddedFontCss } from './fonts'
 import { fontStackWithStandIns } from '@/core/fontStandIns'
 
@@ -59,9 +59,9 @@ body { margin: 0; background: #f3f4f6; display: flex; justify-content: center; }
   }
 }
 
-export async function exportHtml(data: CVData, templateId: string): Promise<void> {
+/** Downloads the standalone HTML as `<name>.html`; `name` is the stem from `fileName` (spec 073). */
+export async function exportHtml(data: CVData, templateId: string, name: string): Promise<void> {
   const html = await buildStandaloneHtml(data, templateId)
-  const name = slugify(data.personal.fullName || data.meta.title)
   downloadBlob(new Blob([html], { type: 'text/html;charset=utf-8' }), `${name}.html`)
 }
 

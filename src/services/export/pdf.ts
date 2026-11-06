@@ -1,6 +1,7 @@
 import type { CVData } from '@/types/cv'
 import printCss from '@/styles/print.css?raw'
 import { collectDocumentCss, renderTemplateHtml, resolvePhoto } from './render'
+import { safeFileName } from './download'
 
 /**
  * Every interaction with paged.js is confined to this module (spec §6 and the
@@ -37,16 +38,18 @@ export interface PrintOptions {
  * "Nadia Martín Reyes – CV"; the document title when there is no name; "CV" when there is neither.
  */
 export function printTitle(data: CVData): string {
-  // Path characters, control characters and bidi overrides (U+202E could make "…exe.pdf" read as
-  // something else) never reach the file name or the PDF's title (spec 034).
-  const clean = (value: string) =>
-    value
-      .replace(/[/\\:*?"<>|\u0000-\u001f\u007f\u200e\u200f\u202a-\u202e\u2066-\u2069]/g, '')
-      .replace(/\s+/g, ' ')
-      .trim()
-  const name = clean(data.personal.fullName)
+  // Nothing unsafe reaches the file name or the PDF's title (spec 034).
+  const name = safeFileName(data.personal.fullName)
   if (name) return `${name} – CV`
-  return clean(data.meta.title) || 'CV'
+  return safeFileName(data.meta.title) || 'CV'
+}
+
+/**
+ * The stem of an exported file, without the extension: the name the user typed in Export, made safe,
+ * or the print title when that leaves nothing (spec 073). The same for every format.
+ */
+export function fileName(data: CVData, chosen = ''): string {
+  return safeFileName(chosen) || printTitle(data)
 }
 
 export async function printCv(

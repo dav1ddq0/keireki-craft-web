@@ -118,7 +118,7 @@ const pdfImages = (file) => execFileSync('pdfimages', ['-list', file]).toString(
       fs.writeFileSync(f('print.pdf'), await p.pdf({ preferCSSPageSize: true, printBackground: true }))
       await p.evaluate(() => window.dispatchEvent(new Event('afterprint')))
 
-      check(id, 'file names keep the name', pdfName === 'Łucja Øster-Ñúñez – CV.pdf' && htmlName === 'lucja-oster-nunez.html' && jsonName === 'lucja-oster-nunez.json', `${pdfName} · ${htmlName} · ${jsonName}`)
+      check(id, 'file names keep the name', pdfName === 'Łucja Øster-Ñúñez – CV.pdf' && htmlName === 'Łucja Øster-Ñúñez – CV.html' && jsonName === 'Łucja Øster-Ñúñez – CV.json', `${pdfName} · ${htmlName} · ${jsonName}`)
       const down = JSON.parse(fs.readFileSync(f('down.json'), 'utf8'))
       check(id, 'downloaded JSON carries the photo as a data URL', /^data:image\/(jpeg|png|webp);base64,/.test(down.personal.photo || ''), (down.personal.photo || 'none').slice(0, 30))
       const changed = diff(withoutPhoto(src), withoutPhoto(down))

@@ -10,6 +10,7 @@ vi.mock('@/services/export', () => ({
   downloadBlob: vi.fn(),
   sideColumnOverflows: vi.fn(async () => false),
   printTitle: () => 'Ana – CV',
+  fileName: (_data: unknown, chosen?: string) => chosen || 'Ana – CV',
 }))
 
 vi.mock('@/services/export/image', async (original) => ({

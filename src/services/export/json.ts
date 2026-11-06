@@ -2,7 +2,7 @@ import type { CVData } from '@/types/cv'
 import { migrate } from '@/core/migrations'
 import { loadPhoto } from '@/services/storage'
 import { readPrefs } from '@/services/prefs'
-import { downloadBlob, slugify } from './download'
+import { downloadBlob } from './download'
 
 /**
  * JSON is the canonical portability format (spec §6), so the exported file must
@@ -18,9 +18,9 @@ export async function toExportableJson(data: CVData): Promise<string> {
   return JSON.stringify(copy, null, 2)
 }
 
-export async function exportJson(data: CVData): Promise<void> {
+/** Downloads the CV as `<name>.json`; `name` is the stem from `fileName` (spec 073). */
+export async function exportJson(data: CVData, name: string): Promise<void> {
   const json = await toExportableJson(data)
-  const name = slugify(data.personal.fullName || data.meta.title)
   downloadBlob(new Blob([json], { type: 'application/json' }), `${name}.json`)
 }
 

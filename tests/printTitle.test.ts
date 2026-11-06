@@ -8,7 +8,7 @@ vi.mock('@/services/export/render', () => ({
   collectDocumentCss: () => '',
 }))
 
-const { printCv, printTitle } = await import('@/services/export/pdf')
+const { fileName, printCv, printTitle } = await import('@/services/export/pdf')
 
 const cvNamed = (fullName: string, title = 'Mi CV') => {
   const cv = createEmptyCV()
@@ -26,6 +26,20 @@ describe('printTitle (spec 024)', () => {
 
   it('drops characters that file names cannot hold', () => {
     expect(printTitle(cvNamed('Ana / López: "dev"?'))).toBe('Ana López dev – CV')
+  })
+})
+
+describe('fileName (spec 073)', () => {
+  it('is the name typed in Export, else the print title, for every format', () => {
+    expect(fileName(cvNamed('Nadia Martín Reyes'), 'CV Frontend 2026')).toBe('CV Frontend 2026')
+    expect(fileName(cvNamed('Nadia Martín Reyes'))).toBe('Nadia Martín Reyes – CV')
+    expect(fileName(cvNamed('Nadia Martín Reyes'), '   ')).toBe('Nadia Martín Reyes – CV')
+  })
+
+  it('makes a typed name safe, and falls back when nothing safe is left', () => {
+    expect(fileName(cvNamed('Ana'), '../cv\u202Efdp.exe')).toBe('..cvfdp.exe')
+    expect(fileName(cvNamed('Ana'), '  mi   cv  ')).toBe('mi cv')
+    expect(fileName(cvNamed('Ana'), '/:*?')).toBe('Ana – CV')
   })
 })
 

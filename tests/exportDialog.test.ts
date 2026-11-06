@@ -10,6 +10,7 @@ vi.mock('@/services/export', () => ({
   downloadBlob: vi.fn(),
   sideColumnOverflows: vi.fn(async () => false),
   printTitle: () => 'Ana – CV',
+  fileName: (_data: unknown, chosen?: string) => chosen || 'Ana – CV',
 }))
 
 vi.mock('@/services/export/pdfDirect', () => ({
@@ -112,5 +113,19 @@ describe('ExportDialog side column check (spec 033)', () => {
     vi.mocked(exporters.sideColumnOverflows).mockResolvedValue(false)
     vi.useRealTimers()
     wrapper.unmount()
+  })
+})
+
+describe('useCvExport file name (spec 073)', () => {
+  it('names the HTML and JSON files like the PDF, or with the name typed for this download', async () => {
+    const { useCvExport } = await import('@/composables/useCvExport')
+    useCvStore()
+    const { run } = useCvExport()
+    vi.mocked(exporters.exportHtml).mockClear()
+    vi.mocked(exporters.exportJson).mockClear()
+    await run('html')
+    expect(vi.mocked(exporters.exportHtml).mock.calls[0]![2]).toBe('Ana – CV')
+    await run('json', 'CV Frontend 2026')
+    expect(vi.mocked(exporters.exportJson).mock.calls[0]![1]).toBe('CV Frontend 2026')
   })
 })
