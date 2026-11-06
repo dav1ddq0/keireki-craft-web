@@ -89,6 +89,8 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
 
+- **074** · Long words stay in their column, in every template
+
 
 ## Backlog / ideas 💡
 
