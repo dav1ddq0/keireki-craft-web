@@ -129,3 +129,37 @@ describe('useCvExport file name (spec 073)', () => {
     expect(vi.mocked(exporters.exportJson).mock.calls[0]![1]).toBe('CV Frontend 2026')
   })
 })
+
+describe('ExportDialog file name (spec 073)', () => {
+  it('shows the extension of the chosen format, and no field for printing', async () => {
+    useCvStore()
+    const wrapper = mount(ExportDialog, { props: { open: false }, attachTo: document.body })
+    await wrapper.setProps({ open: true })
+    expect(wrapper.find('input[type="text"]').element).toHaveProperty('value', 'Ana – CV')
+    expect(wrapper.find('.ext').text()).toBe('.pdf')
+    await wrapper.find('input[value="html"]').setValue(true)
+    expect(wrapper.find('.ext').text()).toBe('.html')
+    await wrapper.find('input[value="pdf"]').setValue(true)
+    expect(wrapper.find('input[type="text"]').exists()).toBe(false)
+    expect(wrapper.find('.note').text()).toContain('Ana – CV.pdf')
+  })
+
+  it('downloads under the typed name, names the default when cleared, and starts over on reopening', async () => {
+    useCvStore()
+    vi.mocked(exporters.exportJson).mockClear()
+    const wrapper = mount(ExportDialog, { props: { open: false }, attachTo: document.body })
+    await wrapper.setProps({ open: true })
+    await wrapper.find('input[value="json"]').setValue(true)
+    const field = wrapper.find('input[type="text"]')
+    await field.setValue('')
+    expect(wrapper.text()).toContain('Vacío: se usará «Ana – CV».')
+    await field.setValue('CV Frontend 2026')
+    await wrapper.find('button.btn--primary').trigger('click')
+    await vi.waitFor(() => expect(exporters.exportJson).toHaveBeenCalledTimes(1))
+    expect(vi.mocked(exporters.exportJson).mock.calls[0]![1]).toBe('CV Frontend 2026')
+
+    await wrapper.setProps({ open: false })
+    await wrapper.setProps({ open: true })
+    expect(wrapper.find('input[type="text"]').element).toHaveProperty('value', 'Ana – CV')
+  })
+})

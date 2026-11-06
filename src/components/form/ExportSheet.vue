@@ -5,13 +5,26 @@ import { useCvExport, type ExportKind } from '@/composables/useCvExport'
 import BottomSheet from '@/components/ui/BottomSheet.vue'
 import { useCvStore } from '@/stores/cv'
 import { printTitle } from '@/services/export'
+import { computed, ref, watch } from 'vue'
+import FileNameField from './FileNameField.vue'
 
-defineProps<{ open: boolean }>()
+const props = defineProps<{ open: boolean }>()
 const emit = defineEmits<{ close: [] }>()
 
 const { t } = useI18n()
 const cv = useCvStore()
 const { busy, failed, run } = useCvExport()
+
+/** The file name, for this download only: each opening starts from the default again (spec 073). */
+const defaultName = computed(() => printTitle(cv.data))
+const name = ref('')
+watch(
+  () => props.open,
+  (open) => {
+    if (open) name.value = defaultName.value
+  },
+  { immediate: true },
+)
 
 const OPTIONS: { kind: ExportKind; title: string; hint: string }[] = [
   { kind: 'pdfFile', title: 'exportView.pdfFile', hint: 'exportView.pdfFileHint' },
@@ -29,7 +42,7 @@ function actionLabel(kind: ExportKind): string {
 
 /** A direct PDF that fails keeps the sheet open, with printing offered instead. */
 async function pick(kind: ExportKind) {
-  if (await run(kind)) emit('close')
+  if (await run(kind, name.value)) emit('close')
 }
 </script>
 
@@ -42,13 +55,14 @@ async function pick(kind: ExportKind) {
     <div v-if="failed === 'jpg'" class="failed" role="alert">
       <p class="failed-text">{{ t('exportView.imageFailed') }}</p>
     </div>
+    <FileNameField v-model="name" class="file-name" :fallback="defaultName" />
     <ul class="list">
       <li v-for="option in OPTIONS" :key="option.kind">
         <button type="button" class="row" :disabled="busy !== null" @click="pick(option.kind)">
           <span class="text">
             <span class="name">{{ t(option.title) }}</span>
             <span class="hint">{{ t(option.hint) }}</span>
-            <span v-if="option.kind === 'pdf'" class="hint">{{ t('exportDialog.printNote', { file: printTitle(cv.data) }) }}</span>
+            <span v-if="option.kind === 'pdf'" class="hint">{{ t('exportDialog.printNote', { file: defaultName }) }}</span>
           </span>
           <span class="action">{{ actionLabel(option.kind) }}</span>
         </button>
@@ -58,6 +72,11 @@ async function pick(kind: ExportKind) {
 </template>
 
 <style scoped>
+/* Its hint, not the first row, sits under the field. */
+.file-name {
+  margin-bottom: 8px;
+}
+
 .list {
   list-style: none;
   margin: 0;

@@ -3,7 +3,7 @@
  * Desktop export (spec 018): pick a format, see what is still missing, run it. A modal native
  * <dialog>: focus trap, Esc and focus return come free, as in BottomSheet.
  */
-import { computed, ref, useId, useTemplateRef } from 'vue'
+import { computed, ref, useId, useTemplateRef, watch } from 'vue'
 import { useModalDialog } from '@/composables/useModalDialog'
 import { useUiStore, type StepId } from '@/stores/ui'
 import { useCvStore } from '@/stores/cv'
@@ -13,6 +13,7 @@ import { useCvExport, type ExportKind } from '@/composables/useCvExport'
 import { printTitle } from '@/services/export'
 import { useSideColumnFit } from '@/composables/useSideColumnFit'
 import BaseButton from '@/components/ui/BaseButton.vue'
+import FileNameField from './FileNameField.vue'
 
 const props = defineProps<{ open: boolean }>()
 const emit = defineEmits<{ close: [] }>()
@@ -28,6 +29,17 @@ const titleId = useId()
 const kind = ref<ExportKind>('pdfFile')
 
 useModalDialog(dialog, () => props.open)
+
+/** The file name, for this download only: each opening starts from the default again (spec 073). */
+const defaultName = computed(() => printTitle(cv.data))
+const name = ref('')
+watch(
+  () => props.open,
+  (open) => {
+    if (open) name.value = defaultName.value
+  },
+  { immediate: true },
+)
 
 const FORMATS: { kind: ExportKind; title: string; hint: string }[] = [
   { kind: 'pdfFile', title: 'exportView.pdfFile', hint: 'exportView.pdfFileHint' },
@@ -49,6 +61,8 @@ const ACTIONS: Record<ExportKind, string> = {
 }
 const action = computed(() => t(ACTIONS[kind.value]))
 
+const EXTENSIONS: Record<ExportKind, string> = { pdfFile: '.pdf', pdf: '', jpg: '.jpg', html: '.html', json: '.json' }
+
 function goFix(id: StepId) {
   ui.goTo(id)
   dialog.value?.close()
@@ -57,12 +71,12 @@ function goFix(id: StepId) {
 async function confirm() {
   // A direct download keeps the dialog open while it is built, so a failure can be shown here.
   if (kind.value === 'pdfFile' || kind.value === 'jpg') {
-    if (await run(kind.value)) dialog.value?.close()
+    if (await run(kind.value, name.value)) dialog.value?.close()
     return
   }
   // The print dialog must not open on top of a modal that is still showing.
   dialog.value?.close()
-  await run(kind.value)
+  await run(kind.value, name.value)
 }
 
 function printInstead() {
@@ -92,7 +106,8 @@ function printInstead() {
         </span>
       </label>
     </div>
-    <p v-if="kind === 'pdf'" class="note">{{ t('exportDialog.printNote', { file: printTitle(cv.data) }) }}</p>
+    <p v-if="kind === 'pdf'" class="note">{{ t('exportDialog.printNote', { file: defaultName }) }}</p>
+    <FileNameField v-else v-model="name" :fallback="defaultName" :ext="EXTENSIONS[kind]" />
     <div v-if="failed === 'pdfFile'" class="failed" role="alert">
       <p class="failed-text">{{ t('exportView.pdfFileFailed') }}</p>
       <BaseButton variant="secondary" @click="printInstead">{{ t('exportView.printInstead') }}</BaseButton>

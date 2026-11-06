@@ -8,6 +8,7 @@ import BaseButton from '@/components/ui/BaseButton.vue'
 import NoticeBar from '@/components/ui/NoticeBar.vue'
 import PaginatedPreview from '@/components/preview/PaginatedPreview.vue'
 import ReviewCard from './ReviewCard.vue'
+import FileNameField from './FileNameField.vue'
 import { useSideColumnFit } from '@/composables/useSideColumnFit'
 
 const cv = useCvStore()
@@ -16,6 +17,9 @@ const { t } = useI18n()
 const showPaginated = ref(false)
 const { busy, failed, run } = useCvExport()
 const { overflows: sideTooLong } = useSideColumnFit()
+
+/** The file name, for this download only: it starts from the default each time the step opens (spec 073). */
+const name = ref(printTitle(cv.data))
 </script>
 
 <template>
@@ -26,13 +30,15 @@ const { overflows: sideTooLong } = useSideColumnFit()
 
     <NoticeBar v-if="sideTooLong" tone="warning">{{ t('exportView.sideTooLong') }}</NoticeBar>
 
+    <FileNameField v-model="name" :fallback="printTitle(cv.data)" />
+
     <ul class="options">
       <li class="option">
         <div>
           <h3 class="option-title">{{ t('exportView.pdfFile') }}</h3>
           <p class="option-hint">{{ t('exportView.pdfFileHint') }}</p>
         </div>
-        <BaseButton variant="primary" :disabled="busy !== null" @click="run('pdfFile')">
+        <BaseButton variant="primary" :disabled="busy !== null" @click="run('pdfFile', name)">
           {{ busy === 'pdfFile' ? t('exportView.preparing') : t('exportView.downloadPdf') }}
         </BaseButton>
         <div v-if="failed === 'pdfFile'" class="failed" role="alert">
@@ -57,7 +63,7 @@ const { overflows: sideTooLong } = useSideColumnFit()
           <h3 class="option-title">{{ t('exportView.image') }}</h3>
           <p class="option-hint">{{ t('exportView.imageHint') }}</p>
         </div>
-        <BaseButton :disabled="busy !== null" @click="run('jpg')">
+        <BaseButton :disabled="busy !== null" @click="run('jpg', name)">
           {{ busy === 'jpg' ? t('exportView.preparing') : t('exportView.downloadImage') }}
         </BaseButton>
         <div v-if="failed === 'jpg'" class="failed" role="alert">
@@ -70,7 +76,7 @@ const { overflows: sideTooLong } = useSideColumnFit()
           <h3 class="option-title">{{ t('exportView.html') }}</h3>
           <p class="option-hint">{{ t('exportView.htmlHint') }}</p>
         </div>
-        <BaseButton :disabled="busy !== null" @click="run('html')">
+        <BaseButton :disabled="busy !== null" @click="run('html', name)">
           {{ t('exportView.download') }}
         </BaseButton>
       </li>
@@ -80,7 +86,7 @@ const { overflows: sideTooLong } = useSideColumnFit()
           <h3 class="option-title">{{ t('exportView.json') }}</h3>
           <p class="option-hint">{{ t('exportView.jsonHint') }}</p>
         </div>
-        <BaseButton :disabled="busy !== null" @click="run('json')">
+        <BaseButton :disabled="busy !== null" @click="run('json', name)">
           {{ t('exportView.download') }}
         </BaseButton>
       </li>
