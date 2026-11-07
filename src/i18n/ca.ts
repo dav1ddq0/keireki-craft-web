@@ -475,6 +475,8 @@ const ca: typeof es = {
     languageCount: '{n} idiomes',
     noAccount: 'Sense compte',
     noAnalytics: 'Sense analítica',
+    carouselPause: 'Pausa l’animació',
+    carouselPlay: 'Reprèn l’animació',
     previewLabel: 'El mateix CV, una altra plantilla:',
     previewGroup: 'Canvia la plantilla de l’exemple',
     seeAll: 'Mostra-les totes',

@@ -475,6 +475,8 @@ const de: typeof es = {
     languageCount: '{n} Sprachen',
     noAccount: 'Kein Konto',
     noAnalytics: 'Keine Webanalyse',
+    carouselPause: 'Animation anhalten',
+    carouselPlay: 'Animation fortsetzen',
     previewLabel: 'Derselbe Lebenslauf, eine andere Vorlage:',
     previewGroup: 'Vorlage des Beispiels wechseln',
     seeAll: 'Alle ansehen',

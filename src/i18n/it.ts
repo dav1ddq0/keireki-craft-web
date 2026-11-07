@@ -475,6 +475,8 @@ const it: typeof es = {
     languageCount: '{n} lingue',
     noAccount: 'Nessun account',
     noAnalytics: 'Nessuna statistica di visita',
+    carouselPause: 'Metti in pausa l’animazione',
+    carouselPlay: 'Riprendi l’animazione',
     previewLabel: 'Stesso CV, un altro modello:',
     previewGroup: 'Cambia il modello dell’esempio',
     seeAll: 'Vedi tutti',

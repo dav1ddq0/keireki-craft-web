@@ -475,6 +475,8 @@ const eu: typeof es = {
     languageCount: '{n} hizkuntza',
     noAccount: 'Konturik gabe',
     noAnalytics: 'Analitikarik gabe',
+    carouselPause: 'Pausatu animazioa',
+    carouselPlay: 'Berrekin animazioari',
     previewLabel: 'CV bera, beste txantiloi batekin:',
     previewGroup: 'Aldatu adibidearen txantiloia',
     seeAll: 'Ikusi denak',

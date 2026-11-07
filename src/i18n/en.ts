@@ -475,6 +475,8 @@ const en: typeof es = {
     languageCount: '{n} languages',
     noAccount: 'No account',
     noAnalytics: 'No analytics',
+    carouselPause: 'Pause the animation',
+    carouselPlay: 'Play the animation',
     previewLabel: 'Same CV, another template:',
     previewGroup: 'Change the sample’s template',
     seeAll: 'See all',

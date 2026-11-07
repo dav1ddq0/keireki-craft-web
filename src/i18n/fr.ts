@@ -475,6 +475,8 @@ const fr: typeof es = {
     languageCount: '{n} langues',
     noAccount: 'Sans compte',
     noAnalytics: 'Sans mesure d’audience',
+    carouselPause: 'Mettre l’animation en pause',
+    carouselPlay: 'Reprendre l’animation',
     previewLabel: 'Même CV, autre modèle :',
     previewGroup: 'Changer le modèle de l’exemple',
     seeAll: 'Tout voir',

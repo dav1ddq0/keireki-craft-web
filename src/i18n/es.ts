@@ -476,6 +476,8 @@ export default {
     languageCount: '{n} idiomas',
     noAccount: 'Sin cuenta',
     noAnalytics: 'Sin analítica',
+    carouselPause: 'Pausar la animación',
+    carouselPlay: 'Reanudar la animación',
     previewLabel: 'Mismo CV, otra plantilla:',
     previewGroup: 'Cambiar la plantilla del ejemplo',
     seeAll: 'Ver todas',
