@@ -84,13 +84,12 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 - **071** · Amber: a dark side column with a timeline and a warm accent; Raleway among the bundled fonts
 - **072** · Fixes from the Amber stress test: the direct PDF keeps wrapped inline text on its line, long words stay in Amber's side column
 - **073** · The file name, where the CV is exported: a "File name" field in Export, the header's document name as text, Rename in My CVs
+- **074** · Long words stay in their column, in every template
 - **075** · Nothing is lost at a page break: paged.js measures again after the cut; ledger, monogram and cobalt keep every section
 
 ## Next 🔜
 
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
-
-- **074** · Long words stay in their column, in every template
 
 
 ## Backlog / ideas 💡

@@ -1,6 +1,6 @@
 # 074 · Long words stay in their column, in every template
 
-**Status:** proposed
+**Status:** done
 
 ## What it does
 
@@ -29,16 +29,16 @@ interface and the CV in German and Basque.
 
 ## Acceptance criteria
 
-- [ ] With a 39-character word in every field, nothing leaves its column in any of the 16 templates
+- [x] With a 39-character word in every field, nothing leaves its column in any of the 16 templates
       (print and direct PDF).
-- [ ] With a 64-character word in every field, the same.
-- [ ] A long word breaks only when it does not fit: names of skills and languages, titles and the
+- [x] With a 64-character word in every field, the same.
+- [x] A long word breaks only when it does not fit: names of skills and languages, titles and the
       full name are not cut into a few letters when a whole word would fit on its own line.
-- [ ] No column widens to hold a long word: the side and main columns keep their width.
-- [ ] Every template's ordinary sample CV looks the same as before (`qa:pdf` differences unchanged).
-- [ ] `qa:pdf` gains a long-word case that runs the probe above in every template, so it cannot come
+- [x] No column widens to hold a long word: the side and main columns keep their width.
+- [x] Every template's ordinary sample CV looks the same as before (`qa:pdf` differences unchanged).
+- [x] `qa:pdf` gains a long-word case that runs the probe above in every template, so it cannot come
       back.
-- [ ] `npm test`, `npm run build`, `qa:pdf`, `qa:consistency` pass.
+- [x] `npm test`, `npm run build`, `qa:pdf`, `qa:consistency` pass.
 
 ## Out of scope
 
