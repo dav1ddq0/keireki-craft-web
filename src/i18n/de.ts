@@ -496,7 +496,6 @@ const de: typeof es = {
     moveQ: 'Und wenn ich den Computer wechsle oder der Browser seine Daten löscht?',
     moveA: 'Ihr Lebenslauf folgt Ihnen nicht von selbst. Speichern Sie ab und zu eine JSON-Kopie und importieren Sie sie, wo Sie möchten. Ein Browser ohne Speicherplatz kann Daten löschen, und die App warnt Sie davor.',
     closingTitle: 'Fangen Sie jetzt an. Vorher ist nichts auszufüllen.',
-    licence: 'Keireki Craft · MIT-Lizenz',
     github: 'Code auf GitHub',
   },
   importView: {

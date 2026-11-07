@@ -496,7 +496,6 @@ const fr: typeof es = {
     moveQ: 'Et si je change d’ordinateur ou si le navigateur efface ses données ?',
     moveA: 'Votre CV ne vous suit pas tout seul. Enregistrez une copie JSON de temps en temps et importez-la où vous voulez. Un navigateur à court d’espace peut effacer des données, et l’application vous prévient.',
     closingTitle: 'Commencez maintenant. Rien à remplir avant.',
-    licence: 'Keireki Craft · Licence MIT',
     github: 'Code sur GitHub',
   },
   importView: {

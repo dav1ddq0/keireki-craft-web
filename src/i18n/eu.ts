@@ -496,7 +496,6 @@ const eu: typeof es = {
     moveQ: 'Eta ordenagailuz aldatzen badut edo nabigatzaileak bere datuak ezabatzen baditu?',
     moveA: 'Zure CVa ez zaizu berez etortzen. Gorde JSON kopia bat noizean behin eta inportatu nahi duzun lekuan. Nabigatzailea lekurik gabe geratzen bada datuak ezaba ditzake, eta aplikazioak abisatu egiten dizu.',
     closingTitle: 'Hasi orain. Ez dago ezer bete beharrik aurretik.',
-    licence: 'Keireki Craft · MIT lizentzia',
     github: 'Kodea GitHuben',
   },
   importView: {

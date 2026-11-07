@@ -72,6 +72,18 @@ describe('WelcomeView, the home (specs 019, 076, 077)', () => {
     expect(chooseTemplate).toHaveBeenCalledWith('editorial')
   })
 
+  it('signs the footer with the author and links the code with the GitHub mark alone', () => {
+    const { wrapper } = setup()
+    const footer = wrapper.find('footer')
+    expect(footer.find('span').text()).toBe('Keireki Craft · dav1ddq0')
+    expect(footer.text()).not.toContain('MIT')
+    const repo = footer.find('a')
+    expect(repo.attributes('href')).toBe('https://github.com/dav1ddq0/keireki-craft-web')
+    expect(repo.attributes('aria-label')).toBe('Código en GitHub')
+    expect(repo.find('svg').exists()).toBe(true)
+    expect(repo.text()).toBe('')
+  })
+
   it('"See all templates" opens a blank CV on the style step', async () => {
     const { ui, button } = setup()
     await button(`Ver las ${templates.length} plantillas`).trigger('click')

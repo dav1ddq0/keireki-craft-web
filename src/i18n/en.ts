@@ -496,7 +496,6 @@ const en: typeof es = {
     moveQ: 'What if I switch computers or the browser clears its data?',
     moveA: 'Your CV does not follow you by itself. Save a JSON copy now and then and import it wherever you like. A browser that runs out of space may clear data, and the app warns you.',
     closingTitle: 'Start now. Nothing to fill in first.',
-    licence: 'Keireki Craft · MIT licence',
     github: 'Code on GitHub',
   },
   importView: {

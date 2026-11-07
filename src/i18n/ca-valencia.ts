@@ -496,7 +496,6 @@ const caValencia: typeof es = {
     moveQ: 'I si canvie d’ordinador o el navegador n’esborra les dades?',
     moveA: 'El vostre CV no vos seguix a soles. Guardeu una còpia JSON de tant en tant i importeu-la on vulgueu. Si el navegador es queda sense espai pot esborrar dades, i l’aplicació vos avisa.',
     closingTitle: 'Comenceu ara. No cal omplir res abans.',
-    licence: 'Keireki Craft · Llicència MIT',
     github: 'Codi a GitHub',
   },
   importView: {

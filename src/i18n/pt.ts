@@ -497,7 +497,6 @@ const pt: typeof es = {
     moveQ: 'E se mudar de computador ou o navegador apagar os seus dados?',
     moveA: 'O seu CV não o acompanha sozinho. Guarde uma cópia JSON de vez em quando e importe-a onde quiser. Um navegador sem espaço pode apagar dados, e a aplicação avisa-o.',
     closingTitle: 'Comece já. Não há nada a preencher antes.',
-    licence: 'Keireki Craft · Licença MIT',
     github: 'Código no GitHub',
   },
   importView: {

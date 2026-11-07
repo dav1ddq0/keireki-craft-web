@@ -497,7 +497,6 @@ export default {
     moveQ: '¿Y si cambio de ordenador o el navegador borra sus datos?',
     moveA: 'Tu CV no te sigue solo. Guarda una copia JSON de vez en cuando e impórtala donde quieras. Si el navegador se queda sin espacio puede borrar datos, y la app te avisa.',
     closingTitle: 'Empieza ahora. No hay nada que rellenar antes.',
-    licence: 'Keireki Craft · Licencia MIT',
     github: 'Código en GitHub',
   },
   importView: {

@@ -496,7 +496,6 @@ const it: typeof es = {
     moveQ: 'E se cambio computer o il browser cancella i suoi dati?',
     moveA: 'Il Suo CV non La segue da solo. Salvi ogni tanto una copia JSON e la importi dove vuole. Un browser senza spazio può cancellare dati, e l’app La avvisa.',
     closingTitle: 'Inizi ora. Non c’è niente da compilare prima.',
-    licence: 'Keireki Craft · Licenza MIT',
     github: 'Codice su GitHub',
   },
   importView: {
