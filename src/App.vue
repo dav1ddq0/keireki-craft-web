@@ -12,6 +12,7 @@ import WelcomeView from '@/components/documents/WelcomeView.vue'
 import NoticeBar from '@/components/ui/NoticeBar.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import { useBackup } from '@/composables/useBackup'
+import { useBackupFolder } from '@/composables/useBackupFolder'
 import StartupFailed from '@/components/StartupFailed.vue'
 import { useIsDesktop, useIsPhone } from '@/composables/useIsPhone'
 import StepRail from '@/components/form/StepRail.vue'
@@ -28,6 +29,7 @@ const isDesktop = useIsDesktop()
 const ImportView = defineAsyncComponent(() => import('@/components/import/ImportView.vue'))
 
 const { busy: backingUp, backUp } = useBackup()
+const backupFolder = useBackupFolder()
 
 /** The stored CVs could not be opened: the root only decides whether to say so. */
 const startupFailed = ref(false)
@@ -43,6 +45,8 @@ onMounted(async () => {
   }
   // First visit: nothing saved yet, so offer the ways in rather than an empty form (spec 019).
   if (!cv.documents.length) ui.view = 'welcome'
+  // Where a backup folder was chosen, every save is copied there from now on (spec 079).
+  backupFolder.start()
   window.addEventListener('keydown', onKeydown)
   window.addEventListener('beforeunload', flushPending)
 })
