@@ -1,3 +1,4 @@
+import type { Layout } from 'pagedjs'
 import type { CVData } from '@/types/cv'
 import printCss from '@/styles/print.css?raw'
 import { collectDocumentCss, renderTemplateHtml, resolvePhoto } from './render'
@@ -206,6 +207,87 @@ function blockEnd(css: string, open: number): number {
   return css.length
 }
 
+/** Cuts moved earlier on one page at most: each move is earlier, so this only bounds a pathology. */
+const MAX_REMEASURES = 8
+
+/**
+ * Hides what follows `start` (it included) up to the end of `root`, and drops the bottom padding and
+ * margin of the boxes it lies in, as paged.js does to the boxes a page break splits
+ * (`[data-split-to]`). Returns the function that puts everything back. Exported for its tests.
+ */
+export function hideFrom(start: Node, root: Element): () => void {
+  const undo: Array<() => void> = []
+  /** Sets inline styles on `el`, to be undone to the very attribute it had (or none). */
+  const restyle = (el: HTMLElement | SVGElement, styles: Record<string, string>) => {
+    const before = el.getAttribute('style')
+    Object.assign(el.style, styles)
+    undo.push(() => (before === null ? el.removeAttribute('style') : el.setAttribute('style', before)))
+  }
+  const hide = (node: Node) => {
+    if (node instanceof HTMLElement || node instanceof SVGElement) {
+      restyle(node, { display: 'none' })
+    } else if (node.nodeType === Node.TEXT_NODE && node.parentNode) {
+      const wrap = document.createElement('span')
+      wrap.style.display = 'none'
+      node.parentNode.replaceChild(wrap, node)
+      wrap.appendChild(node)
+      undo.push(() => wrap.replaceWith(node))
+    }
+  }
+  for (let node: Node | null = start; node && node !== root; node = node.parentNode) {
+    for (let sibling: Node | null = node === start ? node : node.nextSibling; sibling; ) {
+      const next: Node | null = sibling.nextSibling
+      hide(sibling)
+      sibling = next
+    }
+    const box = node.parentNode
+    if (box instanceof HTMLElement && box !== root) restyle(box, { paddingBottom: '0', marginBottom: '0' })
+  }
+  return () => undo.reverse().forEach((restore) => restore())
+}
+
+/**
+ * paged.js cuts a page at the first thing laid out past it and removes the rest, without measuring
+ * what is left. Removing it can make the page overflow again: a box that was split gets its bottom
+ * padding back (a side column whose neighbour no longer runs on), an empty section shell stays at
+ * the foot, and Chrome then moves an earlier section past the sheet, where nothing prints it
+ * (spec 075). This measures the page as the cut will leave it and moves the cut before anything
+ * that would fall outside, until nothing new does.
+ */
+function remeasureAfterCut(overflow: Range | undefined, rendered: Element, bounds: DOMRect, layout: Layout): Range | undefined {
+  if (!overflow) return overflow
+  let cut = overflow
+  for (let i = 0; i < MAX_REMEASURES; i++) {
+    // A cut inside a text node keeps that text in the trial: it is measured where it is.
+    const start = cut.startContainer.nodeType === Node.TEXT_NODE ? cut.startContainer.nextSibling : cut.startContainer.childNodes[cut.startOffset] ?? null
+    if (!start || !rendered.contains(start)) return cut
+    const restore = hideFrom(start, rendered)
+    let again: Range | undefined
+    try {
+      again = layout.findOverflow(rendered, bounds)
+    } finally {
+      restore()
+    }
+    if (!again || again.compareBoundaryPoints(Range.START_TO_START, cut) >= 0) return cut
+    cut = again
+  }
+  return cut
+}
+
+let remeasureRegistered = false
+
+/** Registers `remeasureAfterCut` on paged.js's overflow hook, once for every later run. */
+function registerRemeasure(pagedjs: typeof import('pagedjs')): void {
+  if (remeasureRegistered) return
+  remeasureRegistered = true
+  class RemeasureAfterCut extends pagedjs.Handler {
+    onOverflow(overflow: Range | undefined, rendered: Element, bounds: DOMRect, layout: Layout) {
+      return remeasureAfterCut(overflow, rendered, bounds, layout)
+    }
+  }
+  pagedjs.registerHandlers(RemeasureAfterCut)
+}
+
 /**
  * Paginates `html` into `container` using paged.js.
  *
@@ -239,7 +321,9 @@ export async function paginateInto(
   const mover = new MutationObserver(place)
   mover.observe(document.head, { childList: true })
   try {
-    const { Previewer } = await import('pagedjs')
+    const pagedjs = await import('pagedjs')
+    registerRemeasure(pagedjs)
+    const { Previewer } = pagedjs
     const previewer = new Previewer()
     // The `.cv-page` wrapper is what every print.css rule is scoped to (keep entries whole, section
     // page breaks); without it paged.js laid the CV out ignoring all of them (spec 022).

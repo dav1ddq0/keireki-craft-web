@@ -6,6 +6,8 @@ let whileWorking: string[] = []
 
 /** paged.js that succeeds and leaves, like the real one, a style of its own and one per sheet it was given. */
 vi.mock('pagedjs', () => ({
+  Handler: class {},
+  registerHandlers: () => {},
   Previewer: class {
     async preview(_html: string, sheets: Array<Record<string, string>>, container: HTMLElement) {
       const base = document.createElement('style')

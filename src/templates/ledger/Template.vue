@@ -174,7 +174,12 @@ const languages = computed(() => resolveLanguages(props.data))
   border-top: 1px dashed var(--cv-accent);
 }
 
+/* Beside its content in the section's grid, the title has no "next" to keep with: its
+   break-after: avoid (print.css) spread to the whole section, so no break between sections was
+   allowed and Chrome broke right after the header (spec 075). */
 .label {
+  break-after: auto;
+  page-break-after: auto;
   margin: 0;
   font-size: 0.8em;
   font-weight: 700;

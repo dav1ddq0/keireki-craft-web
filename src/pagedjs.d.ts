@@ -6,4 +6,16 @@ declare module 'pagedjs' {
       renderTo?: Element,
     ): Promise<{ total: number; performance: number }>
   }
+
+  /** The part of paged.js's page layout a handler's hooks are given (spec 075). */
+  export interface Layout {
+    findOverflow(rendered: Element, bounds?: DOMRect): Range | undefined
+  }
+
+  /** Base class of paged.js's hooks: a method named after a hook is registered on it. */
+  export class Handler {
+    constructor(chunker: unknown, polisher: unknown, caller: unknown)
+  }
+
+  export function registerHandlers(...handlers: Array<new (chunker: unknown, polisher: unknown, caller: unknown) => Handler>): void
 }
