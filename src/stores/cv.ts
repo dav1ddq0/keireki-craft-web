@@ -7,8 +7,8 @@ import { uid } from '@/core/id'
 import { History } from '@/core/history'
 import { debounce } from '@/core/debounce'
 import { migrate, reconcileOrder } from '@/core/migrations'
-import { NotFoundError, savePhoto, storage, StorageQuotaError } from '@/services/storage'
-import { dataUrlToBlob } from '@/services/export/json'
+import { deletePhoto, NotFoundError, savePhoto, storage, StorageQuotaError } from '@/services/storage'
+import { dataUrlToBlob, toExportableJson } from '@/services/export/json'
 import { readPrefs, writePrefs } from '@/services/prefs'
 import { applyTemplateDefaults } from '@/templates/registry'
 
@@ -17,6 +17,16 @@ const AUTOSAVE_MS = 500
 const HISTORY_COALESCE_MS = 600
 
 export type SaveState = 'idle' | 'saving' | 'saved' | 'error'
+
+/** What restoring a backup would do to each of its CVs (spec 078), worked out before anything is written. */
+export interface RestorePlan {
+  /** Not in this browser: restored as they were. */
+  added: CVData[]
+  /** Here and the same: left alone. */
+  same: CVData[]
+  /** Here but different: replaced by the backup's version, once the person confirms. */
+  changed: CVData[]
+}
 
 export const useCvStore = defineStore('cv', () => {
   const data = ref<CVData>(createEmptyCV())
@@ -186,6 +196,57 @@ export const useCvStore = defineStore('cv', () => {
     const next = documents.value[0]?.id
     if (next) await open(next)
     else await createNew({ persistNow: false })
+  }
+
+  /* ---- backup (spec 078) ------------------------------------------------- */
+
+  /** Every stored CV, the open one with its latest edit: what a backup holds. */
+  async function loadAll(): Promise<CVData[]> {
+    await flush()
+    return Promise.all(documents.value.map((summary) => storage.load(summary.id)))
+  }
+
+  /**
+   * Sorts a backup's CVs by what restoring would do. Compared as their JSON export writes them (photo
+   * inlined) and without `updatedAt`, so restoring a backup just made finds nothing to change.
+   */
+  async function planRestore(cvs: CVData[]): Promise<RestorePlan> {
+    await flush()
+    const plan: RestorePlan = { added: [], same: [], changed: [] }
+    for (const cv of cvs) {
+      if (!documents.value.some((summary) => summary.id === cv.meta.id)) {
+        plan.added.push(cv)
+        continue
+      }
+      const stored = await storage.load(cv.meta.id)
+      const same = comparable(JSON.parse(await toExportableJson(stored))) === comparable(cv)
+      plan[same ? 'same' : 'changed'].push(cv)
+    }
+    return plan
+  }
+
+  /**
+   * Writes a plan: added and changed CVs are stored as the backup has them (a changed one's old photo
+   * goes), identical ones are left alone. If the open CV is replaced, the editor reopens it.
+   */
+  async function restoreBackup(plan: RestorePlan) {
+    const openId = data.value.meta.id
+    for (const cv of plan.added) await storeRestored(cv)
+    for (const cv of plan.changed) {
+      const previous = (await storage.load(cv.meta.id)).personal.photo
+      await storeRestored(cv, previous)
+    }
+    await refreshDocuments()
+    if (plan.changed.some((cv) => cv.meta.id === openId)) await open(openId)
+    return { restored: plan.added.length, skipped: plan.same.length, replaced: plan.changed.length }
+  }
+
+  async function storeRestored(cv: CVData, previousPhoto?: string) {
+    const next = structuredClone(cv)
+    next.sectionOrder = reconcileOrder(next.sectionOrder, next)
+    const stored = await storeInlinePhoto(next, previousPhoto)
+    if (!stored && previousPhoto?.startsWith('photo:')) await deletePhoto(previousPhoto).catch(() => {})
+    await storage.save(next)
   }
 
   /** Replaces the whole document without polluting the undo stack of the old one. */
@@ -364,6 +425,9 @@ export const useCvStore = defineStore('cv', () => {
     open,
     createNew,
     duplicate,
+    loadAll,
+    planRestore,
+    restoreBackup,
     rename,
     remove,
     refreshDocuments,
@@ -374,6 +438,16 @@ export const useCvStore = defineStore('cv', () => {
     flush,
   }
 })
+
+/** A CV as text with its keys in order and without `updatedAt`: equal text, same content. */
+function comparable(cv: CVData): string {
+  const { updatedAt: _updatedAt, ...meta } = cv.meta
+  return JSON.stringify({ ...cv, meta }, (_key, value) =>
+    value && typeof value === 'object' && !Array.isArray(value)
+      ? Object.fromEntries(Object.entries(value).sort(([a], [b]) => a.localeCompare(b)))
+      : value,
+  )
+}
 
 /** Strips Vue proxies so the value is safe for `structuredClone` and IndexedDB. */
 function toPlain<T>(value: T): T {
