@@ -4,4 +4,4 @@
 - [x] 2 · "Copia de seguridad" in My CVs, the phone menu and the export step; `lastBackupAt`; i18n — commit: 4a639a3
 - [x] 3 · Import restores a backup: confirmation when CVs would be replaced, then the summary; the "neither" error; tests — commit: 460ddc8
 - [x] 4 · The reminder: `backupDue`, the notice's text and actions, the 7-day snooze; tests — commit: e42e0bf
-- [ ] 5 · `qa:e2e` backup → wipe → restore; validate (light/dark, three widths) and move 078 to "Done"
+- [x] 5 · `qa:e2e` backup → wipe → restore; validate (light/dark, three widths) and move 078 to "Done" — commit: 3e05a3a
