@@ -6,7 +6,10 @@
 //      high); with the long words, no text out of its column or the page (spec 074);
 //   2. a fixture page (half-opaque box, list bullet, dashed and dotted borders) printed by Chromium
 //      and converted, compared shape by shape, which the whole-page threshold is too coarse to see;
-//   3. the side-column warning (spec 033): off for the sample, on for a side column longer than a page.
+//   3. the side-column warning (spec 033): off for the sample, on for a side column longer than a page;
+//   4. a growing side column (spec 075): every template, the sample plus 0 to 20 skills, no text laid
+//      out off its page in the print, the direct PDF with the same pages and text, and the warning
+//      on whenever side content runs on to page 2.
 // A blank last page in the print fails on its own and is left out of the comparison (spec 036).
 // Usage: npm run qa:pdf [-- templateId,...]. Needs poppler (pdftoppm, pdftotext, pdfinfo).
 const fs = require('node:fs')
@@ -393,6 +396,86 @@ async function checkSideColumn(page) {
   check('side column: 80 links do not fit on a page', long === true, `overflows ${long}`)
 }
 
+/* ---- growing side column ---------------------------------------------------------------------- */
+
+/** Spec 075: page 1 that only just overflows lost whole sections (ledger, monogram, cobalt). */
+const SIDE_GROWTH = [0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 15, 20]
+
+async function checkSideGrowth(page, url, ids) {
+  for (const id of ids) {
+    const lost = []
+    const silent = []
+    const differ = []
+    for (const extra of SIDE_GROWTH) {
+      try {
+        const warned = await page.evaluate(
+          async ([id, extra, SRC]) => {
+            window.__printed = false
+            window.print = () => {
+              window.__printed = true
+            }
+            const { printCv } = await import(`${SRC}/services/export/pdf.ts`)
+            const { createSampleCV } = await import(`${SRC}/core/sample.ts`)
+            const { sideColumnOverflows } = await import(`${SRC}/services/export/render.ts`)
+            const cv = createSampleCV()
+            const group = cv.skills[0]
+            for (let i = 0; i < extra; i++) group.items.push({ ...group.items[0], name: `Extra${i}` })
+            window.__cv = cv
+            window.__done = printCv(cv, id, { paginate: true })
+            return sideColumnOverflows(cv, id)
+          },
+          [id, extra, SRC],
+        )
+        await page.waitForFunction(() => window.__printed, null, { timeout: 60_000 })
+        const laid = await page.evaluate(() => {
+          let off = 0
+          let sideLater = false
+          document.querySelectorAll('.pagedjs_page').forEach((sheet, i) => {
+            const box = sheet.getBoundingClientRect()
+            const walker = document.createTreeWalker(sheet, NodeFilter.SHOW_TEXT)
+            for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+              if (!node.textContent.trim()) continue
+              const range = document.createRange()
+              range.selectNodeContents(node)
+              const rects = [...range.getClientRects()].filter((r) => r.width)
+              if (rects.some((r) => r.left >= box.right - 1 || r.top >= box.bottom - 1)) off++
+              else if (i > 0 && node.parentElement.closest('[data-side]')) sideLater = true
+            }
+          })
+          return { off, sideLater }
+        })
+        const printed = await page.pdf({ preferCSSPageSize: true, printBackground: true })
+        await page.evaluate(() => {
+          window.dispatchEvent(new Event('afterprint'))
+          return window.__done
+        })
+        const printPdf = path.join(OUT, `${id}-side${extra}.print.pdf`)
+        fs.writeFileSync(printPdf, printed)
+        const direct = await page.evaluate(
+          async ([id, SRC]) => {
+            const { buildDirectPdf } = await import(`${SRC}/services/export/pdfDirect.ts`)
+            return window.__base64(await buildDirectPdf(window.__cv, id, 'Test – CV'))
+          },
+          [id, SRC],
+        )
+        const directPdf = path.join(OUT, `${id}-side${extra}.direct.pdf`)
+        fs.writeFileSync(directPdf, Buffer.from(direct, 'base64'))
+        const pages = [renderPages(printPdf, 20).filter((img) => !isBlank(img)).length, renderPages(directPdf, 20).length]
+        const missing = missingChars(pdfText(printPdf), pdfText(directPdf))
+        if (laid.off) lost.push(`+${extra}: ${laid.off} off the page`)
+        if (laid.sideLater && !warned) silent.push(`+${extra}`)
+        if (pages[0] !== pages[1] || missing) differ.push(`+${extra}: pages ${pages.join('/')}, missing ${missing}`)
+      } catch (error) {
+        lost.push(`+${extra}: ${String(error.message).split('\n')[0]}`)
+        await openApp(page, url)
+      }
+    }
+    check(`${id}-sidegrow: no text off its page, with 0 to 20 more skills`, !lost.length, lost.join('; '))
+    check(`${id}-sidegrow: the warning is on whenever the side column runs on to page 2`, !silent.length, silent.length ? `silent at ${silent.join(', ')}` : '')
+    check(`${id}-sidegrow: the direct PDF has the print's pages and text`, !differ.length, differ.join('; '))
+  }
+}
+
 /* ---- run -------------------------------------------------------------------------------------- */
 
 ;(async () => {
@@ -412,6 +495,7 @@ async function checkSideColumn(page) {
     await compareLook(browser, page)
     await checkSideColumn(page)
     await compareTemplates(page, server.url, ids)
+    await checkSideGrowth(page, server.url, ids)
     check('no page errors', errors.length === 0, errors.join(' | '))
   } finally {
     await browser.close()
