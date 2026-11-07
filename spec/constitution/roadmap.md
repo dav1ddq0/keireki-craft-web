@@ -88,12 +88,11 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 - **075** · Nothing is lost at a page break: paged.js measures again after the cut; ledger, monogram and cobalt keep every section
 - **076** · A home that shows the product: the sample CV live with template chips, four templates, what happens to your data; in the app's own look, light and dark
 - **077** · The home's preview turns through the templates by itself: a 3D turn, its name, its accent and font cards, no chips
+- **078** · A backup of every CV in one file, restored from Import (asking before it replaces), and a reminder only when 7 days have passed
 
 ## Next 🔜
 
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
-
-- **078** · A backup of every CV in one file, restored from Import, and a reminder after 7 days
 
 
 ## Backlog / ideas 💡

@@ -1,6 +1,6 @@
 # 078 · A backup of every CV, and a reminder to make one
 
-**Status:** proposed
+**Status:** done
 
 ## What it does
 
@@ -34,22 +34,24 @@ window.
 
 ## Acceptance criteria
 
-- [ ] **Copia de seguridad** in My CVs (desktop, tablet, phone), in the phone menu and in the export
+- [x] **Copia de seguridad** in My CVs (desktop, tablet, phone), in the phone menu and in the export
       step downloads one file with every CV; photos inlined; the file names its format and version.
       No warning bar is shown with it unless the reminder is due.
-- [ ] Import restores it: missing CVs as they were, identical ones skipped, changed ones replaced by
+- [x] Import restores it: missing CVs as they were, identical ones skipped, changed ones replaced by
       the backup's version after a confirmation (cancel restores nothing); the summary counts each
       case; if the open CV is replaced, the editor shows the restored version.
-- [ ] A single CV's JSON still imports as a new CV, as today; a file that is neither says so.
-- [ ] A backup made and restored in another browser gives back the same CVs (content, photo,
+- [x] A single CV's JSON still imports as a new CV, as today; a file that is neither says so.
+- [x] A backup made and restored in another browser gives back the same CVs (content, photo,
       template, style, section order).
-- [ ] The reminder shows under the conditions above and only then; "Hacer copia" makes one and
+- [x] The reminder shows under the conditions above and only then; "Hacer copia" makes one and
       hides it; "Ahora no" hides it for 7 days. The date of the last backup is a preference
       (`localStorage`), never inside a CV.
-- [ ] No change to `CVData` (no migration): the backup wraps CVs, each migrated on restore like any
+- [x] No change to `CVData` (no migration): the backup wraps CVs, each migrated on restore like any
       imported one.
-- [ ] Every string in the nine languages; light and dark; 1440 / 1024 / 390 px.
-- [ ] `npm test`, `npm run build`, `qa:e2e` (a backup → wipe → restore walk), `qa:consistency` pass.
+- [x] Every string in the nine languages; light and dark; 1440 / 1024 / 390 px.
+- [x] `npm test`, `npm run build`, `qa:e2e` (a backup → wipe → restore walk), `qa:consistency` pass:
+      1059 tests; qa:e2e 209/209 (the walk: made in one browser, restored in an empty one, then
+      restored over an edit after confirming); qa:consistency 13/13 over 425 views.
 
 ## Out of scope
 
