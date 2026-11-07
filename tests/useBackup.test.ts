@@ -26,7 +26,7 @@ describe('Back up all CVs (spec 078)', () => {
     vi.spyOn(useCvStore(), 'loadAll').mockResolvedValue(cvs)
     const { backUp, failed } = useBackup()
     await backUp()
-    expect(exportBackup).toHaveBeenCalledWith(cvs, expect.any(Date))
+    expect(exportBackup).toHaveBeenCalledWith(cvs, expect.any(Date), 'es')
     expect(useUiStore().backup.lastBackupAt).toMatch(/^\d{4}-\d\d-\d\dT/)
     expect(writePrefs).toHaveBeenCalledWith(expect.objectContaining({ lastBackupAt: useUiStore().backup.lastBackupAt }))
     expect(failed.value).toBe(false)

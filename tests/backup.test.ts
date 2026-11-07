@@ -86,8 +86,10 @@ describe('the backup file (spec 078)', () => {
     expect(backup.cvs[0]!.personal.photo).toMatch(/^data:image\/png;base64,/)
   })
 
-  it('is named after the day it was made', () => {
+  it('is named after the day it was made, in the interface language (spec 079)', () => {
     expect(backupFileName(new Date(2026, 10, 7, 23, 30))).toBe('keireki-craft-copia-2026-11-07.json')
+    expect(backupFileName(new Date(2026, 10, 7), 'en')).toBe('keireki-craft-backup-2026-11-07.json')
+    expect(backupFileName(new Date(2026, 10, 7), 'de')).toBe('keireki-craft-sicherung-2026-11-07.json')
   })
 
   it('is told from one CV’s JSON when read back', async () => {

@@ -2,6 +2,7 @@ import { ref } from 'vue'
 import { useCvStore } from '@/stores/cv'
 import { exportBackup } from '@/services/export'
 import { useUiStore } from '@/stores/ui'
+import { useI18n } from '@/i18n'
 
 /**
  * "Back up all CVs" (spec 078): every CV in one file, and the day it was made remembered, so the
@@ -10,6 +11,7 @@ import { useUiStore } from '@/stores/ui'
 export function useBackup() {
   const cv = useCvStore()
   const ui = useUiStore()
+  const { locale } = useI18n()
   const busy = ref(false)
   const failed = ref(false)
 
@@ -19,7 +21,7 @@ export function useBackup() {
     failed.value = false
     try {
       const now = new Date()
-      await exportBackup(await cv.loadAll(), now)
+      await exportBackup(await cv.loadAll(), now, locale.value)
       ui.recordBackup(now)
     } catch {
       failed.value = true

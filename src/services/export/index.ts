@@ -3,5 +3,18 @@ export { exportHtml, buildStandaloneHtml } from './html'
 export { exportJson, toExportableJson, blobToDataUrl, dataUrlToBlob } from './json'
 export { downloadBlob, safeFileName } from './download'
 export { renderTemplateHtml, resolvePhoto, collectDocumentCss, sideColumnOverflows } from './render'
-export { buildBackup, exportBackup, readImportFile, backupFileName, UnsupportedBackupError, BACKUP_FORMAT, BACKUP_VERSION } from './backup'
+export {
+  buildBackup,
+  exportBackup,
+  readImportFile,
+  backupFileName,
+  currentFileName,
+  dailyFileName,
+  isCurrentFileName,
+  dailyFileDay,
+  BACKUP_FILE_WORDS,
+  UnsupportedBackupError,
+  BACKUP_FORMAT,
+  BACKUP_VERSION,
+} from './backup'
 export type { Backup, ImportFile } from './backup'

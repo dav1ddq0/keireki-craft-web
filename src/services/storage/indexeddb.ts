@@ -109,6 +109,26 @@ export async function deletePhoto(key: string): Promise<void> {
   await del(key, store)
 }
 
+/* ---- the backup folder (spec 079) ---------------------------------------- */
+
+const FOLDER_KEY = 'backupFolder'
+
+/** The folder chosen for backups: a directory handle, which IndexedDB can keep and nothing else can. */
+export async function loadFolderHandle<T>(): Promise<T | undefined> {
+  await ready()
+  return get<T>(FOLDER_KEY, store)
+}
+
+export async function saveFolderHandle(handle: unknown): Promise<void> {
+  await ready()
+  await set(FOLDER_KEY, handle, store)
+}
+
+export async function forgetFolderHandle(): Promise<void> {
+  await ready()
+  await del(FOLDER_KEY, store)
+}
+
 /* ---- environment probes ------------------------------------------------ */
 
 /**
