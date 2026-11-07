@@ -587,4 +587,52 @@ async function home(browser) {
   await still.context().close()
 }
 
-module.exports = { home, aiImprove, mainFlow, customAndStyle, exportImport, documentsAndPrefs, phone, widths, renameMigration, noLayoutShift }
+/**
+ * B · a backup of every CV (spec 078): made in one browser, restored in another, empty one; then
+ * restored again over an edit, which asks first and puts the backup's version back.
+ */
+async function backupRestore(browser, outDir) {
+  const B = 'backup'
+  const a = await open(browser)
+  await startSample(a)
+  await step(a, 'Plantilla y estilo')
+  await a.getByRole('button', { name: /^Meridian/ }).first().click()
+  await settled(a)
+  await a.getByRole('button', { name: 'Mis CVs' }).first().click()
+  const [download] = await Promise.all([a.waitForEvent('download'), a.getByRole('button', { name: 'Hacer copia de seguridad' }).first().click()])
+  const file = path.join(outDir, 'copia.json')
+  await download.saveAs(file)
+  const backup = JSON.parse(fs.readFileSync(file, 'utf8'))
+  check(B, 'one file with every CV, its format and version', /^keireki-craft-copia-\d{4}-\d\d-\d\d\.json$/.test(download.suggestedFilename()) && backup.format === 'keireki-craft-backup' && backup.version === 1 && backup.cvs.length === 1, `${download.suggestedFilename()} ${backup.cvs.length}`)
+  check(B, 'no errors making it', a.errs.length === 0, a.errs.join(' | '))
+  await a.context().close()
+
+  // Another browser, nothing stored: the home shows; Import brings the CV back as it was.
+  const b = await open(browser)
+  await b.getByRole('heading', { level: 1 }).waitFor()
+  check(B, 'the other browser starts empty', (await idbDocCount(b)) === 0)
+  await b.getByRole('button', { name: /Importar mi PDF/ }).click()
+  await b.locator('input[type=file][accept*="json"]').setInputFiles(file)
+  check(B, 'restored into the empty browser, summed up', await until(async () => (await b.locator('.restore-done').innerText()).includes('Nuevos: 1'), { timeout: 4000 }))
+  check(B, 'the CV is stored again', await until(async () => (await idbDocCount(b)) === 1, { timeout: 4000 }))
+  await b.getByRole('button', { name: 'Mis CVs' }).first().click()
+  await b.getByRole('button', { name: 'Abrir' }).first().click()
+  check(B, 'it comes back with its content and template', await until(async () => (await previewText(b)).includes('Nadia Martín Reyes') && (await b.locator('button.chip').first().innerText()).includes('Meridian'), { timeout: 4000 }))
+
+  // An edit after the backup: restoring asks first, then puts the backup's version back.
+  const headline = b.getByLabel('Titular profesional')
+  const original = await headline.inputValue()
+  await headline.fill('Cambiado después de la copia')
+  await sleep(900)
+  await b.getByRole('button', { name: /Importar/ }).first().click()
+  await b.locator('input[type=file][accept*="json"]').setInputFiles(file)
+  check(B, 'replacing an edited CV asks first', await until(() => b.locator('.restore-confirm').getByText(/: 1\./).isVisible(), { timeout: 4000 }))
+  await b.getByRole('button', { name: 'Confirmar' }).click()
+  check(B, 'once confirmed, it is replaced', await until(async () => (await b.locator('.restore-done').innerText()).includes('Reemplazados: 1'), { timeout: 4000 }))
+  await b.getByRole('button', { name: 'Editor' }).first().click()
+  check(B, 'the editor shows the backup’s version', await until(async () => (await b.getByLabel('Titular profesional').inputValue()) === original, { timeout: 4000 }))
+  check(B, 'no errors restoring', b.errs.length === 0, b.errs.join(' | '))
+  await b.context().close()
+}
+
+module.exports = { backupRestore, home, aiImprove, mainFlow, customAndStyle, exportImport, documentsAndPrefs, phone, widths, renameMigration, noLayoutShift }
