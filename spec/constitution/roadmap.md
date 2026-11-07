@@ -93,6 +93,8 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
 
+- **078** · A backup of every CV in one file, restored from Import, and a reminder after 7 days
+
 
 ## Backlog / ideas 💡
 
