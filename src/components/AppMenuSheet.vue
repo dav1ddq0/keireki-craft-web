@@ -6,6 +6,7 @@ import BottomSheet from '@/components/ui/BottomSheet.vue'
 import BaseField from '@/components/ui/BaseField.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import { useBackup } from '@/composables/useBackup'
+import BackupFolderSettings from '@/components/documents/BackupFolderSettings.vue'
 
 defineProps<{ open: boolean }>()
 const emit = defineEmits<{ close: [] }>()
@@ -67,6 +68,7 @@ function go(view: (typeof VIEWS)[number]) {
       <p class="note">{{ t('notices.notPersisted') }}</p>
       <BaseButton class="backup-button" :disabled="backingUp" @click="backUp">{{ t('actions.backup') }}</BaseButton>
       <p v-if="backupFailed" class="note" role="status">{{ t('notices.backupFailed') }}</p>
+      <BackupFolderSettings class="folder-settings" />
     </div>
   </BottomSheet>
 </template>
@@ -126,7 +128,8 @@ function go(view: (typeof VIEWS)[number]) {
   gap: 8px;
 }
 
-.backup-button {
+.backup-button,
+.folder-settings {
   margin: 0 12px;
 }
 

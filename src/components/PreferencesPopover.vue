@@ -7,12 +7,13 @@
 import { onMounted, ref, useId, useTemplateRef } from 'vue'
 import { useUiStore } from '@/stores/ui'
 import { LOCALE_NAMES, LOCALE_TAGS, useI18n } from '@/i18n'
-import { useCvExport } from '@/composables/useCvExport'
+import { useBackup } from '@/composables/useBackup'
+import BackupFolderSettings from '@/components/documents/BackupFolderSettings.vue'
 import BaseField from '@/components/ui/BaseField.vue'
 
 const ui = useUiStore()
 const { t, locale, availableLocales } = useI18n()
-const { busy, run } = useCvExport()
+const { busy: backingUp, failed: backupFailed, backUp } = useBackup()
 
 const id = useId()
 const panel = useTemplateRef<HTMLElement>('panel')
@@ -76,7 +77,10 @@ function toggleFallback() {
       <div class="group group--ruled">
         <span class="label">{{ t('prefs.storage') }}</span>
         <p class="text">{{ t('prefs.storageText') }}</p>
-        <button type="button" class="action" :disabled="busy !== null" @click="run('json')">{{ t('prefs.backup') }}</button>
+        <!-- Every CV, not only the open one (spec 079). -->
+        <button type="button" class="action" :disabled="backingUp" @click="backUp">{{ t('actions.backup') }}</button>
+        <p v-if="backupFailed" class="text" role="status">{{ t('notices.backupFailed') }}</p>
+        <BackupFolderSettings />
       </div>
 
       <div class="group group--ruled">
