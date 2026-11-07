@@ -25,7 +25,11 @@ turned away is given the next template while it cannot be seen.
 4. Tests: `tests/homeCarousel.test.ts` (jsdom, `Element.animate` mocked): which template each face
    holds at a given time, the swap only on the hidden face, pause/play, reduced motion creates no
    animation; `tests/welcomeView.test.ts`: no chips, Crear mi CV starts in the default template.
-5. `qa/e2e/flows.cjs` home block: the chips checks replaced by the carousel's (it turns, the name
+5. The cards (added by the owner after task 3): in `HomeCarousel`, per face, from
+   `accentIfChosen`/`applyTemplateDefaults` (the template's accent and font), `PALETTE` and
+   `FONT_OPTIONS` (`core/stylePresets.ts`) and `supports(id, 'customFont')`; titled with the style
+   step's own `style.accentColor` and `style.fontFamily` (no new strings); hidden under 600 px.
+6. `qa/e2e/flows.cjs` home block: the chips checks replaced by the carousel's (it turns, the name
    changes, pause stops it, reduced motion keeps it still, no overflow at three widths in both
    themes).
 

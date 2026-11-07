@@ -5,4 +5,7 @@
 - [x] 2 · `WelcomeView`: the hero uses the carousel, the chips go, **Crear mi CV** in the default template;
   `welcomeView.test.ts` updated; the approved removals — commit: f6ba152
 - [x] 3 · `qa:e2e` home block: the carousel's checks instead of the chips' — commit: f0c6c0e
-- [ ] 4 · Validate against the acceptance criteria (light and dark, three widths) and move 077 to "Done"
+- [ ] 4 · The cards on each face: Color de acento (template's accent among `PALETTE`) and Tipografía (only with
+  `customFont`; names in their faces), from the template and the style step; hidden under 600 px; tests and
+  `qa:e2e` checks
+- [ ] 5 · Validate against the acceptance criteria (light and dark, three widths) and move 077 to "Done"

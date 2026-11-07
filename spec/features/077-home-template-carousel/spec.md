@@ -10,7 +10,12 @@ the next template**, then drifts again. It is a showcase, not a picker:
 
 - **No chips.** The row "Mismo CV, otra plantilla:" with its chips and "Ver todas" goes; nothing in
   the preview can be chosen.
-- **Only the template's name** identifies each one, in a small label on the sheet that turns with it.
+- **The template's name** identifies each one, in a small label on the sheet that turns with it.
+- **What can be adjusted in it**, in two cards overlapping the sheet's edge, turning with it (as in
+  the reference): **Color de acento**, the template's accent marked among the style step's suggested
+  colours; and **Tipografía**, a few of the style step's fonts, each in its own face, the template's
+  marked, only on templates whose font can be changed. Hidden on narrow screens (under 600 px), where
+  they would cover the sheet.
 - The sheets are the **real templates rendered live** with the sample CV in the interface language,
   in each template's own accent and face, as today (no screenshots).
 - **Crear mi CV** starts in the default template, whatever the carousel shows.
@@ -34,6 +39,10 @@ reused; none of its images, texts or cards.
 - [ ] Every 4 s it turns to the next of the eight templates: about 3.2 s of drift (0° to 10°) and a
       0.8 s turn (10° to 170°, and on the way back 185° to 360°); the next template is never seen
       changing (it changes on the face turned away).
+- [ ] Each face shows a **Color de acento** card (the template's accent marked, the style step's
+      `PALETTE` beside it) and, only if the template supports `customFont`, a **Tipografía** card (the
+      template's font marked, each name in its face); the values come from the template and the style
+      step, never typed in; no cards under 600 px wide.
 - [ ] The pause button stops the motion where it is and shows "play"; pressed again it continues.
       It is a real button with a label in the nine languages, a ≥ 48 px target, visible focus.
 - [ ] `prefers-reduced-motion: reduce`: no motion and no timer; the first template stands still with
