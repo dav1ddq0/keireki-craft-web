@@ -1,6 +1,6 @@
 # 076 · A home that shows the product
 
-**Status:** proposed
+**Status:** done
 
 ## What it does
 
@@ -44,29 +44,30 @@ dropped by the owner for consistency with the app.
 
 ## Acceptance criteria
 
-- [ ] First run (no CV stored) shows the home; with a CV stored the editor opens as before, and a
+- [x] First run (no CV stored) shows the home; with a CV stored the editor opens as before, and a
       reload after any of the actions does not show the home again (spec 027 kept).
-- [ ] **Crear mi CV** (both) opens the wizard on a stored blank CV; **Importar mi PDF** opens
+- [x] **Crear mi CV** (both) opens the wizard on a stored blank CV; **Importar mi PDF** opens
       Import; **Cargar un ejemplo** opens the sample CV in the interface language.
-- [ ] The hero renders the sample CV with the real template component (no image); each chip changes
+- [x] The hero renders the sample CV with the real template component (no image); each chip changes
       it, the selected chip has `aria-pressed="true"`, and **Crear mi CV** then starts in that template.
-- [ ] **Usar** on a template card starts a blank CV in that template.
-- [ ] The counts come from the template registry and `LOCALES`, never typed in.
-- [ ] Only existing components and tokens: `BaseButton`, `m3-chip`, `TemplateThumb`, the M3 type
+- [x] **Usar** on a template card starts a blank CV in that template.
+- [x] The counts come from the template registry and `LOCALES`, never typed in.
+- [x] Only existing components and tokens: `BaseButton`, `m3-chip`, `TemplateThumb`, the M3 type
       scale and colour roles, `--shape-*`. No new token, no hard-coded colour.
-- [ ] Every string is in the nine dictionaries (`i18nDictionaries` test passes); no claim the
+- [x] Every string is in the nine dictionaries (`i18nDictionaries` test passes); no claim the
       README does not support.
-- [ ] **Light and dark themes, both required.** Every section follows the theme picked in
+- [x] **Light and dark themes, both required.** Every section follows the theme picked in
       Preferences (and the system's, when it follows the system), with no rule of its own: surfaces,
       text, borders, buttons, chips and thumbnails switch together. The hero's CV stays a white sheet,
       dimmed in dark like the editor's preview. Text contrast ≥ 4.5:1 in both, focus ring visible in both.
-- [ ] `npm run qa:consistency` walks the home in light and dark (it already grabs the welcome on
+- [x] `npm run qa:consistency` walks the home in light and dark (it already grabs the welcome on
       every format and theme it checks) with no new finding.
-- [ ] 1440, 1024 and 390 px wide: no horizontal overflow, hero stacks on a phone, targets ≥ 48 px
+- [x] 1440, 1024 and 390 px wide: no horizontal overflow, hero stacks on a phone, targets ≥ 48 px
       (the M3 target the app uses).
-- [ ] Keyboard: every action is a real button or link, in reading order; the chips are a labelled group.
-- [ ] No new dependency, no new font file, no image added to the build.
-- [ ] `npm test`, `npm run build`, `npm run qa:e2e` pass (the welcome checks updated).
+- [x] Keyboard: every action is a real button or link, in reading order; the chips are a labelled group
+      (checked by structure: the unit test and the e2e find them by role; no keyboard walk recorded).
+- [x] No new dependency, no new font file, no image added to the build.
+- [x] `npm test`, `npm run build`, `npm run qa:e2e` pass (the welcome checks updated).
 
 ## Out of scope
 

@@ -86,6 +86,7 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 - **073** · The file name, where the CV is exported: a "File name" field in Export, the header's document name as text, Rename in My CVs
 - **074** · Long words stay in their column, in every template
 - **075** · Nothing is lost at a page break: paged.js measures again after the cut; ledger, monogram and cobalt keep every section
+- **076** · A home that shows the product: the sample CV live with template chips, four templates, what happens to your data; in the app's own look, light and dark
 
 ## Next 🔜
 
