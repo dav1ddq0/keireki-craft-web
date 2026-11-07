@@ -64,7 +64,7 @@ describe('HomeCarousel (spec 077)', () => {
   it('renders the first two templates, each with only its name, as a picture', async () => {
     const wrapper = await mountIt()
     expect(faceTemplates(wrapper)).toEqual(['classic', 'aurora'])
-    expect(wrapper.findAll('.name').map((n) => n.text())).toEqual(['Classic', 'Aurora'])
+    expect(wrapper.findAll('.face-name').map((n) => n.text())).toEqual(['Classic', 'Aurora'])
     expect(wrapper.find('.frame').attributes('aria-hidden')).toBe('true')
     expect(wrapper.find('.frame').attributes()).toHaveProperty('inert')
     wrapper.unmount()

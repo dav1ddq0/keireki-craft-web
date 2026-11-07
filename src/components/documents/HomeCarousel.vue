@@ -10,7 +10,7 @@ import type { CVData } from '@/types/cv'
 import { useI18n } from '@/i18n'
 import { applyTemplateDefaults, templates } from '@/templates/registry'
 import CvRenderer from '@/components/preview/CvRenderer.vue'
-import { facesAt, TURN_KEYFRAMES, TURN_MS } from './homeCarousel'
+import { facesAt, TURN_KEYFRAMES, TURN_MS } from '@/components/documents/homeCarousel'
 
 const props = defineProps<{ sample: CVData; templateIds: string[] }>()
 
@@ -130,7 +130,7 @@ const pageStyle = computed(() => ({ transform: `scale(${scale.value})` }))
               </div>
             </div>
           </div>
-          <span class="name">{{ face.template.name }}</span>
+          <span class="face-name">{{ face.template.name }}</span>
         </div>
       </div>
     </div>
@@ -195,7 +195,7 @@ const pageStyle = computed(() => ({ transform: `scale(${scale.value})` }))
 }
 
 /* The template's name, on the sheet, turning with it. */
-.name {
+.face-name {
   position: absolute;
   bottom: 16px;
   left: 50%;

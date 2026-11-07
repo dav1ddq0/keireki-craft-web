@@ -1,61 +1,36 @@
 <script setup lang="ts">
 /**
  * First visit (spec 019, home since spec 076): what the product is, then the ways in. Built only from
- * the app's own pieces (BaseButton, M3 chips, TemplateThumb, the preview's paper, the wizard's step
- * circles, Import's cards) and its colour aliases, so it follows the light and dark themes as is.
+ * the app's own pieces (BaseButton, TemplateThumb, the preview's paper, the wizard's step circles,
+ * Import's cards) and its colour aliases, so it follows the light and dark themes as is. The hero's
+ * sample turns through the templates by itself (spec 077).
  */
-import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
+import { computed } from 'vue'
 import { useCvStore } from '@/stores/cv'
 import { useUiStore } from '@/stores/ui'
 import { LOCALES, useI18n } from '@/i18n'
 import { createSampleCV } from '@/core/sample'
 import { DEFAULT_STYLE } from '@/core/factory'
-import { accentIfChosen, applyTemplateDefaults, DEFAULT_TEMPLATE_ID, templates } from '@/templates/registry'
+import { accentIfChosen, templates } from '@/templates/registry'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import TemplateThumb from '@/components/ui/TemplateThumb.vue'
-import CvRenderer from '@/components/preview/CvRenderer.vue'
+import HomeCarousel from '@/components/documents/HomeCarousel.vue'
 
 const cv = useCvStore()
 const ui = useUiStore()
 const { t, locale } = useI18n()
 
 const REPO_URL = 'https://github.com/dav1ddq0/keireki-craft-web'
-/** The hero's chips: the default first, then a spread of looks. */
+/** The hero's carousel, in order: the default first, then a spread of looks. */
 const PREVIEW_IDS = ['classic', 'aurora', 'cobalt', 'editorial', 'monograph', 'harbor', 'facet', 'banner']
 /** The template section. Chosen by the owner: there is no usage data, by design (spec 076). */
 const FEATURED_IDS = ['classic', 'cobalt', 'editorial', 'aurora']
 
 const byIds = (ids: string[]) => ids.map((id) => templates.find((t) => t.id === id)).filter((t) => t !== undefined)
-const previewTemplates = byIds(PREVIEW_IDS)
 const featured = byIds(FEATURED_IDS)
 
-/** What the hero shows, and what "Create my CV" starts in: what you see is what you get. */
-const previewId = ref(DEFAULT_TEMPLATE_ID)
-
-/** The sample in the interface language, in the shown template's own accent and face. Never stored. */
+/** The sample in the interface language, which the carousel shows in each template. Never stored. */
 const sample = computed(() => createSampleCV(locale.value))
-const previewData = computed(() => ({
-  ...sample.value,
-  meta: { ...sample.value.meta, templateId: previewId.value },
-  style: applyTemplateDefaults(previewId.value, sample.value.style),
-}))
-
-/* The page is laid out at its A4 width and scaled to the frame, like the editor's preview. */
-const PAGE_WIDTH = 794
-const frame = useTemplateRef<HTMLElement>('frame')
-const scale = ref(0.5)
-let observer: ResizeObserver | undefined
-
-onMounted(() => {
-  if (!frame.value || typeof ResizeObserver === 'undefined') return
-  observer = new ResizeObserver(([entry]) => {
-    if (entry) scale.value = Math.min(1, entry.contentRect.width / PAGE_WIDTH)
-  })
-  observer.observe(frame.value)
-})
-onBeforeUnmount(() => observer?.disconnect())
-
-const sheetStyle = computed(() => ({ transform: `scale(${scale.value})` }))
 
 /**
  * Stores the new CV right away. cv.init's blank document is never saved until edited, so only
@@ -75,7 +50,7 @@ async function startFromSample() {
 
 /** "See all": a blank CV, opened on the style step where every template is. */
 async function seeAllTemplates() {
-  await startBlank(previewId.value)
+  await startBlank()
   ui.goTo('style')
 }
 </script>
@@ -87,7 +62,7 @@ async function seeAllTemplates() {
         <h1 id="home-title" class="title">{{ t('welcome.heroTitle') }}</h1>
         <p class="lead">{{ t('welcome.heroLead') }}</p>
         <div class="actions">
-          <BaseButton variant="primary" @click="startBlank(previewId)">{{ t('welcome.create') }}</BaseButton>
+          <BaseButton variant="primary" @click="startBlank()">{{ t('welcome.create') }}</BaseButton>
           <BaseButton variant="secondary" @click="ui.view = 'import'">
             <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4m0 0L8 8m4-4l4 4" /><path d="M4 15v4a1 1 0 001 1h14a1 1 0 001-1v-4" /></svg>
             {{ t('welcome.importPdf') }}
@@ -103,28 +78,7 @@ async function seeAllTemplates() {
       </div>
 
       <div class="hero-preview">
-        <p id="home-preview-label" class="preview-label">{{ t('welcome.previewLabel') }}</p>
-        <div class="chips" role="group" :aria-label="t('welcome.previewGroup')">
-          <button
-            v-for="template in previewTemplates"
-            :key="template.id"
-            type="button"
-            class="m3-chip m3-state m3-target"
-            :aria-pressed="previewId === template.id"
-            @click="previewId = template.id"
-          >
-            {{ template.name }}
-          </button>
-          <a class="see-all" href="#home-templates">{{ t('welcome.seeAll') }}</a>
-        </div>
-        <!-- A picture of the sample, not content to read: the chips above say what it shows. -->
-        <div ref="frame" class="frame" aria-hidden="true" inert>
-          <div class="sheet cv-preview-paper" :style="sheetStyle">
-            <div class="cv-page">
-              <CvRenderer :data="previewData" :template-id="previewId" />
-            </div>
-          </div>
-        </div>
+        <HomeCarousel :sample="sample" :template-ids="PREVIEW_IDS" />
       </div>
     </section>
 
@@ -182,7 +136,7 @@ async function seeAllTemplates() {
 
     <section class="closing" aria-labelledby="home-closing">
       <h2 id="home-closing" class="view-title">{{ t('welcome.closingTitle') }}</h2>
-      <BaseButton variant="primary" @click="startBlank(previewId)">{{ t('welcome.create') }}</BaseButton>
+      <BaseButton variant="primary" @click="startBlank()">{{ t('welcome.create') }}</BaseButton>
     </section>
 
     <footer class="footer">
@@ -266,47 +220,6 @@ async function seeAllTemplates() {
   flex-direction: column;
   gap: 12px;
   min-width: 0;
-}
-
-.preview-label {
-  margin: 0;
-  font: var(--type-title-small);
-  letter-spacing: var(--tracking-title-small);
-  color: var(--text-muted);
-}
-
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-}
-
-.see-all {
-  display: inline-flex;
-  align-items: center;
-  min-height: var(--target);
-  padding: 0 8px;
-  font: var(--type-label-large);
-  color: var(--accent);
-}
-
-/* The editor preview's paper: the white page on the preview's surface, clipped at the bottom. */
-.frame {
-  height: clamp(340px, 52vh, 520px);
-  overflow: hidden;
-  padding: 16px 16px 0;
-  border-radius: var(--radius);
-  background: var(--surface-2);
-}
-
-.sheet {
-  width: 210mm;
-  transform-origin: top left;
-}
-
-.cv-page {
-  box-shadow: var(--elevation-2);
 }
 
 /* ---- sections ----------------------------------------------------------------------------- */
