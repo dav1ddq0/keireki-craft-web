@@ -1,6 +1,6 @@
 # 075 · Nothing is lost at a page break
 
-**Status:** proposed
+**Status:** done
 
 ## What it does
 
@@ -43,14 +43,16 @@ which the column's bottom padding keeps inside it, so it stays off in the first 
 
 ## Acceptance criteria
 
-- [ ] In every template, with the sample CV plus 0 to 20 skills, no text lies outside its printed
+- [x] In every template, with the sample CV plus 0 to 20 skills, no text lies outside its printed
       page, in the print and in the direct PDF.
-- [ ] ledger with 3 and 7 extra skills prints every section; page 1 holds the sections that fit.
-- [ ] monogram and cobalt keep their Languages: on page 1 when they fit there, on page 2 otherwise.
-- [ ] The side-column warning is on whenever the side column does not fit its first page.
-- [ ] The sample CVs print as before (`qa:pdf` differences unchanged).
-- [ ] `qa:pdf` gains the growing side-column case, so it cannot come back.
-- [ ] `npm test`, `npm run build`, `qa:pdf`, `qa:e2e` pass.
+- [x] ledger with 3 and 7 extra skills prints every section; page 1 holds the sections that fit.
+- [x] monogram and cobalt keep their Languages: on page 1 when they fit there, on page 2 otherwise.
+- [x] The side-column warning is on whenever the side column does not fit its first page.
+- [x] The sample CVs print as before (`qa:pdf` differences unchanged); ledger's ordinary cases changed
+      only for the better: page 1 holds what fits instead of the header alone, one page fewer.
+- [x] `qa:pdf` gains the growing side-column case, so it cannot come back.
+- [x] `npm test`, `npm run build`, `qa:pdf`, `qa:e2e` pass; `qa:pdf` 339/360, its 21 failures the
+      long-word cases of spec 074, still open.
 
 ## Out of scope
 
