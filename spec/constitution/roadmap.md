@@ -94,6 +94,8 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
 
+- **079** · Back up to a folder on the computer by itself (Chrome, Edge): one file kept up to date, paused when access is not granted
+
 
 ## Backlog / ideas 💡
 
