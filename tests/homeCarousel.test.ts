@@ -5,6 +5,7 @@ import { nextTick } from 'vue'
 import HomeCarousel from '@/components/documents/HomeCarousel.vue'
 import { facesAt, TURN_MS } from '@/components/documents/homeCarousel'
 import { createSampleCV } from '@/core/sample'
+import { PALETTE } from '@/core/stylePresets'
 
 describe('facesAt, which template each face holds (spec 077)', () => {
   it('shows two templates per turn, in order, and starts again after the last', () => {
@@ -67,6 +68,22 @@ describe('HomeCarousel (spec 077)', () => {
     expect(wrapper.findAll('.face-name').map((n) => n.text())).toEqual(['Classic', 'Aurora'])
     expect(wrapper.find('.frame').attributes('aria-hidden')).toBe('true')
     expect(wrapper.find('.frame').attributes()).toHaveProperty('inert')
+    wrapper.unmount()
+  })
+
+  it('shows what can be adjusted in each template: its accent among the suggested colours, its font where it can change', async () => {
+    const wrapper = await mountIt()
+    const [classic, aurora] = wrapper.findAll('.face')
+    const swatches = (face: typeof classic) => face!.findAll('.swatch').map((s) => s.attributes('style'))
+    // Classic paints in its own accent, marked first among the style step's suggestions.
+    expect(classic!.find('.accent-card .card-title').text()).toBe('Color de acento')
+    expect(classic!.find('.swatch.on').attributes('style')).toContain('rgb(31, 58, 99)')
+    expect(swatches(classic)).toHaveLength(1 + PALETTE.length)
+    // Classic's font cannot be changed, so it offers none; Aurora's can, and its own is marked.
+    expect(classic!.find('.font-card').exists()).toBe(false)
+    expect(aurora!.find('.font-card .card-title').text()).toBe('Tipografía')
+    expect(aurora!.find('.font-card li.on').text()).toBe('Inter')
+    expect(aurora!.findAll('.font-card li').map((li) => li.attributes('style'))).toEqual(expect.arrayContaining([expect.stringContaining('Inter')]))
     wrapper.unmount()
   })
 

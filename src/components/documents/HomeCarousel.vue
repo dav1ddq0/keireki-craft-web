@@ -2,13 +2,15 @@
 /**
  * The home's preview (spec 077): the sample CV in one template at a time, turning by itself to the
  * next. Two faces, each a live render; the one turned away takes its next template unseen. A
- * showcase, not a picker: only the template's name, and a button to pause it. Still with reduced
- * motion, and paused while the tab is hidden or the carousel is out of view.
+ * showcase, not a picker: the template's name, what can be adjusted in it (its accent among the
+ * style step's colours; its font, where the template lets it change) and a button to pause it.
+ * Still with reduced motion, and paused while the tab is hidden or the carousel is out of view.
  */
 import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
 import type { CVData } from '@/types/cv'
 import { useI18n } from '@/i18n'
-import { applyTemplateDefaults, templates } from '@/templates/registry'
+import { applyTemplateDefaults, supports, templates } from '@/templates/registry'
+import { FONT_OPTIONS, isSameColor, PALETTE } from '@/core/stylePresets'
 import CvRenderer from '@/components/preview/CvRenderer.vue'
 import { facesAt, TURN_KEYFRAMES, TURN_MS } from '@/components/documents/homeCarousel'
 
@@ -26,12 +28,27 @@ const faceData = (index: number) => {
   const id = shown.value[index % shown.value.length]!.id
   return { ...props.sample, meta: { ...props.sample.meta, templateId: id }, style: applyTemplateDefaults(id, props.sample.style) }
 }
+/** Shown beside a template's own font, in this order: a spread of the style step's faces. */
+const FONT_SHOWCASE = ['inter', 'sourceSans', 'raleway', 'garamond', 'georgia']
+
+/** What a face's cards say: the template's accent among the suggested colours, and its font. */
+function adjustable(data: CVData) {
+  const { accentColor, fontFamily } = data.style
+  const own = FONT_OPTIONS.find((font) => font.value === fontFamily)
+  const others = FONT_SHOWCASE.map((id) => FONT_OPTIONS.find((font) => font.id === id)!).filter((font) => font !== own)
+  return {
+    accent: accentColor,
+    swatches: [accentColor, ...PALETTE.filter((color) => !isSameColor(color, accentColor))],
+    fontId: own?.id,
+    fonts: supports(data.meta.templateId, 'customFont') ? [...(own ? [own] : []), ...others].slice(0, 4) : null,
+  }
+}
+
 const faces = computed(() =>
-  [front.value, back.value].map((index, side) => ({
-    side: side === 0 ? 'front' : 'back',
-    template: shown.value[index % shown.value.length]!,
-    data: faceData(index),
-  })),
+  [front.value, back.value].map((index, side) => {
+    const data = faceData(index)
+    return { side: side === 0 ? 'front' : 'back', template: shown.value[index % shown.value.length]!, data, ...adjustable(data) }
+  }),
 )
 
 /* The page is laid out at its A4 width and scaled to the sheet's box, like the editor's preview. */
@@ -115,6 +132,8 @@ onBeforeUnmount(() => {
 const frameStyle = computed(() => ({ perspective: `${Math.round(sheetWidth.value * 2.4)}px` }))
 const sheetStyle = computed(() => ({ width: `${sheetWidth.value}px`, height: `${(sheetWidth.value * 297) / 210}px` }))
 const pageStyle = computed(() => ({ transform: `scale(${scale.value})` }))
+/** The cards overlap the sheet's left edge, wherever its width puts it. */
+const faceStyle = computed(() => ({ '--sheet-left': `calc(50% - ${sheetWidth.value / 2}px)` }))
 </script>
 
 <template>
@@ -122,7 +141,7 @@ const pageStyle = computed(() => ({ transform: `scale(${scale.value})` }))
     <!-- A picture of the sample, not content to read: each face's label says which template it is. -->
     <div ref="frame" class="frame" :style="frameStyle" aria-hidden="true" inert>
       <div ref="rig" class="rig">
-        <div v-for="face in faces" :key="face.side" class="face" :class="face.side" :data-template="face.template.id">
+        <div v-for="face in faces" :key="face.side" class="face" :class="face.side" :style="faceStyle" :data-template="face.template.id">
           <div class="sheet" :style="sheetStyle">
             <div class="page cv-preview-paper" :style="pageStyle">
               <div class="cv-page">
@@ -131,6 +150,18 @@ const pageStyle = computed(() => ({ transform: `scale(${scale.value})` }))
             </div>
           </div>
           <span class="face-name">{{ face.template.name }}</span>
+          <div class="card accent-card">
+            <span class="card-title">{{ t('style.accentColor') }}</span>
+            <span class="swatches">
+              <span v-for="color in face.swatches" :key="color" class="swatch" :class="{ on: color === face.accent }" :style="{ background: color }" />
+            </span>
+          </div>
+          <div v-if="face.fonts" class="card font-card">
+            <span class="card-title">{{ t('style.fontFamily') }}</span>
+            <ul>
+              <li v-for="font in face.fonts" :key="font.id" :class="{ on: font.id === face.fontId }" :style="{ fontFamily: font.value }">{{ font.label }}</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -209,6 +240,74 @@ const pageStyle = computed(() => ({ transform: `scale(${scale.value})` }))
   font: var(--type-label-large);
   letter-spacing: var(--tracking-label-large);
   white-space: nowrap;
+}
+
+/* What can be adjusted in the template, overlapping the sheet's edge below its header (as in the
+   reference): the CV's name stays in view. */
+.card {
+  position: absolute;
+  left: calc(var(--sheet-left) - 32px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--shape-md);
+  background: var(--surface);
+  box-shadow: var(--elevation-2);
+  color: var(--text);
+}
+
+.accent-card {
+  top: 34%;
+}
+
+.font-card {
+  top: 54%;
+}
+
+.card-title {
+  font: var(--type-label-small);
+  color: var(--text-muted);
+}
+
+.swatches {
+  display: flex;
+  gap: 8px;
+}
+
+.swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: var(--shape-full);
+}
+
+.swatch.on {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+.font-card ul {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--size-14);
+  color: var(--text-muted);
+}
+
+.font-card li.on {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* On a narrow screen they would cover the sheet: the name says enough there. */
+@media (max-width: 599px) {
+  .card {
+    display: none;
+  }
 }
 
 .pause {

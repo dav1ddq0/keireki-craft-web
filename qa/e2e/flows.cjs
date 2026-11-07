@@ -541,9 +541,9 @@ async function home(browser) {
         const lum = ([r, g, b]) => [r, g, b].map((v) => ((v /= 255) <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)).reduce((a, v, i) => a + v * [0.2126, 0.7152, 0.0722][i], 0)
         const bg = (e) => { for (; e; e = e.parentElement) { const c = rgb(getComputedStyle(e).backgroundColor); if (c[3] > 0.5) return c } return [255, 255, 255] }
         const out = []
-        for (const e of document.querySelectorAll('.home h1, .home h2, .home h3, .home p, .home li, .home button, .home a, .home .use, .home .template-name, .home .face-name')) {
-          // The sample is a picture; the carousel's template name on it is text to read.
-          if ((e.closest('.frame') && !e.matches('.face-name')) || !e.textContent.trim()) continue
+        for (const e of document.querySelectorAll('.home h1, .home h2, .home h3, .home p, .home li, .home button, .home a, .home .use, .home .template-name, .home .face-name, .home .card-title')) {
+          // The sample is a picture; the carousel's name and cards on it are text to read.
+          if ((e.closest('.frame') && !e.matches('.face-name, .card-title, .font-card li')) || !e.textContent.trim()) continue
           const [a, b] = [lum(rgb(getComputedStyle(e).color)), lum(bg(e))]
           const ratio = (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)
           if (ratio < 4.5) out.push(`${e.textContent.trim().slice(0, 24)} ${ratio.toFixed(2)}`)
@@ -562,8 +562,10 @@ async function home(browser) {
         }, ms)
         check(B, `${where}: the carousel turns`, (await rig()) === 'running')
         check(B, `${where}: no chips to choose a template`, (await p.locator('.home .hero [aria-pressed]').count()) === 0)
+        check(B, `${where}: Classic shows its accent, not a font it cannot change`, (await p.locator('.home .face.front .accent-card').isVisible()) && (await p.locator('.home .face.front .font-card').count()) === 0)
         await rig(8000 * 0.97)
         const front = p.locator('.home .face.front')
+        check(B, `${where}: Cobalt's font card marks its own`, await until(async () => (await p.locator('.home .face.front .font-card li.on').innerText()) === 'Inter', { timeout: 2000 }))
         check(B, `${where}: the front comes round as the next template, named`, await until(async () => (await front.getAttribute('data-template')) === 'cobalt' && (await front.locator('.face-name').innerText()) === 'Cobalt', { timeout: 2000 }))
         await p.getByRole('button', { name: 'Pausar la animación' }).click()
         check(B, `${where}: the pause button stops it`, (await rig()) === 'paused' && (await p.getByRole('button', { name: 'Reanudar la animación' }).count()) === 1)
@@ -571,6 +573,7 @@ async function home(browser) {
         check(B, `${where}: the sample sheet is dimmed only in dark`, colorScheme === 'dark' ? paper.includes('brightness') : paper === 'none', paper)
         check(B, `${where}: the counts come from the app`, /\d+ plantillas/.test(await p.locator('.home .points').innerText()))
       }
+      if (width < 600) check(B, `${where}: no cards over the sheet on a narrow screen`, !(await p.locator('.home .face.front .accent-card').isVisible()))
       check(B, `${where}: no console errors`, p.errs.length === 0, p.errs.join(' | '))
       await p.context().close()
     }

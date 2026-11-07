@@ -61,14 +61,18 @@ const preview = (p) => p.locator('.pane .cv-page, .cv-page').first()
 const previewText = (p) => preview(p).innerText()
 const previewHas = (p, text, timeout) => until(async () => (await previewText(p)).includes(text), { timeout })
 
-/** Waits until the page stops moving: no CSS transition or animation running for a few frames (spec 048). */
+/**
+ * Waits until the page stops moving: no CSS transition or animation running for a few frames (spec 048).
+ * An endless loop never stops by design (the home's carousel, spec 077), so it is not waited for.
+ */
 async function settled(p) {
   await p.evaluate(
     () =>
       new Promise((resolve) => {
         let quiet = 0
         const tick = () => {
-          quiet = document.getAnimations().length === 0 ? quiet + 1 : 0
+          const moving = document.getAnimations().filter((a) => a.effect?.getTiming().iterations !== Infinity)
+          quiet = moving.length === 0 ? quiet + 1 : 0
           if (quiet >= 4) resolve()
           else requestAnimationFrame(tick)
         }
