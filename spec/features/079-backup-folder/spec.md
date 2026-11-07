@@ -1,6 +1,6 @@
 # 079 · Back up to a folder on the computer, by itself
 
-**Status:** proposed
+**Status:** done
 
 ## What it does
 
@@ -42,22 +42,26 @@ clearing its data.
 
 ## Acceptance criteria
 
-- [ ] With the API: choose a folder; after an edit the file is there within a few seconds, in 078's
+- [x] With the API: choose a folder; after an edit the file is there within a few seconds, in 078's
       format, with every CV; Import restores it.
-- [ ] A daily copy is written once per day; with more than 7, the oldest daily copies are deleted and
+- [x] A daily copy is written once per day; with more than 7, the oldest daily copies are deleted and
       no other file in the folder is touched (in particular, no downloaded backup in any language).
-- [ ] File names follow the interface language, for the folder and for 078's download; after a
+- [x] File names follow the interface language, for the folder and for 078's download; after a
       language change the old current file is replaced, not left behind.
-- [ ] The status shows the folder's name and when it was last written; "Cambiar carpeta" and "Dejar
+- [x] The status shows the folder's name and when it was last written; "Cambiar carpeta" and "Dejar
       de guardar" work; stopping forgets the folder (the file stays).
-- [ ] Without access this visit, or with the folder gone: nothing is written, the paused notice
+- [x] Without access this visit, or with the folder gone: nothing is written, the paused notice
       appears, and "Reanudar" / "Elegir otra carpeta" brings it back.
-- [ ] A successful write records a backup (the reminder stays away); a failed one does not.
-- [ ] Without the API (Firefox, Safari, phones): no folder option anywhere; 078 unchanged.
-- [ ] Preferences' backup button saves every CV.
-- [ ] The folder handle is kept in IndexedDB, never in `localStorage`; no change to `CVData`.
-- [ ] Nine languages; light and dark; `npm test`, `npm run build`, `qa:e2e` (a walk with the picker
-      replaced by a private origin folder), `qa:consistency` pass.
+- [x] A successful write records a backup (the reminder stays away); a failed one does not.
+- [x] Without the API (Firefox, Safari, phones): no folder option anywhere; 078 unchanged.
+- [x] Preferences' backup button saves every CV.
+- [x] The folder handle is kept in IndexedDB, never in `localStorage`; no change to `CVData`.
+- [x] Nine languages; light and dark; `npm test`, `npm run build`, `qa:e2e` (a walk with the picker
+      replaced by a private origin folder), `qa:consistency` pass: 1080 tests; qa:e2e 231/231 (the
+      walk: choose, write, edit, Import, paused and resumed, folder gone and another chosen, English
+      names, stop; and no option without the API); qa:consistency 13/13 over 425 views. Headless
+      Chromium crashes reading an origin-private folder back from IndexedDB, so the walk checks the
+      stored key, not a reload; the app keeps the folder in memory after the first read.
 
 ## Out of scope
 
