@@ -123,4 +123,14 @@ describe('remeasureAfterCut (spec 075)', () => {
     expect(remeasureAfterCut(cut, root, BOUNDS, fake)).toBe(cut)
     expect(hidden).toEqual(['One two threefour:', 'four:none', 'five:none'])
   })
+
+  it('leaves a cut in the last text of a paragraph as it is: that text still runs past the page', () => {
+    const root = document.createElement('div')
+    root.innerHTML = '<p>One two three</p><p>four</p>'
+    const cut = document.createRange()
+    cut.setStart(root.querySelector('p')!.firstChild!, 4)
+    const fake = layout(() => before(root, 0))
+    expect(remeasureAfterCut(cut, root, BOUNDS, fake)).toBe(cut)
+    expect(fake.calls()).toBe(0)
+  })
 })

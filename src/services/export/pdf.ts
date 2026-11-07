@@ -258,7 +258,9 @@ export function remeasureAfterCut(overflow: Range | undefined, rendered: Element
   if (!overflow) return overflow
   let cut = overflow
   for (let i = 0; i < MAX_REMEASURES; i++) {
-    // A cut inside a text node keeps that text in the trial: it is measured where it is.
+    // A cut inside a text node keeps that text in the trial, measured where it is: it still runs
+    // past the page, so its column still runs on and nothing earlier can move. Only what follows it
+    // is hidden; when nothing does (the last text of a paragraph it splits), the cut stands as is.
     const start = cut.startContainer.nodeType === Node.TEXT_NODE ? cut.startContainer.nextSibling : cut.startContainer.childNodes[cut.startOffset] ?? null
     if (!start || !rendered.contains(start)) return cut
     const restore = hideFrom(start, rendered)
