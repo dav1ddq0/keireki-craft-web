@@ -1,7 +1,7 @@
 // Functional blocks. Each runs in its own browser context (its own IndexedDB), so they run in parallel.
 const fs = require('fs')
 const path = require('path')
-const { settled, BASE, check, until, sleep, open, previewText, previewHas, step, startSample, idbDump, idbDocCount, overflow } = require('./lib.cjs')
+const { ENGINE, settled, BASE, check, until, sleep, open, previewText, previewHas, step, startSample, idbDump, idbDocCount, overflow } = require('./lib.cjs')
 
 /** A · writing a CV from blank: every step, links, validation, persistence, undo/redo. */
 async function mainFlow(browser) {
@@ -635,4 +635,147 @@ async function backupRestore(browser, outDir) {
   await b.context().close()
 }
 
-module.exports = { backupRestore, home, aiImprove, mainFlow, customAndStyle, exportImport, documentsAndPrefs, phone, widths, renameMigration, noLayoutShift }
+/**
+ * The backup folder (spec 079). The system's picker is replaced by a folder of the origin private file
+ * system, and permission by a switch the walk flips. Headless Chromium crashes when such a folder is
+ * read back from IndexedDB, so the walk never reloads with a folder chosen (the app keeps it in
+ * memory) and only lists the store's keys.
+ */
+const folderScript = () => {
+  window.__folderPermission = 'granted'
+  const proto = FileSystemHandle.prototype
+  proto.queryPermission = async () => window.__folderPermission
+  proto.requestPermission = async () => (window.__folderPermission = 'granted')
+  window.showDirectoryPicker = async () => (await navigator.storage.getDirectory()).getDirectoryHandle('Documentos', { create: true })
+}
+const folderFiles = (p) =>
+  p.evaluate(async () => {
+    const files = {}
+    const dir = await (await navigator.storage.getDirectory()).getDirectoryHandle('Documentos').catch(() => null)
+    if (dir) for await (const [name, handle] of dir.entries()) files[name] = await (await handle.getFile()).text()
+    return files
+  })
+const idbKeys = (p) =>
+  p.evaluate(
+    () =>
+      new Promise((resolve) => {
+        const q = indexedDB.open('keireki-craft')
+        q.onsuccess = () => {
+          const keys = q.result.transaction('kv').objectStore('kv').getAllKeys()
+          keys.onsuccess = () => resolve(keys.result.map(String))
+        }
+      }),
+  )
+
+async function backupFolder(browser, outDir) {
+  const B = 'folder'
+  if (ENGINE !== 'chromium') {
+    // No File System Access API here: no folder option; 078's backup stays.
+    const p = await open(browser)
+    await startSample(p)
+    await p.getByRole('button', { name: /Preferencias/ }).first().click()
+    check(B, `no folder option without the API (${ENGINE})`, (await p.getByText('Guardar también en una carpeta').count()) === 0 && (await p.getByRole('button', { name: 'Hacer copia de seguridad' }).count()) > 0)
+    await p.context().close()
+    return
+  }
+  const p = await open(browser, { initScript: folderScript })
+  // Files already in the folder: downloaded backups and a note stay; an English current copy goes
+  // once the Spanish one is written; of nine daily copies in any language, the oldest two go.
+  const old = ['daily-2020-10-01', 'diaria-2020-10-02', 'taeglich-2020-10-03', 'quotidienne-2020-10-04', 'giornaliero-2020-10-05', 'egunekoa-2020-10-06', 'diaria-2020-10-07', 'daily-2020-10-08'].map((n) => `keireki-craft-${n}.json`)
+  const kept = ['keireki-craft-copia-2020-01-01.json', 'keireki-craft-sicherung-2020-01-02.json', 'notas.txt']
+  await p.evaluate(async (names) => {
+    const dir = await (await navigator.storage.getDirectory()).getDirectoryHandle('Documentos', { create: true })
+    for (const name of names) {
+      const w = await (await dir.getFileHandle(name, { create: true })).createWritable()
+      await w.write('{}')
+      await w.close()
+    }
+  }, [...old, ...kept, 'keireki-craft-backup.json'])
+  const today = await p.evaluate(() => new Date().toLocaleDateString('sv'))
+  await startSample(p)
+  const lastBackup = () => p.evaluate(() => JSON.parse(localStorage.getItem('keireki-craft:prefs') || '{}').lastBackupAt ?? null)
+  const headline = p.getByLabel(/Titular profesional|Professional headline/)
+  const edit = async (text) => {
+    await headline.fill(text)
+    await sleep(4500) // the store's save, then the folder's 3 s pause
+  }
+
+  await p.getByRole('button', { name: /Preferencias/ }).first().click()
+  const settings = p.locator('.folder').first()
+  check(B, 'Preferences offers to save to a folder', await settings.getByText('Guardar también en una carpeta').isVisible())
+  await settings.getByRole('button', { name: 'Elegir carpeta…' }).click()
+  check(B, 'once chosen, it says where and when it saved', await until(async () => /Guardando en «Documentos» · última copia a las \d\d:\d\d/.test(await settings.innerText()), { timeout: 4000 }))
+  let files = await folderFiles(p)
+  const current = JSON.parse(files['keireki-craft-copia.json'] || '{}')
+  check(B, 'the current copy is written at once: 078’s format, every CV', current.format === 'keireki-craft-backup' && current.version === 1 && current.cvs?.length === 1, Object.keys(files).join(' '))
+  check(B, 'with today’s copy, the same backup', files[`keireki-craft-diaria-${today}.json`] === files['keireki-craft-copia.json'])
+  const daily = Object.keys(files).filter((n) => /-\d{4}-\d\d-\d\d\.json$/.test(n) && !kept.includes(n))
+  check(B, 'seven daily copies kept, the two oldest removed', daily.length === 7 && !files[old[0]] && !files[old[1]], daily.join(' '))
+  check(B, 'downloaded backups and other files untouched', kept.every((n) => files[n] !== undefined))
+  check(B, 'the current copy named in another language is removed', files['keireki-craft-backup.json'] === undefined)
+  check(B, 'the write counts as a backup', (await lastBackup()) !== null)
+  const keys = await idbKeys(p)
+  check(B, 'the folder is kept in IndexedDB, not in localStorage', keys.includes('backupFolder') && !(await p.evaluate(() => JSON.stringify({ ...localStorage }))).includes('backupFolder'), keys.join(' '))
+
+  await p.keyboard.press('Escape')
+  await step(p, 'Datos personales')
+  await edit('Copiado en la carpeta')
+  files = await folderFiles(p)
+  check(B, 'a few seconds after an edit, the copy has it', files['keireki-craft-copia.json']?.includes('Copiado en la carpeta'))
+
+  // Import restores the folder’s file in a browser with nothing stored.
+  const file = path.join(outDir, 'carpeta.json')
+  fs.writeFileSync(file, files['keireki-craft-copia.json'])
+  const r = await open(browser)
+  await r.getByRole('button', { name: /Importar mi PDF/ }).click()
+  await r.locator('input[type=file][accept*="json"]').setInputFiles(file)
+  check(B, 'Import restores the folder’s file', await until(async () => (await r.locator('.restore-done').innerText()).includes('Nuevos: 1'), { timeout: 4000 }))
+  await r.context().close()
+
+  // No access in this visit: nothing written, nothing counted, the notice; Resume writes at once.
+  await p.evaluate(() => (window.__folderPermission = 'prompt'))
+  const before = await lastBackup()
+  await edit('Sin permiso')
+  check(B, 'without access nothing is written', !(await folderFiles(p))['keireki-craft-copia.json']?.includes('Sin permiso'))
+  check(B, 'and no backup is counted', (await lastBackup()) === before)
+  await p.getByRole('button', { name: 'Mis CVs' }).first().click()
+  const notice = p.locator('.folder-paused')
+  check(B, 'My CVs says the copy is paused', await until(async () => (await notice.innerText().catch(() => '')).includes('La copia en la carpeta «Documentos» está en pausa.'), { timeout: 2000 }))
+  await notice.getByRole('button', { name: 'Reanudar' }).click()
+  check(B, 'Resume brings it back and writes at once', await until(async () => !(await notice.count()) && (await folderFiles(p))['keireki-craft-copia.json']?.includes('Sin permiso'), { timeout: 4000 }))
+
+  // The folder is gone: the notice offers another; choosing it writes there.
+  await p.evaluate(async () => (await navigator.storage.getDirectory()).removeEntry('Documentos', { recursive: true }))
+  await p.getByRole('button', { name: 'Editor' }).first().click()
+  await edit('Carpeta borrada')
+  await p.getByRole('button', { name: 'Mis CVs' }).first().click()
+  check(B, 'a folder that is gone is said so', await until(async () => (await notice.innerText().catch(() => '')).includes('No se encuentra la carpeta de copias «Documentos».'), { timeout: 2000 }))
+  await notice.getByRole('button', { name: 'Elegir otra carpeta' }).click()
+  check(B, 'choosing another writes there', await until(async () => !(await notice.count()) && (await folderFiles(p))['keireki-craft-copia.json']?.includes('Carpeta borrada'), { timeout: 4000 }))
+
+  // Another language: the current copy is written under its name; the old one goes.
+  await p.getByRole('button', { name: /Preferencias/ }).first().click()
+  await p.getByLabel('Idioma de la interfaz').selectOption('en')
+  await p.keyboard.press('Escape')
+  await p.getByRole('button', { name: 'Editor' }).first().click()
+  await edit('In English')
+  files = await folderFiles(p)
+  check(B, 'in English the current copy is keireki-craft-backup.json, the Spanish one gone', files['keireki-craft-backup.json']?.includes('In English') && files['keireki-craft-copia.json'] === undefined && files[`keireki-craft-daily-${today}.json`] !== undefined, Object.keys(files).join(' '))
+
+  // Stop: the folder is forgotten, its files stay.
+  await p.getByRole('button', { name: /Preferences/ }).first().click()
+  await settings.getByRole('button', { name: 'Stop saving' }).click()
+  check(B, 'stopping forgets the folder and offers to choose one', await until(async () => (await settings.getAttribute('data-state')) === 'off' && !(await idbKeys(p)).includes('backupFolder'), { timeout: 2000 }))
+  check(B, 'the files stay', (await folderFiles(p))['keireki-craft-backup.json'] !== undefined)
+  check(B, 'no errors with the folder', p.errs.length === 0, p.errs.join(' | '))
+  await p.context().close()
+
+  // Chromium without the API (as on a phone): no folder option anywhere.
+  const n = await open(browser, { initScript: () => delete window.showDirectoryPicker })
+  await startSample(n)
+  await n.getByRole('button', { name: /Preferencias/ }).first().click()
+  check(B, 'no folder option without the API', (await n.getByText('Guardar también en una carpeta').count()) === 0 && (await n.getByRole('button', { name: 'Hacer copia de seguridad' }).count()) > 0)
+  await n.context().close()
+}
+
+module.exports = { backupFolder, backupRestore, home, aiImprove, mainFlow, customAndStyle, exportImport, documentsAndPrefs, phone, widths, renameMigration, noLayoutShift }

@@ -49,6 +49,7 @@ const { ROOT, startServer } = require('../lib/server.cjs')
       timed('widths', () => flows.widths(browser)),
       timed('home', () => flows.home(browser)),
       timed('backup', () => flows.backupRestore(browser, outDir)),
+      timed('folder', () => flows.backupFolder(browser, outDir)),
       timed('transitions', () => transitions.run(browser)),
       timed('fidelity', () => fidelity.run(browser, outDir)),
       timed('offline', () => offline.run(browser)),
