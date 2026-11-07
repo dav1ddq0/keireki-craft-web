@@ -27,7 +27,7 @@ async function run(browser) {
   p.on('requestfailed', (r) => failed.push(r.url()))
   await p.context().setOffline(true)
   await p.reload({ waitUntil: 'load' })
-  check(B, 'offline, a reload opens the app', await until(() => p.getByRole('button', { name: /Desde un ejemplo/ }).isVisible(), { timeout: 10000 }))
+  check(B, 'offline, a reload opens the app', await until(() => p.getByRole('button', { name: /Cargar un ejemplo/ }).isVisible(), { timeout: 10000 }))
   await startSample(p)
   check(B, 'offline, the sample opens in the preview', true)
   await step(p, 'Exportar')

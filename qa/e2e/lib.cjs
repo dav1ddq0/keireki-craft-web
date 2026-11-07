@@ -84,7 +84,7 @@ async function step(p, name) {
 }
 
 async function startSample(p) {
-  await p.getByRole('button', { name: /Desde un ejemplo/ }).click()
+  await p.getByRole('button', { name: /Cargar un ejemplo/ }).click()
   await previewHas(p, 'Nadia Martín Reyes')
   await settled(p)
 }

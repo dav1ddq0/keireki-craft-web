@@ -7,8 +7,8 @@ const { settled, BASE, check, until, sleep, open, previewText, previewHas, step,
 async function mainFlow(browser) {
   const B = 'main'
   const p = await open(browser)
-  check(B, 'first run shows the welcome view', await p.getByRole('heading', { name: 'Empieza tu CV' }).isVisible())
-  await p.getByRole('button', { name: /En blanco/ }).click()
+  check(B, 'first run shows the home', await p.getByRole('heading', { name: 'Tu CV, en tu navegador. Y en ningún otro sitio.' }).isVisible())
+  await p.getByRole('button', { name: 'Crear mi CV' }).first().click()
   await settled(p)
   check(B, 'blank goes to Datos personales', await p.getByRole('heading', { name: 'Datos personales' }).isVisible())
 
@@ -84,7 +84,7 @@ async function mainFlow(browser) {
     return ['Lucía Pérez Gómez', 'Data Engineer', 'Grado en Estadística', 'dbt', 'Inglés'].every((s) => t.includes(s)) && t
   })
   check(B, 'everything persists after a reload', !!after)
-  check(B, 'a reload does not show the welcome again', !(await p.getByRole('heading', { name: 'Empieza tu CV' }).isVisible()))
+  check(B, 'a reload does not show the home again', !(await p.getByRole('heading', { name: 'Tu CV, en tu navegador. Y en ningún otro sitio.' }).isVisible()))
 
   await step(p, 'Datos personales')
   await p.getByLabel('Titular profesional').fill('Ingeniera de datos senior')
@@ -253,8 +253,8 @@ async function documentsAndPrefs(browser) {
 async function phone(browser) {
   const B = 'phone'
   const p = await open(browser, { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true })
-  check(B, 'the welcome fits the width', (await overflow(p)) === 0)
-  await p.getByRole('button', { name: /Desde un ejemplo/ }).tap()
+  check(B, 'the home fits the width', (await overflow(p)) === 0)
+  await p.getByRole('button', { name: /Cargar un ejemplo/ }).tap()
   check(B, 'the editor opens on Datos personales', await until(() => p.getByText('Datos personales').first().isVisible(), { timeout: 3000 }))
   const seen = []
   for (let i = 0; i < 8; i++) {
@@ -460,7 +460,7 @@ async function aiImprove(browser) {
   const p = await open(browser, { permissions: ['clipboard-read', 'clipboard-write'] })
   // The assistants are real sites: answer their pages here so the check needs no network.
   await p.context().route(/^https:\/\/(claude\.ai|chatgpt\.com|gemini\.google\.com)\//, (route) => route.fulfill({ status: 200, contentType: 'text/html', body: '<title>assistant</title>' }))
-  await p.getByRole('button', { name: /En blanco/ }).click()
+  await p.getByRole('button', { name: 'Crear mi CV' }).first().click()
   await settled(p)
   await step(p, 'Experiencia')
   await p.getByRole('button', { name: /Añadir experiencia/ }).click()
@@ -503,7 +503,7 @@ async function aiImprove(browser) {
   await p.context().close()
 
   const m = await open(browser, { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true })
-  await m.getByRole('button', { name: /Desde un ejemplo/ }).tap()
+  await m.getByRole('button', { name: /Cargar un ejemplo/ }).tap()
   await m.getByRole('button', { name: /Cambiar de paso/ }).tap()
   await m.locator('dialog[open] button', { hasText: 'Experiencia' }).tap()
   await until(async () => !(await m.locator('dialog[open]').count()), { timeout: 2000 })
@@ -516,4 +516,52 @@ async function aiImprove(browser) {
   await m.context().close()
 }
 
-module.exports = { aiImprove, mainFlow, customAndStyle, exportImport, documentsAndPrefs, phone, widths, renameMigration, noLayoutShift }
+/** H · the home (spec 076): what it shows, the template chips, every width in light and dark. */
+async function home(browser) {
+  const B = 'home'
+  for (const [width, height] of [[1440, 900], [1024, 768], [390, 844]]) {
+    for (const colorScheme of ['light', 'dark']) {
+      const where = `${width} ${colorScheme}`
+      const p = await open(browser, { viewport: { width, height }, colorScheme, isMobile: width < 700, hasTouch: width < 700 })
+      await p.getByRole('heading', { level: 1 }).waitFor()
+      check(B, `${where}: the theme follows the system`, (await p.evaluate(() => document.documentElement.dataset.theme)) === colorScheme)
+      check(B, `${where}: no horizontal scroll`, (await overflow(p)) === 0)
+      // Text against the first opaque background behind it: WCAG AA, 4.5:1.
+      const low = await p.evaluate(() => {
+        // Any CSS colour (rgb(), color(srgb …) from color-mix, oklch…) normalised by a canvas pixel.
+        const ctx = Object.assign(document.createElement('canvas'), { width: 1, height: 1 }).getContext('2d', { willReadFrequently: true })
+        const rgb = (c) => {
+          ctx.clearRect(0, 0, 1, 1)
+          ctx.fillStyle = '#000'
+          ctx.fillStyle = c
+          ctx.fillRect(0, 0, 1, 1)
+          const [r, g, b, a] = ctx.getImageData(0, 0, 1, 1).data
+          return [r, g, b, a / 255]
+        }
+        const lum = ([r, g, b]) => [r, g, b].map((v) => ((v /= 255) <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)).reduce((a, v, i) => a + v * [0.2126, 0.7152, 0.0722][i], 0)
+        const bg = (e) => { for (; e; e = e.parentElement) { const c = rgb(getComputedStyle(e).backgroundColor); if (c[3] > 0.5) return c } return [255, 255, 255] }
+        const out = []
+        for (const e of document.querySelectorAll('.home h1, .home h2, .home h3, .home p, .home li, .home button, .home a, .home .use, .home .template-name')) {
+          if (e.closest('.frame') || !e.textContent.trim()) continue
+          const [a, b] = [lum(rgb(getComputedStyle(e).color)), lum(bg(e))]
+          const ratio = (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)
+          if (ratio < 4.5) out.push(`${e.textContent.trim().slice(0, 24)} ${ratio.toFixed(2)}`)
+        }
+        return out
+      })
+      check(B, `${where}: text contrast ≥ 4.5:1`, low.length === 0, low.join(' | '))
+      if (width === 1440) {
+        const chips = p.getByRole('group', { name: 'Cambiar la plantilla del ejemplo' })
+        await chips.getByRole('button', { name: 'Cobalt' }).click()
+        check(B, `${where}: a chip changes the sample's template`, await until(async () => (await chips.locator('[aria-pressed="true"]').innerText()) === 'Cobalt', { timeout: 2000 }))
+        const paper = await p.locator('.home .cv-preview-paper').evaluate((e) => getComputedStyle(e).filter)
+        check(B, `${where}: the sample sheet is dimmed only in dark`, colorScheme === 'dark' ? paper.includes('brightness') : paper === 'none', paper)
+        check(B, `${where}: the counts come from the app`, /\d+ plantillas/.test(await p.locator('.home .points').innerText()))
+      }
+      check(B, `${where}: no console errors`, p.errs.length === 0, p.errs.join(' | '))
+      await p.context().close()
+    }
+  }
+}
+
+module.exports = { home, aiImprove, mainFlow, customAndStyle, exportImport, documentsAndPrefs, phone, widths, renameMigration, noLayoutShift }

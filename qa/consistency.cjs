@@ -40,7 +40,7 @@ const OUT = path.join(ROOT, '.qa')
 const UI = {
   es: {
     steps: ['Datos personales', 'Resumen', 'Experiencia', 'Formación', 'Competencias', 'Idiomas', 'Secciones propias', 'Plantilla y estilo', 'Exportar'],
-    sample: /Desde un ejemplo/,
+    sample: /Cargar un ejemplo/,
     sampleName: 'Nadia Martín Reyes',
     next: /Siguiente/,
     preview: /^Vista previa$/,
@@ -54,7 +54,7 @@ const UI = {
   },
   de: {
     steps: ['Persönliche Daten', 'Profil', 'Berufserfahrung', 'Ausbildung', 'Kenntnisse', 'Sprachen', 'Eigene Abschnitte', 'Vorlage und Stil', 'Exportieren'],
-    sample: /Aus einem Beispiel/,
+    sample: /Beispiel laden/,
     // The sample is in the interface language, with a person of its own (spec 059).
     sampleName: 'Lena Schneider',
     next: /Weiter|Nächster Schritt/,
@@ -69,7 +69,7 @@ const UI = {
   },
   eu: {
     steps: ['Datu pertsonalak', 'Laburpena', 'Esperientzia', 'Prestakuntza', 'Gaitasunak', 'Hizkuntzak', 'Atal propioak', 'Txantiloia eta estiloa', 'Esportatu'],
-    sample: /Adibide batetik/,
+    sample: /Kargatu adibide bat/,
     sampleName: 'Ane Etxeberria Goikoetxea',
     next: /Hurrengoa|Hurrengo urratsa/,
     preview: /^Aurrebista$/,
