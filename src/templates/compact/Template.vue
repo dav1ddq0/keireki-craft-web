@@ -30,7 +30,7 @@ const contactLine = computed(() =>
 <template>
   <article class="compact" :style="vars">
     <header class="head">
-      <div>
+      <div class="head-text">
         <h1 class="name">{{ data.personal.fullName }}</h1>
         <p v-if="data.personal.headline" class="headline">{{ data.personal.headline }}</p>
       </div>
@@ -129,7 +129,7 @@ const contactLine = computed(() =>
 }
 
 /* The name and headline may shrink below a long word's width, so the word breaks (spec 074). */
-.head > :first-child {
+.head-text {
   min-width: 0;
 }
 

@@ -69,6 +69,6 @@ describe('long words in the name and the main column (spec 074)', () => {
   })
 
   it("compact's name and headline give way to the contact line", () => {
-    expect(rule(source('compact'), '.head > :first-child')).toMatch(/min-width:\s*0/)
+    expect(rule(source('compact'), '.head-text')).toMatch(/min-width:\s*0/)
   })
 })
