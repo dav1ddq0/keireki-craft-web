@@ -8,4 +8,4 @@
 - [x] 4 · The cards on each face: Color de acento (template's accent among `PALETTE`) and Tipografía (only with
   `customFont`; names in their faces), from the template and the style step; hidden under 600 px; tests and
   `qa:e2e` checks — commit: b0554bf
-- [ ] 5 · Validate against the acceptance criteria (light and dark, three widths) and move 077 to "Done"
+- [x] 5 · Validate against the acceptance criteria (light and dark, three widths) and move 077 to "Done" — commit: 61108b6
