@@ -92,6 +92,8 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
 
+- **077** · The home's preview turns through the templates by itself: a 3D turn, the name only, no chips
+
 
 ## Backlog / ideas 💡
 
