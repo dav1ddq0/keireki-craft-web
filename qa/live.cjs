@@ -72,7 +72,7 @@ const until = async (fn, timeout = 15000, every = 250) => {
       const res = await p.goto(SITE, { waitUntil: 'networkidle' })
       check(`${label}: the page opens`, res.ok() && p.url() === SITE, `${res.status()} ${p.url()}`)
       check(`${label}: with its Content-Security-Policy`, (await p.locator('meta[http-equiv="Content-Security-Policy"]').count()) === 1)
-      await p.getByRole('button', { name: /From a sample/ }).first().click()
+      await p.getByRole('button', { name: /Load a sample/ }).first().click()
       // On the phone the preview is a tap away: its text is there, not on screen.
       check(`${label}: the sample opens`, await until(async () => (await p.locator('.cv-page').first().textContent()).includes('Emma Clarke')))
       const gotIt = p.getByRole('button', { name: 'Got it' })
