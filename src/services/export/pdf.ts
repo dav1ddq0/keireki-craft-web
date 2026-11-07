@@ -208,7 +208,7 @@ function blockEnd(css: string, open: number): number {
 }
 
 /** Cuts moved earlier on one page at most: each move is earlier, so this only bounds a pathology. */
-const MAX_REMEASURES = 8
+export const MAX_REMEASURES = 8
 
 /**
  * Hides what follows `start` (it included) up to the end of `root`, and drops the bottom padding and
@@ -252,9 +252,9 @@ export function hideFrom(start: Node, root: Element): () => void {
  * padding back (a side column whose neighbour no longer runs on), an empty section shell stays at
  * the foot, and Chrome then moves an earlier section past the sheet, where nothing prints it
  * (spec 075). This measures the page as the cut will leave it and moves the cut before anything
- * that would fall outside, until nothing new does.
+ * that would fall outside, until nothing new does. Exported for its tests.
  */
-function remeasureAfterCut(overflow: Range | undefined, rendered: Element, bounds: DOMRect, layout: Layout): Range | undefined {
+export function remeasureAfterCut(overflow: Range | undefined, rendered: Element, bounds: DOMRect, layout: Layout): Range | undefined {
   if (!overflow) return overflow
   let cut = overflow
   for (let i = 0; i < MAX_REMEASURES; i++) {
