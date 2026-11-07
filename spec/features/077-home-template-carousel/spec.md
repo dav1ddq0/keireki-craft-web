@@ -1,6 +1,6 @@
 # 077 · The home's preview turns through the templates by itself
 
-**Status:** proposed
+**Status:** done
 
 ## What it does
 
@@ -34,30 +34,32 @@ reused; none of its images, texts or cards.
 
 ## Acceptance criteria
 
-- [ ] The hero shows the sample CV in one template, rendered by its real component, with the
+- [x] The hero shows the sample CV in one template, rendered by its real component, with the
       template's name on the sheet; no chips, no "Ver todas" in the hero.
-- [ ] Every 4 s it turns to the next of the eight templates: about 3.2 s of drift (0° to 10°) and a
+- [x] Every 4 s it turns to the next of the eight templates: about 3.2 s of drift (0° to 10°) and a
       0.8 s turn (10° to 170°, and on the way back 185° to 360°); the next template is never seen
       changing (it changes on the face turned away).
-- [ ] Each face shows a **Color de acento** card (the template's accent marked, the style step's
+- [x] Each face shows a **Color de acento** card (the template's accent marked, the style step's
       `PALETTE` beside it) and, only if the template supports `customFont`, a **Tipografía** card (the
       template's font marked, each name in its face); the values come from the template and the style
       step, never typed in; no cards under 600 px wide.
-- [ ] The pause button stops the motion where it is and shows "play"; pressed again it continues.
+- [x] The pause button stops the motion where it is and shows "play"; pressed again it continues.
       It is a real button with a label in the nine languages, a ≥ 48 px target, visible focus.
-- [ ] `prefers-reduced-motion: reduce`: no motion and no timer; the first template stands still with
+- [x] `prefers-reduced-motion: reduce`: no motion and no timer; the first template stands still with
       its name.
-- [ ] Nothing runs while it cannot be seen: the motion stops with the tab hidden and with the hero
+- [x] Nothing runs while it cannot be seen: the motion stops with the tab hidden and with the hero
       scrolled out of view, and resumes when it is back.
-- [ ] **Crear mi CV** (both) starts a blank CV in the default template; **Usar** on a template card
+      (Tab hidden: unit test; out of view: checked in the app, scrolling `main.scroll-view`.)
+- [x] **Crear mi CV** (both) starts a blank CV in the default template; **Usar** on a template card
       and the rest of the home are unchanged.
-- [ ] The preview stays a picture for assistive technology (`aria-hidden`, `inert`), as today; the
+- [x] The preview stays a picture for assistive technology (`aria-hidden`, `inert`), as today; the
       pause button is outside it.
-- [ ] Light and dark themes, 1440 / 1024 / 390 px: no horizontal overflow, the turn stays inside the
+- [x] Light and dark themes, 1440 / 1024 / 390 px: no horizontal overflow, the turn stays inside the
       frame, the name label readable (contrast ≥ 4.5:1) in both themes.
-- [ ] Only existing tokens and components; no new dependency, font or image.
-- [ ] `npm test`, `npm run build`, `npm run qa:e2e` (the home block updated), `npm run qa:consistency`
-      pass.
+- [x] Only existing tokens and components; no new dependency, font or image.
+- [x] `npm test`, `npm run build`, `npm run qa:e2e` (the home block updated), `npm run qa:consistency`
+      pass: 1034 tests, qa:e2e 199/199, qa:consistency 13/13 over 425 views (its `settled` no
+      longer waits for an endless animation).
 
 ## Out of scope
 
