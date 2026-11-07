@@ -142,7 +142,8 @@ const languages = computed(() => resolveLanguages(props.data))
   position: relative;
   isolation: isolate;
   display: grid;
-  grid-template-columns: 31% 1fr;
+  /* minmax(0, …): a long word breaks inside the column instead of widening it (spec 074). */
+  grid-template-columns: 31% minmax(0, 1fr);
   font-family: var(--cv-font);
   font-size: calc(10pt * var(--cv-font-scale));
   line-height: 1.45;
@@ -264,6 +265,8 @@ const languages = computed(() => resolveLanguages(props.data))
   font-weight: 700;
   letter-spacing: -0.015em;
   margin: 0;
+  /* A name longer than the line breaks inside the word, only where it cannot fit (spec 074). */
+  overflow-wrap: break-word;
 }
 
 .headline {

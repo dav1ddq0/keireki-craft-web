@@ -184,14 +184,16 @@ const contactTitle = computed(() => contactHeading(language.value))
 
 .body {
   display: grid;
-  grid-template-columns: 42% 1fr;
+  /* minmax(0, …): a long word breaks inside the column instead of widening it (spec 074). */
+  grid-template-columns: 42% minmax(0, 1fr);
 }
 
 .head {
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: 42% 1fr;
+  /* minmax(0, …): a long word breaks inside the column instead of widening it (spec 074). */
+  grid-template-columns: 42% minmax(0, 1fr);
   align-items: center;
   min-height: 46mm;
   background: var(--band);
@@ -261,6 +263,8 @@ const contactTitle = computed(() => contactHeading(language.value))
 .main {
   grid-column: 2;
   padding: calc(var(--cv-page-margin) * 0.9) var(--cv-page-margin) var(--cv-page-margin) calc(var(--cv-page-margin) * 0.75);
+  /* A word longer than the column breaks inside it, and only where it cannot fit (spec 074). */
+  overflow-wrap: break-word;
 }
 
 .cobalt--photo .sidebar,

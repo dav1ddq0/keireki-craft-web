@@ -149,7 +149,8 @@ const languages = computed(() => resolveLanguages(props.data))
   /* The side column comes first in the markup, so paged.js keeps it on page 1 (spec 032); dense
      packing puts the main column back in the free track beside it. */
   grid-auto-flow: row dense;
-  grid-template-columns: 1fr 34%;
+  /* minmax(0, …): a long word breaks inside the column instead of widening it (spec 074). */
+  grid-template-columns: minmax(0, 1fr) 34%;
   align-content: start;
   column-gap: calc(var(--cv-page-margin) * 0.8);
   font-family: var(--cv-font);
@@ -233,6 +234,8 @@ const languages = computed(() => resolveLanguages(props.data))
   font-weight: 700;
   line-height: 1.15;
   margin: 0;
+  /* A name longer than the line breaks inside the word, only where it cannot fit (spec 074). */
+  overflow-wrap: break-word;
 }
 
 .headline {

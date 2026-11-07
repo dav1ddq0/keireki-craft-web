@@ -27,3 +27,48 @@ describe('long words in the side column (spec 074)', () => {
     expect(rule(css, name)).toMatch(/min-width:\s*0/)
   })
 })
+
+/**
+ * Spec 074: the full name breaks a word longer than its line, and a grid's flexible column has no
+ * minimum, so a long word breaks inside it instead of widening it and pushing the other one out.
+ */
+describe('long words in the name and the main column (spec 074)', () => {
+  const ALL = ['amber', 'aurora', 'banner', 'chevron', 'classic', 'cobalt', 'compact', 'editorial', 'facet', 'frame', 'harbor', 'ledger', 'meridian', 'modern', 'monogram', 'monograph']
+
+  it.each(ALL)('%s breaks a long word in the full name', (id) => {
+    expect(rule(source(id), '.name')).toMatch(/overflow-wrap:\s*(break-word|anywhere)/)
+  })
+
+  const GRIDS: [string, string][] = [
+    ['amber', '.amber'],
+    ['aurora', '.aurora'],
+    ['banner', '.banner'],
+    ['chevron', '.chevron'],
+    ['facet', '.facet'],
+    ['harbor', '.harbor'],
+    ['meridian', '.meridian'],
+    ['modern', '.modern'],
+    ['cobalt', '.body'],
+    ['cobalt', '.head'],
+  ]
+
+  it.each(GRIDS)('%s: %s gives its flexible column no minimum', (id, grid) => {
+    const columns = /grid-template-columns:\s*([^;]*);/.exec(rule(source(id), grid))?.[1] ?? ''
+    expect(columns).toContain('minmax(0, 1fr)')
+    expect(columns).not.toMatch(/(^|\s)1fr(\s|$)/)
+  })
+
+  it.each([['amber'], ['aurora']])('%s: an entry title gives way to its dates', (id) => {
+    const css = rule(source(id), '.entry-title')
+    expect(css).toMatch(/min-width:\s*0/)
+    expect(css).toMatch(/overflow-wrap:\s*break-word/)
+  })
+
+  it('cobalt breaks a long word in the main column', () => {
+    expect(rule(source('cobalt'), '.main')).toMatch(/overflow-wrap:\s*break-word/)
+  })
+
+  it("compact's name and headline give way to the contact line", () => {
+    expect(rule(source('compact'), '.head > :first-child')).toMatch(/min-width:\s*0/)
+  })
+})

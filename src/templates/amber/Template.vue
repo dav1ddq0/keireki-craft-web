@@ -175,7 +175,8 @@ const SECTION_ICONS: Record<ResolvedSection['kind'] | 'contact', string> = {
   position: relative;
   isolation: isolate;
   display: grid;
-  grid-template-columns: 36% 1fr;
+  /* minmax(0, …): a long word breaks inside the column instead of widening it (spec 074). */
+  grid-template-columns: 36% minmax(0, 1fr);
   /* Header, then the side column, then the main one, in the markup: paged.js splits in DOM order, so
      the side column stays on page 1 and only the main column flows on (spec 032); the header comes
      first so text extraction reads the name before the contact details. */
@@ -464,6 +465,9 @@ const SECTION_ICONS: Record<ResolvedSection['kind'] | 'contact', string> = {
   margin: 0;
   font-size: 1.05em;
   font-weight: 700;
+  /* Beside the dates: a word longer than the line breaks, so it does not push them out (spec 074). */
+  min-width: 0;
+  overflow-wrap: break-word;
 }
 
 .entry-dates {

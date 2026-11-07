@@ -145,7 +145,8 @@ const languages = computed(() => resolveLanguages(props.data))
   position: relative;
   isolation: isolate;
   display: grid;
-  grid-template-columns: 1fr 31%;
+  /* minmax(0, …): a long word breaks inside the column instead of widening it (spec 074). */
+  grid-template-columns: minmax(0, 1fr) 31%;
   /* Name, then the sidebar, then the main column, in the markup: paged.js splits in DOM order, so
      the sidebar stays on page 1 and only the main column flows on (spec 032). The name row comes
      first so text extraction still reads the name before the contact details. */
@@ -281,6 +282,8 @@ const languages = computed(() => resolveLanguages(props.data))
   font-weight: 700;
   letter-spacing: -0.015em;
   margin: 0;
+  /* A name longer than the line breaks inside the word, only where it cannot fit (spec 074). */
+  overflow-wrap: break-word;
 }
 
 .headline {

@@ -131,7 +131,8 @@ const contactTitle = computed(() => contactHeading(language.value))
   position: relative;
   isolation: isolate;
   display: grid;
-  grid-template-columns: 33% 1fr;
+  /* minmax(0, …): a long word breaks inside the column instead of widening it (spec 074). */
+  grid-template-columns: 33% minmax(0, 1fr);
   font-family: var(--cv-font);
   font-size: calc(10pt * var(--cv-font-scale));
   line-height: 1.5;
@@ -247,6 +248,8 @@ const contactTitle = computed(() => contactHeading(language.value))
   font-weight: 650;
   letter-spacing: -0.02em;
   line-height: 1.1;
+  /* A name longer than the line breaks inside the word, only where it cannot fit (spec 074). */
+  overflow-wrap: break-word;
 }
 
 .headline {
@@ -298,6 +301,9 @@ const contactTitle = computed(() => contactHeading(language.value))
   margin: 0;
   font-size: 1.02em;
   font-weight: 650;
+  /* Beside the dates: a word longer than the line breaks, so it does not push them out (spec 074). */
+  min-width: 0;
+  overflow-wrap: break-word;
 }
 
 .entry-dates {

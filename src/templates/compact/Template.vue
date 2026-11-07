@@ -128,11 +128,18 @@ const contactLine = computed(() =>
   border-bottom: 2px solid var(--cv-accent);
 }
 
+/* The name and headline may shrink below a long word's width, so the word breaks (spec 074). */
+.head > :first-child {
+  min-width: 0;
+}
+
 .name {
   font-size: 1.85em;
   font-weight: 700;
   letter-spacing: -0.02em;
   margin: 0;
+  /* A name longer than the line breaks inside the word, only where it cannot fit (spec 074). */
+  overflow-wrap: break-word;
 }
 
 .headline {

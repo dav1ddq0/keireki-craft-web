@@ -128,6 +128,8 @@ const contactLine = computed(() =>
   font-weight: 400;
   letter-spacing: 0.02em;
   line-height: 1.1;
+  /* A name longer than the line breaks inside the word, only where it cannot fit (spec 074). */
+  overflow-wrap: break-word;
 }
 
 .headline {

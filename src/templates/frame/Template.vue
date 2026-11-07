@@ -178,6 +178,8 @@ const languages = computed(() => resolveLanguages(props.data))
   font-weight: 700;
   line-height: 1.15;
   margin: 0;
+  /* A name longer than the line breaks inside the word, only where it cannot fit (spec 074). */
+  overflow-wrap: break-word;
 }
 
 .headline {
