@@ -18,6 +18,7 @@ const fr: typeof es = {
     removeNamed: 'Supprimer {name}',
     duplicate: 'Dupliquer',
     rename: 'Renommer',
+    backup: 'Faire une sauvegarde',
     cancel: 'Annuler',
     confirm: 'Confirmer',
     back: 'Retour',
@@ -449,6 +450,8 @@ const fr: typeof es = {
     htmlHint: 'Un seul fichier .html avec le CSS intégré.',
     json: 'JSON',
     jsonHint: 'Le format officiel de sauvegarde et de portabilité.',
+    backupTitle: 'Sauvegarde de tous vos CV',
+    backupHint: 'Un fichier avec tous vos CV, pour les retrouver depuis Importer si ce navigateur les perd.',
     paginated: 'Vue paginée',
     paginatedHint: 'Prévisualisez les vrais sauts de page sans ouvrir la boîte de dialogue d’impression.',
     paginatedFailed: 'La pagination a échoué. Le CV s’affiche sans sauts de page ; l’export PDF fonctionne toujours.',
@@ -537,13 +540,12 @@ const fr: typeof es = {
     noMatch: 'Aucun CV ne correspond à « {q} ».',
   },
   notices: {
-    localOnly:
-      'Vos CV ne vivent que dans ce navigateur. Exportez le JSON de temps en temps pour en garder une sauvegarde.',
     privateMode:
       'Le stockage du navigateur n’est pas disponible (navigation privée ?). Vous pouvez travailler, mais rien ne sera conservé à la fermeture de l’onglet.',
     notPersisted:
-      'Le navigateur peut effacer ces données s’il manque d’espace. Exportez le JSON pour en garder une sauvegarde.',
+      'Le navigateur peut effacer ces données s’il manque d’espace. Faites-en une sauvegarde.',
     saveFailed: 'Échec de l’enregistrement',
+    backupFailed: 'La sauvegarde n’a pas pu être faite.',
     startupFailed:
       'Impossible d’ouvrir le stockage de ce navigateur (par exemple, quand l’espace manque pour reprendre les CV de la version précédente). Vos données n’ont pas été supprimées : libérez de l’espace et rechargez la page.',
     reload: 'Recharger',

@@ -18,6 +18,7 @@ const it: typeof es = {
     removeNamed: 'Elimina {name}',
     duplicate: 'Duplica',
     rename: 'Rinomina',
+    backup: 'Fai un backup',
     cancel: 'Annulla',
     confirm: 'Conferma',
     back: 'Indietro',
@@ -449,6 +450,8 @@ const it: typeof es = {
     htmlHint: 'Un unico file .html con il CSS incorporato.',
     json: 'JSON',
     jsonHint: 'Il formato ufficiale di backup e portabilità.',
+    backupTitle: 'Backup di tutti i Suoi CV',
+    backupHint: 'Un file con tutti i Suoi CV, per recuperarli da Importa se questo browser li perde.',
     paginated: 'Vista impaginata',
     paginatedHint: 'Veda le vere interruzioni di pagina senza aprire la finestra di stampa.',
     paginatedFailed: 'L’impaginazione non è riuscita. Il CV viene mostrato senza interruzioni di pagina; l’esportazione in PDF funziona comunque.',
@@ -537,13 +540,12 @@ const it: typeof es = {
     noMatch: 'Nessun CV corrisponde a «{q}».',
   },
   notices: {
-    localOnly:
-      'I Suoi CV vivono solo in questo browser. Esporti il JSON di tanto in tanto come backup.',
     privateMode:
       'L’archiviazione del browser non è disponibile (navigazione privata?). Può lavorare, ma alla chiusura della scheda non verrà conservato nulla.',
     notPersisted:
-      'Il browser potrebbe eliminare questi dati se resta senza spazio. Esporti il JSON come backup.',
+      'Il browser potrebbe eliminare questi dati se resta senza spazio. Ne faccia un backup.',
     saveFailed: 'Salvataggio non riuscito',
+    backupFailed: 'Non è stato possibile fare il backup.',
     startupFailed:
       'Impossibile aprire l’archiviazione di questo browser (ad esempio quando manca lo spazio per trasferire i CV della versione precedente). I Suoi dati non sono stati eliminati: liberi un po’ di spazio e ricarichi la pagina.',
     reload: 'Ricarica',

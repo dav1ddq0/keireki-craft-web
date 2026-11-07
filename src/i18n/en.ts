@@ -18,6 +18,7 @@ const en: typeof es = {
     removeNamed: 'Remove {name}',
     duplicate: 'Duplicate',
     rename: 'Rename',
+    backup: 'Back up all CVs',
     cancel: 'Cancel',
     confirm: 'Confirm',
     back: 'Back',
@@ -449,6 +450,8 @@ const en: typeof es = {
     htmlHint: 'A single .html file with the CSS embedded.',
     json: 'JSON',
     jsonHint: 'The official backup and portability format.',
+    backupTitle: 'Backup of all your CVs',
+    backupHint: 'One file with all your CVs, to bring them back from Import if this browser loses them.',
     paginated: 'Paginated view',
     paginatedHint: 'Preview the real page breaks without opening the print dialog.',
     paginatedFailed: 'Pagination failed. The CV is shown without page breaks; PDF export still works.',
@@ -537,13 +540,12 @@ const en: typeof es = {
     noMatch: 'No CV matches “{q}”.',
   },
   notices: {
-    localOnly:
-      'Your CVs live only in this browser. Export the JSON now and then as a backup.',
     privateMode:
       'Browser storage is unavailable (private mode?). You can work, but nothing will be kept when you close the tab.',
     notPersisted:
-      'The browser may evict this data if it runs low on space. Export the JSON as a backup.',
+      'The browser may evict this data if it runs low on space. Back up your CVs.',
     saveFailed: 'Could not save',
+    backupFailed: 'The backup could not be made.',
     startupFailed:
       "This browser's storage could not be opened (for example, when there is not enough space to bring over the CVs of the previous version). Your data has not been deleted: free some space and reload the page.",
     reload: 'Reload',

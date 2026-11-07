@@ -10,6 +10,7 @@ import PaginatedPreview from '@/components/preview/PaginatedPreview.vue'
 import ReviewCard from './ReviewCard.vue'
 import FileNameField from './FileNameField.vue'
 import { useSideColumnFit } from '@/composables/useSideColumnFit'
+import { useBackup } from '@/composables/useBackup'
 
 const cv = useCvStore()
 const { t } = useI18n()
@@ -17,6 +18,7 @@ const { t } = useI18n()
 const showPaginated = ref(false)
 const { busy, failed, run } = useCvExport()
 const { overflows: sideTooLong } = useSideColumnFit()
+const { busy: backingUp, failed: backupFailed, backUp } = useBackup()
 
 /** The file name, for this download only: it starts from the default each time the step opens (spec 073). */
 const name = ref(printTitle(cv.data))
@@ -24,8 +26,6 @@ const name = ref(printTitle(cv.data))
 
 <template>
   <div class="step">
-    <NoticeBar tone="warning">{{ t('notices.localOnly') }}</NoticeBar>
-
     <ReviewCard />
 
     <NoticeBar v-if="sideTooLong" tone="warning">{{ t('exportView.sideTooLong') }}</NoticeBar>
@@ -89,6 +89,18 @@ const name = ref(printTitle(cv.data))
         <BaseButton :disabled="busy !== null" @click="run('json', name)">
           {{ t('exportView.download') }}
         </BaseButton>
+      </li>
+
+      <!-- Every CV, not only this one (spec 078). -->
+      <li class="option">
+        <div>
+          <h3 class="option-title">{{ t('exportView.backupTitle') }}</h3>
+          <p class="option-hint">{{ t('exportView.backupHint') }}</p>
+        </div>
+        <BaseButton :disabled="backingUp" @click="backUp">{{ t('exportView.download') }}</BaseButton>
+        <div v-if="backupFailed" class="failed" role="alert">
+          <NoticeBar tone="warning">{{ t('notices.backupFailed') }}</NoticeBar>
+        </div>
       </li>
     </ul>
 

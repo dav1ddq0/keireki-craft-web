@@ -19,6 +19,7 @@ const pt: typeof es = {
     removeNamed: 'Eliminar {name}',
     duplicate: 'Duplicar',
     rename: 'Mudar o nome',
+    backup: 'Fazer cópia de segurança',
     cancel: 'Cancelar',
     confirm: 'Confirmar',
     back: 'Voltar',
@@ -450,6 +451,8 @@ const pt: typeof es = {
     htmlHint: 'Um único ficheiro .html com o CSS incorporado.',
     json: 'JSON',
     jsonHint: 'O formato oficial de cópia de segurança e portabilidade.',
+    backupTitle: 'Cópia de segurança de todos os seus CV',
+    backupHint: 'Um ficheiro com todos os seus CV, para os recuperar em Importar se este navegador os perder.',
     paginated: 'Vista paginada',
     paginatedHint: 'Pré-visualize as quebras de página reais sem abrir a caixa de diálogo de impressão.',
     paginatedFailed: 'A paginação falhou. O CV é mostrado sem quebras de página; a exportação para PDF continua a funcionar.',
@@ -538,13 +541,12 @@ const pt: typeof es = {
     noMatch: 'Nenhum CV corresponde a «{q}».',
   },
   notices: {
-    localOnly:
-      'Os seus CV vivem apenas neste navegador. Exporte o JSON de vez em quando como cópia de segurança.',
     privateMode:
       'O armazenamento do navegador não está disponível (modo privado?). Pode trabalhar, mas nada será mantido ao fechar o separador.',
     notPersisted:
-      'O navegador pode apagar estes dados se ficar sem espaço. Exporte o JSON como cópia de segurança.',
+      'O navegador pode apagar estes dados se ficar sem espaço. Faça uma cópia de segurança.',
     saveFailed: 'Não foi possível guardar',
+    backupFailed: 'Não foi possível fazer a cópia de segurança.',
     startupFailed:
       'Não foi possível abrir o armazenamento deste navegador (por exemplo, quando não há espaço suficiente para trazer os CV da versão anterior). Os seus dados não foram apagados: liberte algum espaço e recarregue a página.',
     reload: 'Recarregar',

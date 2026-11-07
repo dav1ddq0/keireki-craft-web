@@ -9,6 +9,7 @@ import BaseButton from '@/components/ui/BaseButton.vue'
 import BaseField from '@/components/ui/BaseField.vue'
 import NoticeBar from '@/components/ui/NoticeBar.vue'
 import { useIsPhone } from '@/composables/useIsPhone'
+import { useBackup } from '@/composables/useBackup'
 import DocumentCard from './DocumentCard.vue'
 import DocumentActionsSheet from './DocumentActionsSheet.vue'
 import DocumentTemplateTag from './DocumentTemplateTag.vue'
@@ -22,6 +23,7 @@ const pendingDelete = ref<string | null>(null)
 const isPhone = useIsPhone()
 const menuDoc = ref<CVSummary | null>(null)
 const query = ref('')
+const { busy: backingUp, failed: backupFailed, backUp } = useBackup()
 
 /** Focuses a field as it appears, its text selected to be typed over. */
 const vFocusSelect = {
@@ -98,6 +100,7 @@ async function confirmDelete(id: string) {
     <header class="head">
       <h2 class="title view-title">{{ t('documents.title') }}</h2>
       <div v-if="!isPhone" class="head-actions">
+        <BaseButton v-if="cv.documents.length" :disabled="backingUp" @click="backUp">{{ t('actions.backup') }}</BaseButton>
         <BaseButton @click="loadSample">{{ t('actions.loadSample') }}</BaseButton>
         <BaseButton variant="primary" @click="cv.createNew().then(() => ui.goTo('personal'))">
           + {{ t('actions.newCv') }}
@@ -105,7 +108,7 @@ async function confirmDelete(id: string) {
       </div>
     </header>
 
-    <NoticeBar tone="warning">{{ t('notices.localOnly') }}</NoticeBar>
+    <NoticeBar v-if="backupFailed" tone="warning">{{ t('notices.backupFailed') }}</NoticeBar>
 
     <p v-if="!cv.documents.length" class="empty">{{ t('documents.empty') }}</p>
 
@@ -175,6 +178,11 @@ async function confirmDelete(id: string) {
       </ul>
       <p v-if="query && !shown.length" class="empty">{{ t('documents.noMatch', { q: query }) }}</p>
     </template>
+    <!-- On a phone the dock keeps its three actions; the backup sits with the list (spec 078). -->
+    <BaseButton v-if="isPhone && cv.documents.length" variant="ghost" class="backup" :disabled="backingUp" @click="backUp">
+      {{ t('actions.backup') }}
+    </BaseButton>
+
     <div v-if="isPhone" class="bottom">
       <BaseButton variant="primary" class="big" @click="createBlank">+ {{ t('actions.newCv') }}</BaseButton>
       <div class="pair">
@@ -365,6 +373,10 @@ async function confirmDelete(id: string) {
 }
 
 /* Phones: the create actions stay at the bottom edge, within the thumb's reach. */
+.backup {
+  align-self: flex-start;
+}
+
 .bottom {
   position: sticky;
   bottom: 0;

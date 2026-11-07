@@ -10,6 +10,8 @@ import PreviewPane from '@/components/preview/PreviewPane.vue'
 import DocumentList from '@/components/documents/DocumentList.vue'
 import WelcomeView from '@/components/documents/WelcomeView.vue'
 import NoticeBar from '@/components/ui/NoticeBar.vue'
+import BaseButton from '@/components/ui/BaseButton.vue'
+import { useBackup } from '@/composables/useBackup'
 import StartupFailed from '@/components/StartupFailed.vue'
 import { useIsDesktop, useIsPhone } from '@/composables/useIsPhone'
 import StepRail from '@/components/form/StepRail.vue'
@@ -24,6 +26,8 @@ const isDesktop = useIsDesktop()
 // pdf.js is ~500 kB: the import view — and the parser behind it — load only when
 // someone actually opens it, so the editor's first paint never pays for it.
 const ImportView = defineAsyncComponent(() => import('@/components/import/ImportView.vue'))
+
+const { busy: backingUp, backUp } = useBackup()
 
 /** The stored CVs could not be opened: the root only decides whether to say so. */
 const startupFailed = ref(false)
@@ -91,6 +95,9 @@ function onKeydown(event: KeyboardEvent) {
         @dismiss="ui.dismissNotice('persistence')"
       >
         {{ t('notices.notPersisted') }}
+        <template v-if="cv.documents.length" #actions>
+          <BaseButton size="sm" :disabled="backingUp" @click="backUp">{{ t('actions.backup') }}</BaseButton>
+        </template>
       </NoticeBar>
     </div>
 

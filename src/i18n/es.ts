@@ -19,6 +19,7 @@ export default {
     removeNamed: 'Eliminar {name}',
     duplicate: 'Duplicar',
     rename: 'Renombrar',
+    backup: 'Hacer copia de seguridad',
     cancel: 'Cancelar',
     confirm: 'Confirmar',
     back: 'Atrás',
@@ -450,6 +451,8 @@ export default {
     htmlHint: 'Un único archivo .html con el CSS incrustado.',
     json: 'JSON',
     jsonHint: 'Formato oficial de copia de seguridad y portabilidad.',
+    backupTitle: 'Copia de seguridad de todos tus CV',
+    backupHint: 'Un archivo con todos tus CV, para recuperarlos desde Importar si este navegador los pierde.',
     paginated: 'Vista paginada',
     paginatedHint: 'Previsualiza los saltos de página reales sin abrir el diálogo de impresión.',
     paginatedFailed: 'No se pudo paginar. Se muestra el CV sin saltos de página; la exportación a PDF sigue funcionando.',
@@ -538,13 +541,12 @@ export default {
     noMatch: 'Ningún CV coincide con «{q}».',
   },
   notices: {
-    localOnly:
-      'Tus CVs se guardan solo en este navegador. Exporta el JSON de vez en cuando como copia de seguridad.',
     privateMode:
       'El almacenamiento del navegador no está disponible (¿modo privado?). Puedes trabajar, pero nada se guardará al cerrar.',
     notPersisted:
-      'El navegador puede borrar estos datos si le falta espacio. Exporta el JSON como respaldo.',
+      'El navegador puede borrar estos datos si le falta espacio. Haz una copia de seguridad.',
     saveFailed: 'No se pudo guardar',
+    backupFailed: 'No se pudo hacer la copia de seguridad.',
     startupFailed:
       'No se pudo abrir el almacenamiento de este navegador (por ejemplo, si falta espacio para traer los CV de la versión anterior). Tus datos no se han borrado: libera espacio y recarga la página.',
     reload: 'Recargar',

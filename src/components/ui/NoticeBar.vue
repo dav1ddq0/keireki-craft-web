@@ -8,8 +8,10 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <div class="notice" :class="`notice--${tone ?? 'info'}`" role="status">
+  <div class="notice" :class="[`notice--${tone ?? 'info'}`, { 'notice--actions': $slots.actions }]" role="status">
     <p class="text"><slot /></p>
+    <!-- What the notice asks for, done from it (spec 078). -->
+    <slot name="actions" />
     <BaseButton v-if="dismissible" variant="ghost" size="sm" @click="emit('dismiss')">
       {{ t('notices.dismiss') }}
     </BaseButton>
@@ -37,6 +39,15 @@ const { t } = useI18n()
 
 .text {
   margin: 0;
+}
+
+/* With an action, the text keeps a readable width: where both do not fit, the action goes under it. */
+.notice--actions {
+  flex-wrap: wrap;
+}
+
+.notice--actions .text {
+  flex: 1 1 240px;
 }
 
 /* On phones the banner competes with the form for a very short viewport. */

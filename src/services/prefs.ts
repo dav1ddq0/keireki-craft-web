@@ -16,6 +16,8 @@ export interface Prefs {
   lastCvId: string | null
   theme: ThemeChoice
   dismissedNotices: string[]
+  /** When "Back up all CVs" last made a file (spec 078); a preference, never part of a CV. */
+  lastBackupAt: string | null
 }
 
 const DEFAULTS: Prefs = {
@@ -25,6 +27,7 @@ const DEFAULTS: Prefs = {
   // Like any Android or desktop app: follow the system until the user picks one (spec 029).
   theme: 'system',
   dismissedNotices: [],
+  lastBackupAt: null,
 }
 
 export function readPrefs(): Prefs {

@@ -18,6 +18,7 @@ const de: typeof es = {
     removeNamed: '{name} löschen',
     duplicate: 'Duplizieren',
     rename: 'Umbenennen',
+    backup: 'Sicherung erstellen',
     cancel: 'Abbrechen',
     confirm: 'Bestätigen',
     back: 'Zurück',
@@ -449,6 +450,8 @@ const de: typeof es = {
     htmlHint: 'Eine einzige .html-Datei mit eingebettetem CSS.',
     json: 'JSON',
     jsonHint: 'Das offizielle Format für Sicherung und Übertragbarkeit.',
+    backupTitle: 'Sicherung aller Lebensläufe',
+    backupHint: 'Eine Datei mit allen Lebensläufen, um sie über Importieren zurückzuholen, falls dieser Browser sie verliert.',
     paginated: 'Seitenansicht',
     paginatedHint: 'Sehen Sie die echten Seitenumbrüche, ohne den Druckdialog zu öffnen.',
     paginatedFailed: 'Die Seitenaufteilung ist fehlgeschlagen. Der Lebenslauf wird ohne Seitenumbrüche angezeigt; der PDF-Export funktioniert weiterhin.',
@@ -537,13 +540,12 @@ const de: typeof es = {
     noMatch: 'Kein Lebenslauf passt zu „{q}“.',
   },
   notices: {
-    localOnly:
-      'Ihre Lebensläufe liegen nur in diesem Browser. Exportieren Sie ab und zu das JSON als Sicherung.',
     privateMode:
       'Der Browserspeicher ist nicht verfügbar (privater Modus?). Sie können arbeiten, aber beim Schließen des Tabs bleibt nichts erhalten.',
     notPersisted:
-      'Der Browser kann diese Daten löschen, wenn der Speicherplatz knapp wird. Exportieren Sie das JSON als Sicherung.',
+      'Der Browser kann diese Daten löschen, wenn der Speicherplatz knapp wird. Erstellen Sie eine Sicherung.',
     saveFailed: 'Speichern fehlgeschlagen',
+    backupFailed: 'Die Sicherung konnte nicht erstellt werden.',
     startupFailed:
       'Der Speicher dieses Browsers konnte nicht geöffnet werden (zum Beispiel, wenn nicht genug Platz ist, um die Lebensläufe der vorherigen Version zu übernehmen). Ihre Daten wurden nicht gelöscht: Geben Sie Speicherplatz frei und laden Sie die Seite neu.',
     reload: 'Neu laden',

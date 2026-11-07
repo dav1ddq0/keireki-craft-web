@@ -4,12 +4,15 @@ import { useUiStore } from '@/stores/ui'
 import { LOCALE_NAMES, LOCALE_TAGS, useI18n } from '@/i18n'
 import BottomSheet from '@/components/ui/BottomSheet.vue'
 import BaseField from '@/components/ui/BaseField.vue'
+import BaseButton from '@/components/ui/BaseButton.vue'
+import { useBackup } from '@/composables/useBackup'
 
 defineProps<{ open: boolean }>()
 const emit = defineEmits<{ close: [] }>()
 
 const ui = useUiStore()
 const { t, locale, availableLocales } = useI18n()
+const { busy: backingUp, failed: backupFailed, backUp } = useBackup()
 
 const VIEWS = ['editor', 'documents', 'import'] as const
 
@@ -60,7 +63,11 @@ function go(view: (typeof VIEWS)[number]) {
       </div>
     </div>
 
-    <p class="note">{{ t('notices.notPersisted') }}</p>
+    <div class="backup">
+      <p class="note">{{ t('notices.notPersisted') }}</p>
+      <BaseButton class="backup-button" :disabled="backingUp" @click="backUp">{{ t('actions.backup') }}</BaseButton>
+      <p v-if="backupFailed" class="note" role="status">{{ t('notices.backupFailed') }}</p>
+    </div>
   </BottomSheet>
 </template>
 
@@ -110,6 +117,18 @@ function go(view: (typeof VIEWS)[number]) {
 
 
 
+
+/* The storage note and what it asks for: a backup of every CV (spec 078). */
+.backup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.backup-button {
+  margin: 0 12px;
+}
 
 .note {
   margin: 8px 12px 0;

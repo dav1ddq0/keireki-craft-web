@@ -18,6 +18,7 @@ const eu: typeof es = {
     removeNamed: 'Ezabatu {name}',
     duplicate: 'Bikoiztu',
     rename: 'Aldatu izena',
+    backup: 'Egin babeskopia',
     cancel: 'Utzi',
     confirm: 'Berretsi',
     back: 'Atzera',
@@ -449,6 +450,8 @@ const eu: typeof es = {
     htmlHint: '.html fitxategi bakarra, CSSa barnean duela.',
     json: 'JSON',
     jsonHint: 'Babeskopiarako eta eramangarritasunerako formatu ofiziala.',
+    backupTitle: 'CV guztien babeskopia',
+    backupHint: 'Fitxategi bat zure CV guztiekin, Inportatu atalean berreskuratzeko nabigatzaile honek galtzen baditu.',
     paginated: 'Orrikatutako ikuspegia',
     paginatedHint: 'Aurreikusi benetako orri-jauziak inprimatzeko leihoa ireki gabe.',
     paginatedFailed: 'Ezin izan da orrikatu. CVa orri-jauzirik gabe erakusten da; PDFra esportatzeak funtzionatzen jarraitzen du.',
@@ -537,13 +540,12 @@ const eu: typeof es = {
     noMatch: 'Ez dago «{q}» bilaketarekin bat datorren CVrik.',
   },
   notices: {
-    localOnly:
-      'Zure CVak nabigatzaile honetan bakarrik gordetzen dira. Esportatu JSONa noizean behin babeskopia gisa.',
     privateMode:
       'Nabigatzailearen biltegiratzea ez dago erabilgarri (modu pribatua?). Lan egin dezakezu, baina ez da ezer gordeko ixtean.',
     notPersisted:
-      'Nabigatzaileak datu hauek ezaba ditzake lekurik ez badu. Esportatu JSONa babeskopia gisa.',
+      'Nabigatzaileak datu hauek ezaba ditzake lekurik ez badu. Egin babeskopia.',
     saveFailed: 'Ezin izan da gorde',
+    backupFailed: 'Ezin izan da babeskopia egin.',
     startupFailed:
       'Ezin izan da nabigatzaile honen biltegiratzea ireki (adibidez, aurreko bertsioko CVak ekartzeko lekurik ez badago). Zure datuak ez dira ezabatu: egin lekua eta kargatu berriro orria.',
     reload: 'Kargatu berriro',

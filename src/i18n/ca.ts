@@ -18,6 +18,7 @@ const ca: typeof es = {
     removeNamed: 'Elimina {name}',
     duplicate: 'Duplica',
     rename: 'Canvia el nom',
+    backup: 'Fes una còpia de seguretat',
     cancel: 'Cancel·la',
     confirm: 'Confirma',
     back: 'Enrere',
@@ -449,6 +450,8 @@ const ca: typeof es = {
     htmlHint: 'Un únic fitxer .html amb el CSS incrustat.',
     json: 'JSON',
     jsonHint: 'Format oficial de còpia de seguretat i portabilitat.',
+    backupTitle: 'Còpia de seguretat de tots els CV',
+    backupHint: 'Un fitxer amb tots els vostres CV, per recuperar-los des d’Importa si aquest navegador els perd.',
     paginated: 'Vista paginada',
     paginatedHint: 'Previsualitzeu els salts de pàgina reals sense obrir el diàleg d’impressió.',
     paginatedFailed: 'No s’ha pogut paginar. Es mostra el CV sense salts de pàgina; l’exportació a PDF continua funcionant.',
@@ -537,13 +540,12 @@ const ca: typeof es = {
     noMatch: 'Cap CV no coincideix amb «{q}».',
   },
   notices: {
-    localOnly:
-      'Els vostres CV només es desen en aquest navegador. Exporteu el JSON de tant en tant com a còpia de seguretat.',
     privateMode:
       'L’emmagatzematge del navegador no està disponible (mode privat?). Podeu treballar, però no es desarà res en tancar.',
     notPersisted:
-      'El navegador pot esborrar aquestes dades si li falta espai. Exporteu el JSON com a còpia de seguretat.',
+      'El navegador pot esborrar aquestes dades si li falta espai. Feu-ne una còpia de seguretat.',
     saveFailed: 'No s’ha pogut desar',
+    backupFailed: 'No s’ha pogut fer la còpia de seguretat.',
     startupFailed:
       'No s’ha pogut obrir l’emmagatzematge d’aquest navegador (per exemple, si falta espai per portar els CV de la versió anterior). Les vostres dades no s’han esborrat: allibereu espai i torneu a carregar la pàgina.',
     reload: 'Torna a carregar',
