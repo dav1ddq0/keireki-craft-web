@@ -95,6 +95,7 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
 
+- **080** · Retro, a framed page with slab headings and black tabs (Roboto Slab and Montserrat bundled)
 
 ## Backlog / ideas 💡
 
