@@ -516,7 +516,7 @@ async function aiImprove(browser) {
   await m.context().close()
 }
 
-/** H · the home (spec 076): what it shows, the template chips, every width in light and dark. */
+/** H · the home (specs 076, 077): what it shows, the carousel, every width in light and dark. */
 async function home(browser) {
   const B = 'home'
   for (const [width, height] of [[1440, 900], [1024, 768], [390, 844]]) {
@@ -541,8 +541,9 @@ async function home(browser) {
         const lum = ([r, g, b]) => [r, g, b].map((v) => ((v /= 255) <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)).reduce((a, v, i) => a + v * [0.2126, 0.7152, 0.0722][i], 0)
         const bg = (e) => { for (; e; e = e.parentElement) { const c = rgb(getComputedStyle(e).backgroundColor); if (c[3] > 0.5) return c } return [255, 255, 255] }
         const out = []
-        for (const e of document.querySelectorAll('.home h1, .home h2, .home h3, .home p, .home li, .home button, .home a, .home .use, .home .template-name')) {
-          if (e.closest('.frame') || !e.textContent.trim()) continue
+        for (const e of document.querySelectorAll('.home h1, .home h2, .home h3, .home p, .home li, .home button, .home a, .home .use, .home .template-name, .home .face-name')) {
+          // The sample is a picture; the carousel's template name on it is text to read.
+          if ((e.closest('.frame') && !e.matches('.face-name')) || !e.textContent.trim()) continue
           const [a, b] = [lum(rgb(getComputedStyle(e).color)), lum(bg(e))]
           const ratio = (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)
           if (ratio < 4.5) out.push(`${e.textContent.trim().slice(0, 24)} ${ratio.toFixed(2)}`)
@@ -551,10 +552,22 @@ async function home(browser) {
       })
       check(B, `${where}: text contrast ≥ 4.5:1`, low.length === 0, low.join(' | '))
       if (width === 1440) {
-        const chips = p.getByRole('group', { name: 'Cambiar la plantilla del ejemplo' })
-        await chips.getByRole('button', { name: 'Cobalt' }).click()
-        check(B, `${where}: a chip changes the sample's template`, await until(async () => (await chips.locator('[aria-pressed="true"]').innerText()) === 'Cobalt', { timeout: 2000 }))
-        const paper = await p.locator('.home .cv-preview-paper').evaluate((e) => getComputedStyle(e).filter)
+        // The carousel (spec 077): it turns, the face turned away takes the next template, the
+        // button pauses it. The animation is moved to the end of its first turn, where the front
+        // comes round again as the third template.
+        const rig = (ms) => p.evaluate((ms) => {
+          const a = document.getAnimations().find((x) => x.effect?.target?.classList?.contains('rig'))
+          if (a && ms !== undefined) a.currentTime = ms
+          return a?.playState
+        }, ms)
+        check(B, `${where}: the carousel turns`, (await rig()) === 'running')
+        check(B, `${where}: no chips to choose a template`, (await p.locator('.home .hero [aria-pressed]').count()) === 0)
+        await rig(8000 * 0.97)
+        const front = p.locator('.home .face.front')
+        check(B, `${where}: the front comes round as the next template, named`, await until(async () => (await front.getAttribute('data-template')) === 'cobalt' && (await front.locator('.face-name').innerText()) === 'Cobalt', { timeout: 2000 }))
+        await p.getByRole('button', { name: 'Pausar la animación' }).click()
+        check(B, `${where}: the pause button stops it`, (await rig()) === 'paused' && (await p.getByRole('button', { name: 'Reanudar la animación' }).count()) === 1)
+        const paper = await p.locator('.home .cv-preview-paper').first().evaluate((e) => getComputedStyle(e).filter)
         check(B, `${where}: the sample sheet is dimmed only in dark`, colorScheme === 'dark' ? paper.includes('brightness') : paper === 'none', paper)
         check(B, `${where}: the counts come from the app`, /\d+ plantillas/.test(await p.locator('.home .points').innerText()))
       }
@@ -562,6 +575,13 @@ async function home(browser) {
       await p.context().close()
     }
   }
+  // Reduced motion: the first template stands still, with no animation and no button to pause one.
+  const still = await open(browser, { reducedMotion: 'reduce' })
+  await still.getByRole('heading', { level: 1 }).waitFor()
+  await still.locator('.home .face.front .face-name').waitFor()
+  const moving = await still.evaluate(() => document.getAnimations().some((x) => x.effect?.target?.classList?.contains('rig')))
+  check(B, 'reduced motion: the carousel stands still on the first template', !moving && (await still.locator('.home .face.front .face-name').innerText()) === 'Classic' && (await still.getByRole('button', { name: 'Pausar la animación' }).count()) === 0)
+  await still.context().close()
 }
 
 module.exports = { home, aiImprove, mainFlow, customAndStyle, exportImport, documentsAndPrefs, phone, widths, renameMigration, noLayoutShift }
