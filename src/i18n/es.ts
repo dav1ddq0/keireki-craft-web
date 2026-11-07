@@ -505,7 +505,7 @@ export default {
   importView: {
     title: 'Importar',
     json: 'Desde JSON',
-    jsonHint: 'Reconstrucción exacta de un CV exportado.',
+    jsonHint: 'Un CV exportado, o una copia de seguridad con todos.',
     pdf: 'Desde PDF',
     pdfHint: 'Extracción en tu navegador. Es una ayuda, no una conversión automática.',
     dropzone: 'Arrastra un archivo o haz clic para elegirlo',
@@ -523,6 +523,9 @@ export default {
     noText: 'Este PDF no contiene texto extraíble: parece un escaneo. El OCR queda fuera de la versión 1.',
     parseError: 'No se pudo leer el archivo.',
     schemaError: 'El archivo procede de una versión que esta app no entiende.',
+    backupNewer: 'Esta copia se hizo con una versión más nueva de Keireki Craft. Recarga la página e inténtalo de nuevo.',
+    restoreConfirm: 'CV que se reemplazarán por su versión de la copia: {n}. ¿Seguir?',
+    restoreDone: 'Copia restaurada. Nuevos: {restored} · Sin cambios: {skipped} · Reemplazados: {replaced}',
     replaceWarning: 'Se sobrescribirán los datos del CV abierto.',
   },
   documents: {

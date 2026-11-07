@@ -504,7 +504,7 @@ const eu: typeof es = {
   importView: {
     title: 'Inportatu',
     json: 'JSONetik',
-    jsonHint: 'Esportatutako CV baten berreraikuntza zehatza.',
+    jsonHint: 'Esportatutako CV bat, edo guztien babeskopia.',
     pdf: 'PDFtik',
     pdfHint: 'Testua zure nabigatzailean bertan ateratzen da. Laguntza bat da, ez bihurketa automatikoa.',
     dropzone: 'Arrastatu fitxategi bat edo egin klik aukeratzeko',
@@ -522,6 +522,9 @@ const eu: typeof es = {
     noText: 'PDF honek ez du testu ateragarririk: eskaneatutako dokumentu bat dirudi. OCRa 1. bertsiotik kanpo geratzen da.',
     parseError: 'Ezin izan da fitxategia irakurri.',
     schemaError: 'Fitxategia aplikazio honek ulertzen ez duen bertsio batekoa da.',
+    backupNewer: 'Babeskopia hau Keireki Crafteko bertsio berriago batekin egin zen. Kargatu berriro orria eta saiatu berriro.',
+    restoreConfirm: 'Kopiako bertsioarekin ordeztuko diren CVak: {n}. Jarraitu?',
+    restoreDone: 'Babeskopia leheneratuta. Berriak: {restored} · Aldaketarik gabe: {skipped} · Ordeztuak: {replaced}',
     replaceWarning: 'Irekita dagoen CVaren datuak gainidatziko dira.',
   },
   documents: {

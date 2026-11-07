@@ -504,7 +504,7 @@ const ca: typeof es = {
   importView: {
     title: 'Importa',
     json: 'Des de JSON',
-    jsonHint: 'Reconstrucció exacta d’un CV exportat.',
+    jsonHint: 'Un CV exportat, o una còpia de seguretat de tots.',
     pdf: 'Des de PDF',
     pdfHint: 'Extracció al vostre navegador. És una ajuda, no una conversió automàtica.',
     dropzone: 'Arrossegueu un fitxer o feu clic per triar-lo',
@@ -522,6 +522,9 @@ const ca: typeof es = {
     noText: 'Aquest PDF no conté text extraïble: sembla un escaneig. L’OCR queda fora de la versió 1.',
     parseError: 'No s’ha pogut llegir el fitxer.',
     schemaError: 'El fitxer prové d’una versió que aquesta aplicació no entén.',
+    backupNewer: 'Aquesta còpia es va fer amb una versió més nova de Keireki Craft. Torneu a carregar la pàgina i proveu-ho de nou.',
+    restoreConfirm: 'CV que se substituiran per la versió de la còpia: {n}. Voleu continuar?',
+    restoreDone: 'Còpia restaurada. Nous: {restored} · Sense canvis: {skipped} · Substituïts: {replaced}',
     replaceWarning: 'Se sobreescriuran les dades del CV obert.',
   },
   documents: {

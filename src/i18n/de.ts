@@ -504,7 +504,7 @@ const de: typeof es = {
   importView: {
     title: 'Importieren',
     json: 'Aus JSON',
-    jsonHint: 'Exakte Wiederherstellung eines exportierten Lebenslaufs.',
+    jsonHint: 'Ein exportierter Lebenslauf oder eine Sicherung aller Lebensläufe.',
     pdf: 'Aus PDF',
     pdfHint: 'Die Extraktion läuft in Ihrem Browser. Sie ist eine Hilfe, keine automatische Umwandlung.',
     dropzone: 'Datei hierher ziehen oder klicken, um eine auszuwählen',
@@ -522,6 +522,9 @@ const de: typeof es = {
     noText: 'Dieses PDF enthält keinen extrahierbaren Text – es scheint ein Scan zu sein. Texterkennung (OCR) ist in v1 nicht vorgesehen.',
     parseError: 'Die Datei konnte nicht gelesen werden.',
     schemaError: 'Diese Datei stammt aus einer Version, die die App nicht versteht.',
+    backupNewer: 'Diese Sicherung stammt aus einer neueren Version von Keireki Craft. Laden Sie die Seite neu und versuchen Sie es noch einmal.',
+    restoreConfirm: 'Lebensläufe, die durch ihre Version aus der Sicherung ersetzt werden: {n}. Fortfahren?',
+    restoreDone: 'Sicherung wiederhergestellt. Neu: {restored} · Unverändert: {skipped} · Ersetzt: {replaced}',
     replaceWarning: 'Dadurch werden die Daten des geöffneten Lebenslaufs überschrieben.',
   },
   documents: {

@@ -504,7 +504,7 @@ const fr: typeof es = {
   importView: {
     title: 'Importer',
     json: 'Depuis un JSON',
-    jsonHint: 'Reconstitution exacte d’un CV exporté.',
+    jsonHint: 'Un CV exporté, ou une sauvegarde de tous vos CV.',
     pdf: 'Depuis un PDF',
     pdfHint: 'L’extraction se fait dans votre navigateur. C’est une aide, pas une conversion automatique.',
     dropzone: 'Faites glisser un fichier ici, ou cliquez pour en choisir un',
@@ -522,6 +522,9 @@ const fr: typeof es = {
     noText: 'Ce PDF n’a pas de texte extractible — il ressemble à un scan. La reconnaissance de texte (OCR) n’est pas prévue dans la v1.',
     parseError: 'Impossible de lire le fichier.',
     schemaError: 'Ce fichier provient d’une version que l’application ne comprend pas.',
+    backupNewer: 'Cette sauvegarde vient d’une version plus récente de Keireki Craft. Rechargez la page et réessayez.',
+    restoreConfirm: 'CV qui seront remplacés par leur version de la sauvegarde : {n}. Continuer ?',
+    restoreDone: 'Sauvegarde restaurée. Nouveaux : {restored} · Inchangés : {skipped} · Remplacés : {replaced}',
     replaceWarning: 'Cela remplacera les données du CV ouvert.',
   },
   documents: {

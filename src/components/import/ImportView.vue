@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, shallowRef } from 'vue'
 import type { CVData } from '@/types/cv'
-import { useCvStore } from '@/stores/cv'
+import { useCvStore, type RestorePlan } from '@/stores/cv'
 import { useUiStore } from '@/stores/ui'
 import { useI18n } from '@/i18n'
-import { importJsonFile } from '@/services/export'
+import { readImportFile, UnsupportedBackupError } from '@/services/export'
 import { UnsupportedSchemaError } from '@/core/migrations'
 import { readPrefs } from '@/services/prefs'
 import { StorageQuotaError } from '@/services/storage'
@@ -21,19 +21,46 @@ const { t } = useI18n()
 const draft = shallowRef<ImportDraft | null>(null)
 const busy = ref(false)
 const error = ref<string | null>(null)
+/** A backup that would replace CVs, waiting for the person to confirm (spec 078). */
+const pendingRestore = shallowRef<RestorePlan | null>(null)
+/** What the last restore did, for its summary. */
+const restored = ref<{ restored: number; skipped: number; replaced: number } | null>(null)
 
+const failure = (cause: unknown) =>
+  cause instanceof UnsupportedBackupError
+    ? t('importView.backupNewer')
+    : cause instanceof UnsupportedSchemaError
+      ? t('importView.schemaError')
+      : cause instanceof StorageQuotaError
+        ? t('notices.quota')
+        : t('importView.parseError')
+
+/** One CV's JSON opens as a new CV; a backup of every CV is restored (spec 078). */
 async function onJson(file: File) {
   error.value = null
+  restored.value = null
+  pendingRestore.value = null
   try {
-    await cv.importData(await importJsonFile(file), 'new')
-    ui.goTo('personal')
+    const read = await readImportFile(file)
+    if (read.kind === 'cv') {
+      await cv.importData(read.data, 'new')
+      ui.goTo('personal')
+      return
+    }
+    const plan = await cv.planRestore(read.cvs)
+    if (plan.changed.length) pendingRestore.value = plan
+    else await restore(plan)
   } catch (cause) {
-    error.value =
-      cause instanceof UnsupportedSchemaError
-        ? t('importView.schemaError')
-        : cause instanceof StorageQuotaError
-          ? t('notices.quota')
-          : t('importView.parseError')
+    error.value = failure(cause)
+  }
+}
+
+async function restore(plan: RestorePlan) {
+  pendingRestore.value = null
+  try {
+    restored.value = await cv.restoreBackup(plan)
+  } catch (cause) {
+    error.value = failure(cause)
   }
 }
 
@@ -69,6 +96,22 @@ async function apply(data: CVData, mode: 'new' | 'current') {
     <h2 class="title view-title">{{ t('importView.title') }}</h2>
 
     <NoticeBar v-if="error" tone="warning">{{ error }}</NoticeBar>
+
+    <!-- Restoring a backup over CVs that changed since: confirmed first (spec 078). -->
+    <NoticeBar v-if="pendingRestore" tone="warning" class="restore-confirm">
+      {{ t('importView.restoreConfirm', { n: pendingRestore.changed.length }) }}
+      <template #actions>
+        <BaseButton size="sm" @click="pendingRestore = null">{{ t('actions.cancel') }}</BaseButton>
+        <BaseButton size="sm" variant="primary" @click="restore(pendingRestore)">{{ t('actions.confirm') }}</BaseButton>
+      </template>
+    </NoticeBar>
+
+    <NoticeBar v-if="restored" class="restore-done">
+      {{ t('importView.restoreDone', restored) }}
+      <template #actions>
+        <BaseButton size="sm" @click="ui.view = 'documents'">{{ t('nav.documents') }}</BaseButton>
+      </template>
+    </NoticeBar>
 
     <template v-if="!draft">
       <article class="card">

@@ -1,6 +1,6 @@
 export { printCv, printTitle, fileName, paginateInto, releasePagination, exportCss } from './pdf'
 export { exportHtml, buildStandaloneHtml } from './html'
-export { exportJson, importJsonFile, toExportableJson, blobToDataUrl, dataUrlToBlob } from './json'
+export { exportJson, toExportableJson, blobToDataUrl, dataUrlToBlob } from './json'
 export { downloadBlob, safeFileName } from './download'
 export { renderTemplateHtml, resolvePhoto, collectDocumentCss, sideColumnOverflows } from './render'
 export { buildBackup, exportBackup, readImportFile, backupFileName, UnsupportedBackupError, BACKUP_FORMAT, BACKUP_VERSION } from './backup'
