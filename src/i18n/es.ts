@@ -550,6 +550,9 @@ export default {
       'El navegador puede borrar estos datos si le falta espacio. Haz una copia de seguridad.',
     saveFailed: 'No se pudo guardar',
     backupFailed: 'No se pudo hacer la copia de seguridad.',
+    backupDue: 'Tu última copia de seguridad es de hace {n} días y tus CVs solo están en este navegador.',
+    backupNever: 'Aún no tienes ninguna copia de seguridad y tus CVs solo están en este navegador.',
+    later: 'Ahora no',
     startupFailed:
       'No se pudo abrir el almacenamiento de este navegador (por ejemplo, si falta espacio para traer los CV de la versión anterior). Tus datos no se han borrado: libera espacio y recarga la página.',
     reload: 'Recargar',

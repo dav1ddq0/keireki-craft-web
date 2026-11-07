@@ -549,6 +549,9 @@ const caValencia: typeof es = {
       'El navegador pot esborrar estes dades si li falta espai. Feu-ne una còpia de seguretat.',
     saveFailed: 'No s’ha pogut guardar',
     backupFailed: 'No s’ha pogut fer la còpia de seguretat.',
+    backupDue: 'L’última còpia de seguretat és de fa {n} dies i els vostres CV només estan en este navegador.',
+    backupNever: 'Encara no teniu cap còpia de seguretat i els vostres CV només estan en este navegador.',
+    later: 'Ara no',
     startupFailed:
       'No s’ha pogut obrir l’emmagatzematge d’este navegador (per exemple, si falta espai per portar els CV de la versió anterior). Les vostres dades no s’han esborrat: allibereu espai i torneu a carregar la pàgina.',
     reload: 'Torna a carregar',

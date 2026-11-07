@@ -550,6 +550,9 @@ const pt: typeof es = {
       'O navegador pode apagar estes dados se ficar sem espaço. Faça uma cópia de segurança.',
     saveFailed: 'Não foi possível guardar',
     backupFailed: 'Não foi possível fazer a cópia de segurança.',
+    backupDue: 'A sua última cópia de segurança tem {n} dias e os seus CV vivem apenas neste navegador.',
+    backupNever: 'Ainda não tem nenhuma cópia de segurança e os seus CV vivem apenas neste navegador.',
+    later: 'Agora não',
     startupFailed:
       'Não foi possível abrir o armazenamento deste navegador (por exemplo, quando não há espaço suficiente para trazer os CV da versão anterior). Os seus dados não foram apagados: liberte algum espaço e recarregue a página.',
     reload: 'Recarregar',

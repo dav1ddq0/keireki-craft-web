@@ -549,6 +549,9 @@ const eu: typeof es = {
       'Nabigatzaileak datu hauek ezaba ditzake lekurik ez badu. Egin babeskopia.',
     saveFailed: 'Ezin izan da gorde',
     backupFailed: 'Ezin izan da babeskopia egin.',
+    backupDue: 'Zure azken babeskopiak {n} egun ditu, eta zure CVak nabigatzaile honetan bakarrik daude.',
+    backupNever: 'Oraindik ez duzu babeskopiarik, eta zure CVak nabigatzaile honetan bakarrik daude.',
+    later: 'Orain ez',
     startupFailed:
       'Ezin izan da nabigatzaile honen biltegiratzea ireki (adibidez, aurreko bertsioko CVak ekartzeko lekurik ez badago). Zure datuak ez dira ezabatu: egin lekua eta kargatu berriro orria.',
     reload: 'Kargatu berriro',

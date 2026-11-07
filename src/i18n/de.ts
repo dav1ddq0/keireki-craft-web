@@ -549,6 +549,9 @@ const de: typeof es = {
       'Der Browser kann diese Daten löschen, wenn der Speicherplatz knapp wird. Erstellen Sie eine Sicherung.',
     saveFailed: 'Speichern fehlgeschlagen',
     backupFailed: 'Die Sicherung konnte nicht erstellt werden.',
+    backupDue: 'Ihre letzte Sicherung ist {n} Tage alt, und Ihre Lebensläufe liegen nur in diesem Browser.',
+    backupNever: 'Sie haben noch keine Sicherung, und Ihre Lebensläufe liegen nur in diesem Browser.',
+    later: 'Nicht jetzt',
     startupFailed:
       'Der Speicher dieses Browsers konnte nicht geöffnet werden (zum Beispiel, wenn nicht genug Platz ist, um die Lebensläufe der vorherigen Version zu übernehmen). Ihre Daten wurden nicht gelöscht: Geben Sie Speicherplatz frei und laden Sie die Seite neu.',
     reload: 'Neu laden',

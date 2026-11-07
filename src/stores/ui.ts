@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { computed, ref, watch } from 'vue'
 import { readPrefs, writePrefs } from '@/services/prefs'
+import { snoozeUntil, type BackupState } from '@/core/backupReminder'
 import { isStorageAvailable, requestPersistence } from '@/services/storage'
 import { DARK_QUERY, resolveTheme, systemPrefersDark, type ThemeChoice } from '@/core/theme'
 import { withViewTransition } from '@/core/viewTransition'
@@ -42,6 +43,14 @@ export const useUiStore = defineStore('ui', () => {
     if (next !== 'editor') previewExpanded.value = false
   })
   const dismissedNotices = ref<string[]>(prefs.dismissedNotices)
+
+  /** What the backup reminder needs (spec 078), kept here so a backup made anywhere hides it everywhere. */
+  const backup = ref<BackupState>({
+    lastBackupAt: prefs.lastBackupAt,
+    snoozedUntil: prefs.backupSnoozedUntil,
+    watchSince: prefs.backupWatchSince ?? new Date().toISOString(),
+  })
+  if (!prefs.backupWatchSince) writePrefs({ backupWatchSince: backup.value.watchSince })
 
   /** Environment facts surfaced as notices (spec §8.2). */
   const storageAvailable = ref(true)
@@ -88,6 +97,17 @@ export const useUiStore = defineStore('ui', () => {
     applyTheme()
   }
 
+  function recordBackup(at = new Date()) {
+    backup.value = { ...backup.value, lastBackupAt: at.toISOString(), snoozedUntil: null }
+    writePrefs({ lastBackupAt: backup.value.lastBackupAt, backupSnoozedUntil: null })
+  }
+
+  /** "Not now": the reminder comes back in seven days. */
+  function snoozeBackupReminder(now = new Date()) {
+    backup.value = { ...backup.value, snoozedUntil: snoozeUntil(now) }
+    writePrefs({ backupSnoozedUntil: backup.value.snoozedUntil })
+  }
+
   function dismissNotice(id: string) {
     if (dismissedNotices.value.includes(id)) return
     dismissedNotices.value = [...dismissedNotices.value, id]
@@ -131,6 +151,9 @@ export const useUiStore = defineStore('ui', () => {
     setTheme,
     dismissNotice,
     isDismissed,
+    backup,
+    recordBackup,
+    snoozeBackupReminder,
     probeEnvironment,
   }
 })

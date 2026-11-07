@@ -11,6 +11,7 @@ import ReviewCard from './ReviewCard.vue'
 import FileNameField from './FileNameField.vue'
 import { useSideColumnFit } from '@/composables/useSideColumnFit'
 import { useBackup } from '@/composables/useBackup'
+import BackupReminder from '@/components/documents/BackupReminder.vue'
 
 const cv = useCvStore()
 const { t } = useI18n()
@@ -26,6 +27,7 @@ const name = ref(printTitle(cv.data))
 
 <template>
   <div class="step">
+    <BackupReminder />
     <ReviewCard />
 
     <NoticeBar v-if="sideTooLong" tone="warning">{{ t('exportView.sideTooLong') }}</NoticeBar>

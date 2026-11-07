@@ -549,6 +549,9 @@ const en: typeof es = {
       'The browser may evict this data if it runs low on space. Back up your CVs.',
     saveFailed: 'Could not save',
     backupFailed: 'The backup could not be made.',
+    backupDue: 'Your last backup is {n} days old, and your CVs live only in this browser.',
+    backupNever: 'You have no backup yet, and your CVs live only in this browser.',
+    later: 'Not now',
     startupFailed:
       "This browser's storage could not be opened (for example, when there is not enough space to bring over the CVs of the previous version). Your data has not been deleted: free some space and reload the page.",
     reload: 'Reload',

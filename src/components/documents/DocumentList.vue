@@ -13,6 +13,7 @@ import { useBackup } from '@/composables/useBackup'
 import DocumentCard from './DocumentCard.vue'
 import DocumentActionsSheet from './DocumentActionsSheet.vue'
 import DocumentTemplateTag from './DocumentTemplateTag.vue'
+import BackupReminder from './BackupReminder.vue'
 import type { CVSummary } from '@/types/cv'
 
 const cv = useCvStore()
@@ -108,6 +109,7 @@ async function confirmDelete(id: string) {
       </div>
     </header>
 
+    <BackupReminder />
     <NoticeBar v-if="backupFailed" tone="warning">{{ t('notices.backupFailed') }}</NoticeBar>
 
     <p v-if="!cv.documents.length" class="empty">{{ t('documents.empty') }}</p>

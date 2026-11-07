@@ -18,6 +18,10 @@ export interface Prefs {
   dismissedNotices: string[]
   /** When "Back up all CVs" last made a file (spec 078); a preference, never part of a CV. */
   lastBackupAt: string | null
+  /** "Not now" on the backup reminder hides it until then (spec 078). */
+  backupSnoozedUntil: string | null
+  /** Since when the reminder counts for someone who has never made a backup: the first visit with it. */
+  backupWatchSince: string | null
 }
 
 const DEFAULTS: Prefs = {
@@ -28,6 +32,8 @@ const DEFAULTS: Prefs = {
   theme: 'system',
   dismissedNotices: [],
   lastBackupAt: null,
+  backupSnoozedUntil: null,
+  backupWatchSince: null,
 }
 
 export function readPrefs(): Prefs {

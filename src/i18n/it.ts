@@ -549,6 +549,9 @@ const it: typeof es = {
       'Il browser potrebbe eliminare questi dati se resta senza spazio. Ne faccia un backup.',
     saveFailed: 'Salvataggio non riuscito',
     backupFailed: 'Non è stato possibile fare il backup.',
+    backupDue: 'Il Suo ultimo backup risale a {n} giorni fa e i Suoi CV vivono solo in questo browser.',
+    backupNever: 'Non ha ancora nessun backup e i Suoi CV vivono solo in questo browser.',
+    later: 'Non ora',
     startupFailed:
       'Impossibile aprire l’archiviazione di questo browser (ad esempio quando manca lo spazio per trasferire i CV della versione precedente). I Suoi dati non sono stati eliminati: liberi un po’ di spazio e ricarichi la pagina.',
     reload: 'Ricarica',

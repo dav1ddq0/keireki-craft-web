@@ -10,6 +10,7 @@ const writePrefs = vi.fn()
 vi.mock('@/services/prefs', async (original) => ({ ...(await original<object>()), writePrefs: (patch: unknown) => writePrefs(patch) }))
 
 const { useCvStore } = await import('@/stores/cv')
+const { useUiStore } = await import('@/stores/ui')
 const { useBackup } = await import('@/composables/useBackup')
 const DocumentList = (await import('@/components/documents/DocumentList.vue')).default
 
@@ -26,7 +27,8 @@ describe('Back up all CVs (spec 078)', () => {
     const { backUp, failed } = useBackup()
     await backUp()
     expect(exportBackup).toHaveBeenCalledWith(cvs, expect.any(Date))
-    expect(writePrefs).toHaveBeenCalledWith({ lastBackupAt: expect.stringMatching(/^\d{4}-\d\d-\d\dT/) })
+    expect(useUiStore().backup.lastBackupAt).toMatch(/^\d{4}-\d\d-\d\dT/)
+    expect(writePrefs).toHaveBeenCalledWith(expect.objectContaining({ lastBackupAt: useUiStore().backup.lastBackupAt }))
     expect(failed.value).toBe(false)
   })
 
@@ -37,7 +39,8 @@ describe('Back up all CVs (spec 078)', () => {
     await backUp()
     expect(failed.value).toBe(true)
     expect(busy.value).toBe(false)
-    expect(writePrefs).not.toHaveBeenCalled()
+    expect(useUiStore().backup.lastBackupAt).toBeNull()
+    expect(writePrefs).not.toHaveBeenCalledWith(expect.objectContaining({ lastBackupAt: expect.anything() }))
   })
 
   it('is offered among My CVs’ actions once there is a CV, with no warning bar of its own', async () => {

@@ -549,6 +549,9 @@ const fr: typeof es = {
       'Le navigateur peut effacer ces données s’il manque d’espace. Faites-en une sauvegarde.',
     saveFailed: 'Échec de l’enregistrement',
     backupFailed: 'La sauvegarde n’a pas pu être faite.',
+    backupDue: 'Votre dernière sauvegarde date d’il y a {n} jours, et vos CV ne vivent que dans ce navigateur.',
+    backupNever: 'Vous n’avez encore aucune sauvegarde, et vos CV ne vivent que dans ce navigateur.',
+    later: 'Plus tard',
     startupFailed:
       'Impossible d’ouvrir le stockage de ce navigateur (par exemple, quand l’espace manque pour reprendre les CV de la version précédente). Vos données n’ont pas été supprimées : libérez de l’espace et rechargez la page.',
     reload: 'Recharger',
