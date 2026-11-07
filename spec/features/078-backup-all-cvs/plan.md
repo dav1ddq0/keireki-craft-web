@@ -21,10 +21,12 @@ the "only in this browser" notice already is, and turns that notice into the rem
 3. `services/prefs.ts`: `lastBackupAt: string | null`, `backupSnoozedUntil: string | null`.
    `core/backupReminder.ts`: `backupDue(summaries, prefs, now)` — the pure rule, tested.
 4. UI:
-   - `DocumentList.vue`: "Copia de seguridad" beside "only in this browser"; the notice shows the
-     reminder text and its two actions when `backupDue`.
+   - `DocumentList.vue`: "Copia de seguridad" among the page's actions (desktop header; under the
+     list on a phone); the always-on "only in this browser" notice goes, and a reminder notice with
+     its two actions appears only when `backupDue`.
    - `AppMenuSheet.vue` (phone): the action under the persistence note.
-   - `StepExport.vue`: the action beside its notice.
+   - `StepExport.vue`: a "backup of every CV" row in its list of downloads; its always-on notice goes,
+     the reminder shows there too when due. `notices.localOnly` left unused, removed (owner's choice).
    - `ImportView.vue`: `readImportFile`; a backup is planned first; if any CV would be replaced, a
      confirmation dialog names how many; then it restores and shows the summary in a notice.
 5. i18n: the button, the reminder (with the number of days), "Ahora no", the summary, the error for a

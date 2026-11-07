@@ -8,18 +8,19 @@ The CVs live only in this browser (IndexedDB). Today the only copy a person can 
 time (Export → JSON), and Import takes one back. This adds:
 
 1. **Copia de seguridad** — one button saves **every CV** (with its photo) in one file,
-   `keireki-craft-copia-AAAA-MM-DD.json`. It is in My CVs (every layout), in the phone menu, and in
-   the export step beside the "only in this browser" notice.
+   `keireki-craft-copia-AAAA-MM-DD.json`. It is an ordinary action in My CVs (every layout), in the
+   phone menu, and in the export step's list of downloads.
 2. **Restore** — Import's JSON drop zone also takes that file and brings every CV back:
    - a CV that is not here is restored as it was (same id, dates, title, template);
    - one that is here and identical is skipped;
    - one that is here but differs is **replaced by the backup's version** (the owner's choice), after
      a confirmation that names how many: "Se reemplazarán 2 CV por la versión de la copia. ¿Seguir?".
    A summary says what happened: "3 restaurados · 1 ya estaba · 2 reemplazados".
-3. **A reminder** — when a CV has been edited since the last backup and that backup is more than
-   **7 days** old (or there has never been one and the oldest CV is more than 7 days old), the
-   "only in this browser" notice becomes: "Tu última copia es de hace 9 días · Hacer copia". "Ahora
-   no" hides it for 7 more days.
+3. **A reminder, only now and then** (the owner's choice) — the warning about the browser is not
+   shown all the time any more. It appears in My CVs and in the export step only when a CV has been
+   edited since the last backup and that backup is more than **7 days** old (or there has never been
+   one and the oldest CV is more than 7 days old): "Tu última copia es de hace 9 días · Hacer copia".
+   "Ahora no" hides it for 7 more days. The always-on "only in this browser" notice is removed.
 
 A single CV's JSON export and import work as before.
 
@@ -35,6 +36,7 @@ window.
 
 - [ ] **Copia de seguridad** in My CVs (desktop, tablet, phone), in the phone menu and in the export
       step downloads one file with every CV; photos inlined; the file names its format and version.
+      No warning bar is shown with it unless the reminder is due.
 - [ ] Import restores it: missing CVs as they were, identical ones skipped, changed ones replaced by
       the backup's version after a confirmation (cancel restores nothing); the summary counts each
       case; if the open CV is replaced, the editor shows the restored version.
