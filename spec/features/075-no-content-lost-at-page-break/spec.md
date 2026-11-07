@@ -38,8 +38,8 @@ never measures what is left. Removing the rest changes the page:
   title beside the content; the titles' `break-after: avoid` spreads to the whole section, so no
   break between sections is allowed and Chrome breaks right after the header.
 
-The side-column warning (spec 033) measures the column without its bottom padding, so it stays off
-in the first rows of the table.
+The side-column warning (spec 033) measures the column without its last section's bottom margin,
+which the column's bottom padding keeps inside it, so it stays off in the first rows of the table.
 
 ## Acceptance criteria
 

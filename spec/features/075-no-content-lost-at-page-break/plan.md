@@ -21,8 +21,8 @@ break at the worst place (ledger), the template changes.
    Registered once, before the first run.
 3. `templates/ledger`: the section title, beside its content in a grid, does not forbid a break
    after it (`break-after: auto`); check the other templates with grid sections (editorial).
-4. `services/export/render.ts` (`sideColumnOverflows`): measure the side column with its bottom
-   padding.
+4. `services/export/render.ts` (`sideColumnOverflows`): measure the side column down to its last
+   section's bottom margin (the padding was already counted).
 5. Tests: the handler on a small paginated fixture in `qa:pdf`; unit tests for the warning's
    measurement.
 

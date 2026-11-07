@@ -59,12 +59,22 @@ export async function sideColumnOverflows(data: CVData, templateId: string): Pro
     const pageHeight = sheet.getBoundingClientRect().height
     sheet.remove()
     const top = side.getBoundingClientRect().top - article.getBoundingClientRect().top
-    const children = Array.from(side.children)
-    const contentBottom = children.length ? Math.max(...children.map((c) => c.getBoundingClientRect().bottom)) : side.getBoundingClientRect().top
-    const style = getComputedStyle(side)
-    const height = contentBottom - side.getBoundingClientRect().top + (parseFloat(style.paddingBottom) || 0) + (parseFloat(style.borderBottomWidth) || 0)
-    return top + height > pageHeight + 0.5
+    return top + sideColumnHeight(side) > pageHeight + 0.5
   })
+}
+
+/**
+ * The side column's height as paged.js lays it out: down to its last child's bottom margin, which
+ * the column's bottom padding keeps inside it (spec 075), plus that padding and border.
+ */
+export function sideColumnHeight(side: HTMLElement): number {
+  const sideTop = side.getBoundingClientRect().top
+  const children = Array.from(side.children)
+  const contentBottom = children.length
+    ? Math.max(...children.map((c) => c.getBoundingClientRect().bottom + (parseFloat(getComputedStyle(c).marginBottom) || 0)))
+    : sideTop
+  const style = getComputedStyle(side)
+  return contentBottom - sideTop + (parseFloat(style.paddingBottom) || 0) + (parseFloat(style.borderBottomWidth) || 0)
 }
 
 /**
