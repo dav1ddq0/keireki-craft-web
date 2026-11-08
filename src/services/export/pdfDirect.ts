@@ -166,7 +166,35 @@ function opacityOf(c: Ctx, el: Element): number {
 const lengthOf = (value: string, basis: number) => (value.trim().endsWith('%') ? (parseFloat(value) / 100) * basis : parseFloat(value) || 0)
 
 /** `clip-path: polygon(…)` as an SVG path in PDF units over the box at x, y, w × h (CSS px sizes). */
-export function clipPolygon(value: string, c: Ctx, r: DOMRect): string | null {
+/** A box in CSS pixels, as `getBoundingClientRect()` gives it. */
+export interface Box {
+  left: number
+  top: number
+  width: number
+  height: number
+}
+
+/**
+ * Where a box is on its page: its fragments (`getClientRects()`) that meet the page, joined; `null`
+ * when none does. paged.js lays a page out in CSS columns, and its cut can leave a sliver of a box in
+ * the next column, off the sheet: the print never shows it, but `getBoundingClientRect()` spans it,
+ * and a side column measured that way came out three pages wide and covered the page (spec 082).
+ */
+export function boxOnPage(rects: ArrayLike<Box>, page: Box): Box | null {
+  let left = Infinity, top = Infinity, right = -Infinity, bottom = -Infinity
+  const pageRight = page.left + page.width, pageBottom = page.top + page.height
+  for (const r of Array.from(rects)) {
+    const rRight = r.left + r.width, rBottom = r.top + r.height
+    if (r.left >= pageRight || rRight <= page.left || r.top >= pageBottom || rBottom <= page.top) continue
+    left = Math.min(left, r.left)
+    top = Math.min(top, r.top)
+    right = Math.max(right, rRight)
+    bottom = Math.max(bottom, rBottom)
+  }
+  return left === Infinity ? null : { left, top, width: right - left, height: bottom - top }
+}
+
+export function clipPolygon(value: string, c: Ctx, r: Box): string | null {
   const m = /^polygon\((?:(?:nonzero|evenodd),\s*)?(.+)\)$/.exec(value.trim())
   if (!m) return null
   const points = m[1]!.split(',').map((pair) => {
@@ -253,8 +281,8 @@ async function softShadowPng(width: number, height: number, radius: number, blur
 }
 
 async function drawBox(c: Ctx, el: Element, style: CSSStyleDeclaration) {
-  const r = el.getBoundingClientRect()
-  if (r.width < 0.5 || r.height < 0.5) return
+  const r = boxOnPage(el.getClientRects(), c.origin)
+  if (!r || r.width < 0.5 || r.height < 0.5) return
   const x = X(c, r.left), y = Y(c, r.top), w = r.width * c.k, h = r.height * c.k
   const radius = Math.min(lengthOf(style.borderTopLeftRadius, Math.min(r.width, r.height)), r.width / 2, r.height / 2) * c.k
   const alpha = opacityOf(c, el)
@@ -387,7 +415,8 @@ async function imageBytes(img: HTMLImageElement, gray = 0): Promise<Uint8Array |
 async function drawImage(c: Ctx, img: HTMLImageElement, style: CSSStyleDeclaration) {
   const bytes = await imageBytes(img, grayscaleOf(style.filter))
   if (!bytes) return
-  const r = img.getBoundingClientRect()
+  const r = boxOnPage(img.getClientRects(), c.origin)
+  if (!r) return
   const inset = (side: string) => (parseFloat(style.getPropertyValue(`border-${side}-width`)) || 0) + (parseFloat(style.getPropertyValue(`padding-${side}`)) || 0)
   const left = r.left + inset('left'), top = r.top + inset('top')
   const width = r.width - inset('left') - inset('right'), height = r.height - inset('top') - inset('bottom')

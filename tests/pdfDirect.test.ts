@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import {
+  boxOnPage,
   clipPolygon,
   faceFor,
   parseColor,
@@ -161,5 +162,32 @@ describe('a grey photo (spec 081)', () => {
     const none = new Uint8ClampedArray([255, 0, 0, 255])
     grayPixels(none, 0)
     expect([...none]).toEqual([255, 0, 0, 255])
+  })
+})
+
+describe('a box only where it is on its page (spec 082)', () => {
+  const page = { left: 0, top: 0, width: 794, height: 1123 }
+  const box = (left: number, top: number, width: number, height: number) => ({ left, top, width, height })
+
+  it('keeps a box that is on the page', () => {
+    expect(boxOnPage([box(10, 20, 286, 1071)], page)).toEqual(box(10, 20, 286, 1071))
+  })
+
+  it("drops the sliver paged.js leaves in the next column, off the sheet", () => {
+    // Amber's side column with a four-line name: the box on the page and 9 px of it 1,794 px over.
+    expect(boxOnPage([box(0, 0, 286, 1071), box(1794, 0, 286, 9)], page)).toEqual(box(0, 0, 286, 1071))
+  })
+
+  it('draws nothing for a box wholly off the page', () => {
+    expect(boxOnPage([box(1794, 0, 286, 9)], page)).toBeNull()
+    expect(boxOnPage([], page)).toBeNull()
+  })
+
+  it('joins the fragments on the page, like the bounding box (an inline box over two lines)', () => {
+    expect(boxOnPage([box(300, 100, 200, 16), box(40, 116, 120, 16)], page)).toEqual(box(40, 100, 460, 32))
+  })
+
+  it('keeps a box that runs past the edge of the page, as the print clips it there', () => {
+    expect(boxOnPage([box(-34, 0, 828, 1200)], page)).toEqual(box(-34, 0, 828, 1200))
   })
 })

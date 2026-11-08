@@ -20,7 +20,13 @@ const { ROOT, startServer } = require('./lib/server.cjs')
 const { renderPages, diffPercent } = require('./lib/images.cjs')
 
 const OUT = path.join(ROOT, '.qa/pdf')
-const MODES = ['sample', 'photo', 'long', 'break', 'longname', 'longword', 'longword64']
+const MODES = ['sample', 'photo', 'long', 'break', 'longname', 'longname4', 'longword', 'longword64']
+/**
+ * Spec 082: a name that wraps to four lines, with each template's own style (accent and font, as the
+ * gallery applies them). With Amber's Raleway it left a sliver of the side column off the sheet, which
+ * the direct PDF painted over the page; the sample's style and a three-line name did not reach it.
+ */
+const LONG_NAME_4 = 'Maximiliana Wolfeschlegelsteinhausen-Bergerdorff de la Santísima Trinidad'
 /**
  * Spec 074: one word with no break, the length of `longword` a real German compound, `longword64`
  * longer still. Each field gets its own, starting with a tag (Name, Skil…) so an overflow names its
@@ -128,7 +134,7 @@ async function compareTemplates(page, url, ids) {
       try {
         // Reference: the print path, with window.print stubbed so Playwright can print instead.
         await page.evaluate(
-          async ([id, mode, photo, SRC, LONG_WORD]) => {
+          async ([id, mode, photo, SRC, LONG_WORD, LONG_NAME_4]) => {
             window.__printed = false
             window.print = () => {
               window.__printed = true
@@ -163,11 +169,16 @@ async function compareTemplates(page, url, ids) {
               cv.skills[0].items[0].name = word('Skil')
               cv.languages[0].name = word('Lang')
             }
+            if (mode === 'longname4') {
+              const { applyTemplateDefaults } = await import(`${SRC}/templates/registry.ts`)
+              cv.personal.fullName = LONG_NAME_4
+              cv.style = applyTemplateDefaults(id, cv.style)
+            }
             if (mode === 'photo') cv.personal.photo = photo
             window.__cv = cv
             window.__done = printCv(cv, id, { paginate: true })
           },
-          [id, mode, photo, SRC, LONG_WORDS[mode]],
+          [id, mode, photo, SRC, LONG_WORDS[mode], LONG_NAME_4],
         )
         await page.waitForFunction(() => window.__printed, null, { timeout: 60_000 })
         const outside = LONG_WORDS[mode] ? await page.evaluate(textOutside) : []
@@ -207,7 +218,7 @@ async function compareTemplates(page, url, ids) {
           `pages ${pages.join('/')}, missing ${missing}, diff ${diffs.map((d) => d.toFixed(1)).join(',')} %`,
         )
         if (LONG_WORDS[mode]) check(`${key}: no text leaves its column or the page`, outside.length === 0, outside.join(', '))
-        if (mode === 'longname' || LONG_WORDS[mode]) {
+        if (mode === 'longname' || mode === 'longname4' || LONG_WORDS[mode]) {
           const misplaced = misplacedWords(printPdf, directPdf)
           check(`${key}: every word where the print has it`, misplaced.length === 0, misplaced.slice(0, 6).join(', '))
         }
