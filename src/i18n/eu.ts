@@ -557,7 +557,7 @@ const eu: typeof es = {
     discard: 'Baztertu',
     rawText: 'Ateratako testu osoa',
     apply: 'Inportatu CV berri batera',
-    applyToCurrent: 'Irauli uneko CVra',
+    applyToCurrent: 'Ordeztu irekita dagoen CVa',
     noText: 'PDF honek ez du testu ateragarririk: eskaneatutako dokumentu bat dirudi. OCRa 1. bertsiotik kanpo geratzen da.',
     parseError: 'Ezin izan da fitxategia irakurri.',
     schemaError: 'Fitxategia aplikazio honek ulertzen ez duen bertsio batekoa da.',

@@ -557,7 +557,7 @@ const caValencia: typeof es = {
     discard: 'Descarta',
     rawText: 'Text complet extret',
     apply: 'Importa a un CV nou',
-    applyToCurrent: 'Bolca al CV actual',
+    applyToCurrent: 'Substituïx el CV obert',
     noText: 'Este PDF no conté text extraïble: sembla un escaneig. L’OCR queda fora de la versió 1.',
     parseError: 'No s’ha pogut llegir el fitxer.',
     schemaError: 'El fitxer prové d’una versió que esta aplicació no entén.',
