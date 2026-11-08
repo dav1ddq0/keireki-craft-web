@@ -97,6 +97,8 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
 
+- **083** · Minimalist, a dusty rose page with the side column on the right
+
 ## Backlog / ideas 💡
 
 - **Phase 5–6 — Backend**: stateless FastAPI service, then sync. Out of scope for v1; the app must stay fully usable with the backend permanently absent.
