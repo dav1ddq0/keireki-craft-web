@@ -391,6 +391,8 @@ const eu: typeof es = {
       tahoma: 'Sans trinkoa',
       verdana: 'Irekia eta irakurgarria',
       raleway: 'Dotorea, izenburu indartsuekin',
+      robotoSlab: 'Serif lodia, retro eta sendoa',
+      montserrat: 'Geometrikoa eta modernoa',
     },
     fontFamily: 'Tipografia',
     systemFont: 'gailuaren arabera',

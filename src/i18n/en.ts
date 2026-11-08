@@ -391,6 +391,8 @@ const en: typeof es = {
       tahoma: 'Compact sans',
       verdana: 'Open and legible',
       raleway: 'Elegant, with striking headings',
+      robotoSlab: 'Slab serif, retro and sturdy',
+      montserrat: 'Geometric and modern',
     },
     fontFamily: 'Typeface',
     systemFont: 'depends on the computer',

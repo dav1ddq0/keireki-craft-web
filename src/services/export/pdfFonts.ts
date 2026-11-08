@@ -83,6 +83,20 @@ import f75 from '@fontsource/raleway/files/raleway-latin-ext-800-normal.woff?url
 import f76 from '@fontsource/raleway/files/raleway-latin-800-normal.woff?url'
 import f77 from '@fontsource/raleway/files/raleway-latin-ext-400-italic.woff?url'
 import f78 from '@fontsource/raleway/files/raleway-latin-400-italic.woff?url'
+import f79 from '@fontsource/roboto-slab/files/roboto-slab-latin-ext-400-normal.woff?url'
+import f80 from '@fontsource/roboto-slab/files/roboto-slab-latin-400-normal.woff?url'
+import f81 from '@fontsource/roboto-slab/files/roboto-slab-latin-ext-700-normal.woff?url'
+import f82 from '@fontsource/roboto-slab/files/roboto-slab-latin-700-normal.woff?url'
+import f83 from '@fontsource/montserrat/files/montserrat-latin-ext-400-normal.woff?url'
+import f84 from '@fontsource/montserrat/files/montserrat-latin-400-normal.woff?url'
+import f85 from '@fontsource/montserrat/files/montserrat-latin-ext-500-normal.woff?url'
+import f86 from '@fontsource/montserrat/files/montserrat-latin-500-normal.woff?url'
+import f87 from '@fontsource/montserrat/files/montserrat-latin-ext-600-normal.woff?url'
+import f88 from '@fontsource/montserrat/files/montserrat-latin-600-normal.woff?url'
+import f89 from '@fontsource/montserrat/files/montserrat-latin-ext-700-normal.woff?url'
+import f90 from '@fontsource/montserrat/files/montserrat-latin-700-normal.woff?url'
+import f91 from '@fontsource/montserrat/files/montserrat-latin-ext-400-italic.woff?url'
+import f92 from '@fontsource/montserrat/files/montserrat-latin-400-italic.woff?url'
 
 /** Face file name (`inter-latin-400-normal`) → WOFF URL. */
 export const WOFF: Record<string, string> = {
@@ -165,4 +179,18 @@ export const WOFF: Record<string, string> = {
   'raleway-latin-800-normal': f76,
   'raleway-latin-ext-400-italic': f77,
   'raleway-latin-400-italic': f78,
+  'roboto-slab-latin-ext-400-normal': f79,
+  'roboto-slab-latin-400-normal': f80,
+  'roboto-slab-latin-ext-700-normal': f81,
+  'roboto-slab-latin-700-normal': f82,
+  'montserrat-latin-ext-400-normal': f83,
+  'montserrat-latin-400-normal': f84,
+  'montserrat-latin-ext-500-normal': f85,
+  'montserrat-latin-500-normal': f86,
+  'montserrat-latin-ext-600-normal': f87,
+  'montserrat-latin-600-normal': f88,
+  'montserrat-latin-ext-700-normal': f89,
+  'montserrat-latin-700-normal': f90,
+  'montserrat-latin-ext-400-italic': f91,
+  'montserrat-latin-400-italic': f92,
 }

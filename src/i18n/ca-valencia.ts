@@ -391,6 +391,8 @@ const caValencia: typeof es = {
       tahoma: 'Sans compacta',
       verdana: 'Oberta i llegible',
       raleway: 'Elegant, amb títols marcats',
+      robotoSlab: 'Serif gruixuda, retro i ferma',
+      montserrat: 'Geomètrica i moderna',
     },
     fontFamily: 'Tipografia',
     systemFont: 'segons l’equip',

@@ -391,6 +391,8 @@ const de: typeof es = {
       tahoma: 'Kompakte Groteskschrift',
       verdana: 'Offen und gut lesbar',
       raleway: 'Elegant, mit markanten Überschriften',
+      robotoSlab: 'Slab-Serif, retro und kräftig',
+      montserrat: 'Geometrisch und modern',
     },
     fontFamily: 'Schriftart',
     systemFont: 'hängt vom Computer ab',

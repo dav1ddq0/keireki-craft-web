@@ -392,6 +392,8 @@ export default {
       tahoma: 'Sans compacta',
       verdana: 'Abierta y legible',
       raleway: 'Elegante, de títulos con carácter',
+      robotoSlab: 'Serif gruesa, retro y firme',
+      montserrat: 'Geométrica y moderna',
     },
     fontFamily: 'Tipografía',
     systemFont: 'según el equipo',

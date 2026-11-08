@@ -392,6 +392,8 @@ const pt: typeof es = {
       tahoma: 'Sem serifa compacta',
       verdana: 'Aberta e legível',
       raleway: 'Elegante, com títulos marcantes',
+      robotoSlab: 'Serifa grossa, retro e firme',
+      montserrat: 'Geométrica e moderna',
     },
     fontFamily: 'Tipo de letra',
     systemFont: 'depende do computador',

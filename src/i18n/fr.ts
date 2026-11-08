@@ -391,6 +391,8 @@ const fr: typeof es = {
       tahoma: 'Sans empattements compacte',
       verdana: 'Ouverte et lisible',
       raleway: 'Élégante, aux titres marqués',
+      robotoSlab: 'Slab serif, rétro et solide',
+      montserrat: 'Géométrique et moderne',
     },
     fontFamily: 'Police',
     systemFont: 'dépend de l’ordinateur',

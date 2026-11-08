@@ -391,6 +391,8 @@ const it: typeof es = {
       tahoma: 'Senza grazie compatto',
       verdana: 'Aperto e leggibile',
       raleway: 'Elegante, con titoli di carattere',
+      robotoSlab: 'Slab serif, retrò e solida',
+      montserrat: 'Geometrica e moderna',
     },
     fontFamily: 'Carattere',
     systemFont: 'dipende dal computer',

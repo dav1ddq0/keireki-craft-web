@@ -47,6 +47,8 @@ export const FONT_OPTIONS: FontOption[] = [
   { id: 'tahoma', label: 'Tahoma', value: "Tahoma, 'DejaVu Sans', Verdana, sans-serif", bundled: true },
   { id: 'verdana', label: 'Verdana', value: "Verdana, 'DejaVu Sans', Geneva, sans-serif", bundled: true },
   { id: 'raleway', label: 'Raleway', value: "'Raleway', 'Segoe UI', system-ui, sans-serif", bundled: true },
+  { id: 'robotoSlab', label: 'Roboto Slab', value: "'Roboto Slab', Rockwell, Georgia, serif", bundled: true },
+  { id: 'montserrat', label: 'Montserrat', value: "'Montserrat', 'Segoe UI', system-ui, sans-serif", bundled: true },
 ]
 
 /** Page margins offered by the style step; anything else in a file falls back to the default. */
