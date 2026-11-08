@@ -213,7 +213,9 @@ const CHEVRON = 'M9 5l7 7-7 7'
   z-index: -1;
   box-sizing: border-box;
   width: calc(210mm - 2 * var(--frame));
-  height: calc(297mm - var(--frame) - var(--frame-foot));
+  /* Unpaginated (the live preview), the sheet follows the content: the root is at least a page high,
+     and a CV of two pages is one tall sheet, its text never on the frame (spec 082). */
+  height: calc(100% - var(--frame) - var(--frame-foot));
   border-right: var(--side) solid var(--side-bg);
   background: #fff;
   box-shadow:
@@ -228,6 +230,11 @@ const CHEVRON = 'M9 5l7 7-7 7'
    than its page, and clipping it there would cut the frame short. */
 .cv-page--paged .retro {
   overflow: visible;
+}
+
+/* Paginated, every page has its own sheet, one page high: a fragment can be shorter than its page. */
+.cv-page--paged .retro::before {
+  height: calc(297mm - var(--frame) - var(--frame-foot));
 }
 
 /* paged.js unsets ::before and the top padding on a fragment that continues from the last page; the
