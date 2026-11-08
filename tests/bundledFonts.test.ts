@@ -16,7 +16,7 @@ const faces = [...css.matchAll(/@font-face \{([^}]*)\}/g)].map((m) => {
 })
 
 /** The CV fonts the style step offers; the interface font (Roboto Flex) is not one of them. */
-const CV_FAMILIES = ['inter', 'source sans 3', 'jetbrains mono', 'eb garamond', 'carlito', 'caladea', 'gelasio', 'arimo', 'tinos', 'dejavu sans', 'raleway', 'roboto slab', 'montserrat']
+const CV_FAMILIES = ['inter', 'source sans 3', 'jetbrains mono', 'eb garamond', 'carlito', 'caladea', 'gelasio', 'arimo', 'tinos', 'dejavu sans', 'raleway', 'roboto slab', 'montserrat', 'dela gothic one', 'work sans']
 const shipped = new Set(faces.map((face) => face.family))
 
 describe('bundled fonts (specs 026, 029)', () => {

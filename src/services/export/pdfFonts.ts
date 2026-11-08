@@ -97,6 +97,18 @@ import f89 from '@fontsource/montserrat/files/montserrat-latin-ext-700-normal.wo
 import f90 from '@fontsource/montserrat/files/montserrat-latin-700-normal.woff?url'
 import f91 from '@fontsource/montserrat/files/montserrat-latin-ext-400-italic.woff?url'
 import f92 from '@fontsource/montserrat/files/montserrat-latin-400-italic.woff?url'
+import f93 from '@fontsource/dela-gothic-one/files/dela-gothic-one-latin-ext-400-normal.woff?url'
+import f94 from '@fontsource/dela-gothic-one/files/dela-gothic-one-latin-400-normal.woff?url'
+import f95 from '@fontsource/work-sans/files/work-sans-latin-ext-400-normal.woff?url'
+import f96 from '@fontsource/work-sans/files/work-sans-latin-400-normal.woff?url'
+import f97 from '@fontsource/work-sans/files/work-sans-latin-ext-500-normal.woff?url'
+import f98 from '@fontsource/work-sans/files/work-sans-latin-500-normal.woff?url'
+import f99 from '@fontsource/work-sans/files/work-sans-latin-ext-600-normal.woff?url'
+import f100 from '@fontsource/work-sans/files/work-sans-latin-600-normal.woff?url'
+import f101 from '@fontsource/work-sans/files/work-sans-latin-ext-700-normal.woff?url'
+import f102 from '@fontsource/work-sans/files/work-sans-latin-700-normal.woff?url'
+import f103 from '@fontsource/work-sans/files/work-sans-latin-ext-400-italic.woff?url'
+import f104 from '@fontsource/work-sans/files/work-sans-latin-400-italic.woff?url'
 
 /** Face file name (`inter-latin-400-normal`) → WOFF URL. */
 export const WOFF: Record<string, string> = {
@@ -193,4 +205,16 @@ export const WOFF: Record<string, string> = {
   'montserrat-latin-700-normal': f90,
   'montserrat-latin-ext-400-italic': f91,
   'montserrat-latin-400-italic': f92,
+  'dela-gothic-one-latin-ext-400-normal': f93,
+  'dela-gothic-one-latin-400-normal': f94,
+  'work-sans-latin-ext-400-normal': f95,
+  'work-sans-latin-400-normal': f96,
+  'work-sans-latin-ext-500-normal': f97,
+  'work-sans-latin-500-normal': f98,
+  'work-sans-latin-ext-600-normal': f99,
+  'work-sans-latin-600-normal': f100,
+  'work-sans-latin-ext-700-normal': f101,
+  'work-sans-latin-700-normal': f102,
+  'work-sans-latin-ext-400-italic': f103,
+  'work-sans-latin-400-italic': f104,
 }

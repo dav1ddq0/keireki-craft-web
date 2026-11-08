@@ -404,6 +404,8 @@ const fr: typeof es = {
       raleway: 'Élégante, aux titres marqués',
       robotoSlab: 'Slab serif, rétro et solide',
       montserrat: 'Géométrique et moderne',
+      delaGothicOne: 'Display très grasse, pour les titres',
+      workSans: 'Grotesque claire et chaleureuse',
     },
     fontFamily: 'Police',
     systemFont: 'dépend de l’ordinateur',

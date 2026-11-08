@@ -404,6 +404,8 @@ const eu: typeof es = {
       raleway: 'Dotorea, izenburu indartsuekin',
       robotoSlab: 'Serif lodia, retro eta sendoa',
       montserrat: 'Geometrikoa eta modernoa',
+      delaGothicOne: 'Display oso lodia, izenburuetarako',
+      workSans: 'Grotesko argi eta atsegina',
     },
     fontFamily: 'Tipografia',
     systemFont: 'gailuaren arabera',

@@ -404,6 +404,8 @@ const ca: typeof es = {
       raleway: 'Elegant, amb títols marcats',
       robotoSlab: 'Serif gruixuda, retro i ferma',
       montserrat: 'Geomètrica i moderna',
+      delaGothicOne: 'Display molt gruixuda, per a títols',
+      workSans: 'Grotesca clara i amable',
     },
     fontFamily: 'Tipografia',
     systemFont: 'segons l’equip',

@@ -405,6 +405,8 @@ const pt: typeof es = {
       raleway: 'Elegante, com títulos marcantes',
       robotoSlab: 'Serifa grossa, retro e firme',
       montserrat: 'Geométrica e moderna',
+      delaGothicOne: 'Display muito grossa, para títulos',
+      workSans: 'Grotesca clara e simpática',
     },
     fontFamily: 'Tipo de letra',
     systemFont: 'depende do computador',

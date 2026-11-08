@@ -404,6 +404,8 @@ const it: typeof es = {
       raleway: 'Elegante, con titoli di carattere',
       robotoSlab: 'Slab serif, retrò e solida',
       montserrat: 'Geometrica e moderna',
+      delaGothicOne: 'Display molto spessa, per i titoli',
+      workSans: 'Grottesca chiara e cordiale',
     },
     fontFamily: 'Carattere',
     systemFont: 'dipende dal computer',

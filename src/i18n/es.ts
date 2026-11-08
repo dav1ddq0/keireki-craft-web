@@ -405,6 +405,8 @@ export default {
       raleway: 'Elegante, de títulos con carácter',
       robotoSlab: 'Serif gruesa, retro y firme',
       montserrat: 'Geométrica y moderna',
+      delaGothicOne: 'Display muy gruesa, para títulos',
+      workSans: 'Grotesca clara y amable',
     },
     fontFamily: 'Tipografía',
     systemFont: 'según el equipo',

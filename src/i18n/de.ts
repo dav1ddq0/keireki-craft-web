@@ -404,6 +404,8 @@ const de: typeof es = {
       raleway: 'Elegant, mit markanten Überschriften',
       robotoSlab: 'Slab-Serif, retro und kräftig',
       montserrat: 'Geometrisch und modern',
+      delaGothicOne: 'Sehr fette Display-Schrift für Überschriften',
+      workSans: 'Klare, freundliche Grotesk',
     },
     fontFamily: 'Schriftart',
     systemFont: 'hängt vom Computer ab',

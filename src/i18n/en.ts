@@ -404,6 +404,8 @@ const en: typeof es = {
       raleway: 'Elegant, with striking headings',
       robotoSlab: 'Slab serif, retro and sturdy',
       montserrat: 'Geometric and modern',
+      delaGothicOne: 'Heavy display, for headings',
+      workSans: 'Clear, friendly grotesque',
     },
     fontFamily: 'Typeface',
     systemFont: 'depends on the computer',

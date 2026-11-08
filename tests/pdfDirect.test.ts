@@ -63,7 +63,7 @@ describe('direct PDF helpers (spec 031)', () => {
   it('has the WOFF twin of every bundled CV face, by built or dev file name', () => {
     const css = readFileSync(join(process.cwd(), 'src/styles/fonts.css'), 'utf8')
     const names = [...css.matchAll(/url\('@fontsource\/[\w-]+\/files\/([\w-]+)\.woff2'\)/g)].map((m) => m[1]!)
-    expect(names.length).toBe(93)
+    expect(names.length).toBe(105)
     for (const name of names) expect(WOFF[name], name).toBeTruthy()
     expect(woffFor('/assets/inter-latin-400-normal-C38fXH4l.woff2')).toBe(WOFF['inter-latin-400-normal'])
     expect(woffFor('/node_modules/@fontsource/inter/files/inter-latin-400-normal.woff2')).toBe(WOFF['inter-latin-400-normal'])
