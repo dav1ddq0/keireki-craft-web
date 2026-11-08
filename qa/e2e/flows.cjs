@@ -276,7 +276,12 @@ async function phone(browser) {
   check(B, 'preview mode shows the CV', await previewHas(p, 'Nadia', 3000))
   // The dock in preview (spec 064): icons-only switch, template switch, copy image off the page.
   check(B, 'the dock switch shows icons only', (await p.locator('.dock .mode').allInnerTexts()).every((t) => t.trim() === ''))
-  check(B, 'copy image sits in the dock, not over the page', (await p.locator('.dock .copy-btn').count()) === 1 && (await p.locator('.pane .copy-btn').count()) === 0)
+  // The button shows up a moment after the switch (~150 ms): wait for it instead of counting at once.
+  check(
+    B,
+    'copy image sits in the dock, not over the page',
+    await until(async () => (await p.locator('.dock .copy-btn').count()) === 1 && (await p.locator('.pane .copy-btn').count()) === 0, { timeout: 2000 }),
+  )
   check(B, 'the dock row fits the screen', (await overflow(p)) === 0)
   const before = await p.locator('.dock .template-name').innerText()
   await p.getByRole('button', { name: /Plantilla: .*Cambiar/ }).tap()
