@@ -313,6 +313,10 @@ const pt: typeof es = {
       description:
         'Cartões com contorno fino e sombra dura sobre papel quente: o nome muito grande em letra display, a foto a preto e branco com um anel em malha a cores. Perfil, competências e línguas com barras de um lado; formação e experiência duas a duas.',
     },
+    minimalist: {
+      description:
+        'Dois fundos em tons da cor: a coluna lateral à direita, mais intensa, com a foto num círculo, o nome grande em itálico, o contacto e os idiomas sob títulos em faixa. Formação de duas em duas, competências com iniciais e barras, as suas secções numa linha do tempo.',
+    },
     cobalt: {
       description:
         'Faixa de cabeçalho colorida com uma fotografia redonda, uma coluna lateral clara para o contacto, as competências e os idiomas, e o percurso à direita.',
@@ -389,6 +393,7 @@ const pt: typeof es = {
       'b5d99c': 'Sálvia',
       'ffb17a': 'Damasco',
       'ff6b61': 'Toranja',
+      'c98b84': 'Rosa velho',
     },
     cvLanguage: 'Idioma do CV',
     cvLanguageHint: 'Datas e títulos de secção no documento. Não muda o idioma da aplicação.',

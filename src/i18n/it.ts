@@ -312,6 +312,10 @@ const it: typeof es = {
       description:
         'Schede con bordo sottile e ombra netta su carta calda: il nome molto grande in carattere display, la foto in bianco e nero con un anello a reticolo a colori. Profilo, competenze e lingue con barre da un lato; formazione ed esperienza a due a due.',
     },
+    minimalist: {
+      description:
+        'Due sfondi nelle tinte del colore: la colonna laterale a destra, più intensa, con la foto in un cerchio, il nome grande in corsivo, i contatti e le lingue sotto titoli a fascia. Formazione a due a due, competenze con iniziali e barre, le tue sezioni su una linea del tempo.',
+    },
     cobalt: {
       description:
         'Fascia d’intestazione colorata con una foto rotonda, una colonna laterale chiara per contatti, competenze e lingue, e il percorso a destra.',
@@ -388,6 +392,7 @@ const it: typeof es = {
       'b5d99c': 'Salvia',
       'ffb17a': 'Albicocca',
       'ff6b61': 'Pompelmo',
+      'c98b84': 'Rosa antico',
     },
     cvLanguage: 'Lingua del CV',
     cvLanguageHint: 'Date e titoli delle sezioni nel documento. Non cambia la lingua dell’app.',

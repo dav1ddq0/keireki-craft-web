@@ -312,6 +312,10 @@ const ca: typeof es = {
       description:
         'Targetes amb vora fina i ombra dura sobre paper càlid: el nom molt gran en lletra display, la foto en blanc i negre amb un anell de malla en color. Perfil, competències i idiomes amb barres a un costat; formació i experiència de dues en dues.',
     },
+    minimalist: {
+      description:
+        'Dos fons en tons del color: la columna lateral a la dreta, més intensa, amb la foto en un cercle, el nom gran en cursiva, el contacte i els idiomes sota títols en franja. Formació de dos en dos, competències amb inicials i barres, seccions pròpies en línia de temps.',
+    },
     cobalt: {
       description:
         'Capçalera de color amb foto rodona, barra lateral pàl·lida per al contacte, les competències i els idiomes, i la trajectòria a la dreta.',
@@ -388,6 +392,7 @@ const ca: typeof es = {
       'b5d99c': 'Sàlvia',
       'ffb17a': 'Albercoc',
       'ff6b61': 'Aranja',
+      'c98b84': 'Rosa empolsat',
     },
     cvLanguage: 'Idioma del CV',
     cvLanguageHint: 'Dates i títols de secció del document. No canvia l’idioma de l’aplicació.',

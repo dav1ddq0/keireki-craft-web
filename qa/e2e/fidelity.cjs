@@ -4,7 +4,7 @@ const fs = require('node:fs')
 const path = require('node:path')
 const { check, open, settled, startSample } = require('./lib.cjs')
 
-const IDS = ['amber', 'aurora', 'banner', 'chevron', 'classic', 'cobalt', 'compact', 'editorial', 'facet', 'frame', 'harbor', 'ledger', 'meridian', 'modern', 'monogram', 'monograph', 'retro', 'freelance']
+const IDS = ['amber', 'aurora', 'banner', 'chevron', 'classic', 'cobalt', 'compact', 'editorial', 'facet', 'frame', 'harbor', 'ledger', 'meridian', 'modern', 'monogram', 'monograph', 'retro', 'freelance', 'minimalist']
 
 /** Runs in the page: CSS on the CV that the direct PDF has no way to draw. Outer box-shadows (rings, soft shadows) are drawn. */
 const UNSUPPORTED = () => {

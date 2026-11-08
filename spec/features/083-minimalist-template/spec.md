@@ -49,8 +49,7 @@ keep it on the left; Freelance draws cards) and the name set in a light italic.
 - **The accent sets the papers**: the main paper and the side's are tints of it (mixed with white,
   which the direct PDF already draws, as Amber and Retro), so a pale accent and a dark one both give a
   soft page; the skill circles are the accent itself. The ink (titles, squares, bars) stays dark grey.
-- **Skills in the main column**, as in the design; the side keeps contact and languages. `sidebar`
-  moves languages to the main column when the user wants it, as in the other templates.
+- **Skills in the main column**, as in the design; the side keeps contact and languages.
 - **Links inside Contact**, under the contact details, with no title of their own (the model has no
   "Follow me" section; a title only for them would be a new word in nine languages and a heading the
   PDF import does not know).

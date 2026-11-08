@@ -312,6 +312,10 @@ const fr: typeof es = {
       description:
         'Des cartes au trait fin et à l’ombre nette sur un papier chaud : le nom très grand en caractère display, la photo en noir et blanc avec un anneau filaire en couleur. Profil, compétences et langues avec des barres d’un côté ; formation et expérience deux par deux.',
     },
+    minimalist: {
+      description:
+        'Deux fonds dans les teintes de la couleur : la colonne latérale à droite, plus soutenue, avec la photo dans un cercle, le nom en grand et en italique, le contact et les langues sous des titres en bandeau. Formation deux par deux, compétences avec initiales et barres, vos sections sur une frise.',
+    },
     cobalt: {
       description:
         'Bandeau d’en-tête coloré avec une photo ronde, une colonne latérale pâle pour le contact, les compétences et les langues, et le parcours à droite.',
@@ -388,6 +392,7 @@ const fr: typeof es = {
       'b5d99c': 'Sauge',
       'ffb17a': 'Abricot',
       'ff6b61': 'Pamplemousse',
+      'c98b84': 'Vieux rose',
     },
     cvLanguage: 'Langue du CV',
     cvLanguageHint: 'Les dates et les titres de section du document. Ne change pas la langue de l’application.',

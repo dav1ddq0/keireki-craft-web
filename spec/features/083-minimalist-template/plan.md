@@ -29,7 +29,7 @@ lives in `src/templates/minimalist/` and registers itself, built on the shared p
      vertical rule and a square per entry, as borders and solid boxes); skills as a two-column grid of
      rows: circle (the initials, `aria-hidden`), name, bar (`role="img"` with its label, as Freelance).
    - Titles: `'Montserrat'` fixed, uppercase, 700; everything else `var(--cv-font)`; the name italic 400.
-   - `SIDE_KINDS = new Set(['languages'])`; with `sidebar` off, languages go to the main column.
+   - `SIDE_KINDS = new Set(['languages'])`.
 3. `src/templates/minimalist/initials.ts`: a skill's initials (first letters of its first two words,
    or its first two letters; letters only, any script), with its test.
 4. `src/templates/minimalist/thumbnail.ts`: an SVG thumbnail in the style of the others.

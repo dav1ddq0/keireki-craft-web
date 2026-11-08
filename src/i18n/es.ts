@@ -313,6 +313,10 @@ export default {
       description:
         'Tarjetas con borde fino y sombra dura sobre papel cálido: el nombre muy grande en letra display, la foto en blanco y negro con un aro de malla en color. Resumen, competencias e idiomas con barras a un lado; formación y experiencia de dos en dos.',
     },
+    minimalist: {
+      description:
+        'Dos fondos en tonos del color: la columna lateral a la derecha, más intensa, con la foto en un círculo, el nombre grande en cursiva, el contacto y los idiomas bajo títulos en franja. Formación de dos en dos, competencias con iniciales y barras, secciones propias en línea de tiempo.',
+    },
     cobalt: {
       description:
         'Cabecera de color con foto redonda, barra lateral pálida para contacto, competencias e idiomas, y la trayectoria a la derecha.',
@@ -389,6 +393,7 @@ export default {
       'b5d99c': 'Salvia',
       'ffb17a': 'Albaricoque',
       'ff6b61': 'Pomelo',
+      'c98b84': 'Rosa empolvado',
     },
     cvLanguage: 'Idioma del CV',
     cvLanguageHint: 'Fechas y títulos de sección del documento. No cambia el idioma de la aplicación.',

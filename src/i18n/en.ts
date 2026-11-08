@@ -312,6 +312,10 @@ const en: typeof es = {
       description:
         'Cards with a thin border and a hard shadow on warm paper: the name very large in a display face, the photo in black and white with a wireframe ring in colour. Summary, skills and languages with bars on one side; education and experience two by two.',
     },
+    minimalist: {
+      description:
+        'Two papers in tints of the colour: the side column on the right, deeper, with the photo in a circle, the name large in italic, the contact and languages under banded titles. Education two by two, skills with initials and bars, your own sections on a timeline.',
+    },
     cobalt: {
       description:
         'Colored header band with a round photo, a pale sidebar for contact, skills and languages, and the career on the right.',
@@ -388,6 +392,7 @@ const en: typeof es = {
       'b5d99c': 'Sage',
       'ffb17a': 'Apricot',
       'ff6b61': 'Grapefruit',
+      'c98b84': 'Dusty rose',
     },
     cvLanguage: 'CV language',
     cvLanguageHint: 'Dates and section titles in the document. Does not change the app language.',

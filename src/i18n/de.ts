@@ -312,6 +312,10 @@ const de: typeof es = {
       description:
         'Karten mit feinem Rand und hartem Schatten auf warmem Papier: der Name sehr groß in einer Display-Schrift, das Foto in Schwarzweiß mit einem farbigen Drahtgitter-Ring. Profil, Kenntnisse und Sprachen mit Balken auf einer Seite; Ausbildung und Berufserfahrung paarweise.',
     },
+    minimalist: {
+      description:
+        'Zwei Flächen in Tönen der Farbe: die Seitenspalte rechts, kräftiger, mit dem Foto im Kreis, dem Namen groß und kursiv, Kontakt und Sprachen unter Titeln auf einem Band. Ausbildung paarweise, Kenntnisse mit Initialen und Balken, eigene Abschnitte auf einer Zeitleiste.',
+    },
     cobalt: {
       description:
         'Farbiges Kopfband mit rundem Foto, eine helle Seitenspalte für Kontakt, Kenntnisse und Sprachen, der Werdegang rechts.',
@@ -388,6 +392,7 @@ const de: typeof es = {
       'b5d99c': 'Salbei',
       'ffb17a': 'Aprikose',
       'ff6b61': 'Grapefruit',
+      'c98b84': 'Altrosa',
     },
     cvLanguage: 'Sprache des Lebenslaufs',
     cvLanguageHint: 'Datumsangaben und Abschnittstitel im Dokument. Ändert nicht die Sprache der App.',

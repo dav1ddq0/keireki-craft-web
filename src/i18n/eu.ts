@@ -312,6 +312,10 @@ const eu: typeof es = {
       description:
         'Ertz fineko eta itzal gogorreko txartelak paper beroaren gainean: izena oso handia display letran, argazkia zuri-beltzean eta sare-eraztun bat kolorez. Profila, gaitasunak eta hizkuntzak barrekin alde batean; prestakuntza eta esperientzia binaka.',
     },
+    minimalist: {
+      description:
+        'Kolorearen tonuetako bi hondo: alboko zutabea eskuinean, biziagoa, argazkia zirkulu batean, izena handi eta etzanez, kontaktua eta hizkuntzak banda gaineko izenburuen azpian. Prestakuntza binaka, gaitasunak inizialekin eta barrekin, zure atalak denbora-lerro batean.',
+    },
     cobalt: {
       description:
         'Koloretako goiburua argazki biribilarekin, alboko barra argia kontakturako, gaitasunetarako eta hizkuntzetarako, eta ibilbidea eskuinean.',
@@ -388,6 +392,7 @@ const eu: typeof es = {
       'b5d99c': 'Salbia',
       'ffb17a': 'Abrikota',
       'ff6b61': 'Pomeloa',
+      'c98b84': 'Arrosa zaharra',
     },
     cvLanguage: 'CVaren hizkuntza',
     cvLanguageHint: 'Dokumentuko datak eta atalen izenburuak. Ez du aplikazioaren hizkuntza aldatzen.',
