@@ -24,8 +24,9 @@ addition: the direct PDF draws a grey image when the template asks for it.
 1. `src/services/export/pdfDirect.ts`: when an image's computed `filter` has `grayscale(…)`, its bytes
    are re-encoded through a canvas with that filter (as the shadows already use `ctx.filter`); no
    filter, the bytes as today.
-2. Test in `pdfDirect.test.ts`: an image with `filter: grayscale(1)` goes through the canvas, one
-   without does not.
+2. Test in `pdfDirect.test.ts`: how grey the computed filter asks (`grayscale(1)`, `60%`, none) and
+   the pixels turned by their luminance, part of the way when asked (jsdom has no canvas: the drawn
+   result is checked by `qa:pdf` in task 4).
 
 ### 3 · The template
 1. `src/templates/freelance/index.ts`: `id: 'freelance'`, supports `photo`, `sidebar`, `accentColor`,

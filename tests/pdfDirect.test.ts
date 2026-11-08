@@ -138,3 +138,28 @@ describe('the font stack of the page (spec 052)', () => {
     expect(fontStackWithStandIns('')).toBe('')
   })
 })
+
+describe('a grey photo (spec 081)', () => {
+  it('reads how grey the computed filter asks the image to be', async () => {
+    const { grayscaleOf } = await import('@/services/export/pdfDirect')
+    expect(grayscaleOf('grayscale(1)')).toBe(1)
+    expect(grayscaleOf('grayscale(60%)')).toBe(0.6)
+    expect(grayscaleOf('contrast(1.1) grayscale(0.5)')).toBe(0.5)
+    expect(grayscaleOf('grayscale(2)')).toBe(1)
+    expect(grayscaleOf('none')).toBe(0)
+    expect(grayscaleOf('')).toBe(0)
+  })
+
+  it('turns pixels grey by their luminance, the alpha untouched, part of the way when asked', async () => {
+    const { grayPixels } = await import('@/services/export/pdfDirect')
+    const pixels = new Uint8ClampedArray([255, 0, 0, 200, 10, 20, 30, 255])
+    grayPixels(pixels, 1)
+    expect([...pixels]).toEqual([54, 54, 54, 200, 19, 19, 19, 255])
+    const half = new Uint8ClampedArray([255, 0, 0, 255])
+    grayPixels(half, 0.5)
+    expect([...half]).toEqual([155, 27, 27, 255])
+    const none = new Uint8ClampedArray([255, 0, 0, 255])
+    grayPixels(none, 0)
+    expect([...none]).toEqual([255, 0, 0, 255])
+  })
+})

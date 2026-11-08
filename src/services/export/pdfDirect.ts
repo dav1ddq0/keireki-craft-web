@@ -340,25 +340,52 @@ export function dashPattern(style: string, width: number, length: number): { mar
 
 /* ---- images and SVG --------------------------------------------------------------------------- */
 
-/** The image as JPEG or PNG bytes (what PDF can embed); anything else is re-encoded through a canvas. */
-async function imageBytes(img: HTMLImageElement): Promise<Uint8Array | null> {
+/** How grey a computed `filter` makes an image, 0–1 (spec 081): `grayscale(1)`, `grayscale(60%)`; 0 without one. */
+export function grayscaleOf(filter: string): number {
+  const match = /grayscale\(\s*([\d.]*)(%?)\s*\)/.exec(filter)
+  if (!match) return 0
+  const amount = match[1] ? Number(match[1]) / (match[2] ? 100 : 1) : 1
+  return Number.isFinite(amount) ? Math.min(1, Math.max(0, amount)) : 0
+}
+
+/** RGBA pixels turned grey in place, `amount` of the way, by the luminance CSS's `grayscale()` uses. */
+export function grayPixels(pixels: Uint8ClampedArray, amount: number): void {
+  for (let i = 0; i < pixels.length; i += 4) {
+    const luma = 0.2126 * pixels[i]! + 0.7152 * pixels[i + 1]! + 0.0722 * pixels[i + 2]!
+    for (let j = i; j < i + 3; j++) pixels[j] = pixels[j]! + (luma - pixels[j]!) * amount
+  }
+}
+
+/**
+ * The image as JPEG or PNG bytes (what PDF can embed); anything else is re-encoded through a canvas,
+ * and so is a picture to be drawn grey (`gray` > 0), its pixels turned by hand: PDF has no filters.
+ */
+async function imageBytes(img: HTMLImageElement, gray = 0): Promise<Uint8Array | null> {
   try {
     const blob = await (await fetch(img.currentSrc || img.src)).blob()
-    if (blob.type === 'image/jpeg' || blob.type === 'image/png') return new Uint8Array(await blob.arrayBuffer())
+    const embeddable = blob.type === 'image/jpeg' || blob.type === 'image/png'
+    if (embeddable && gray === 0) return new Uint8Array(await blob.arrayBuffer())
     const canvas = document.createElement('canvas')
     canvas.width = img.naturalWidth
     canvas.height = img.naturalHeight
-    canvas.getContext('2d')!.drawImage(img, 0, 0)
-    const png = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'))
-    return png ? new Uint8Array(await png.arrayBuffer()) : null
+    const ctx = canvas.getContext('2d')!
+    ctx.drawImage(img, 0, 0)
+    if (gray > 0) {
+      const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height)
+      grayPixels(pixels.data, gray)
+      ctx.putImageData(pixels, 0, 0)
+    }
+    const type = blob.type === 'image/jpeg' ? 'image/jpeg' : 'image/png'
+    const out = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, type, 0.92))
+    return out ? new Uint8Array(await out.arrayBuffer()) : null
   } catch {
     return null
   }
 }
 
-/** The photo: its content box, cropped like `object-fit: cover`, clipped to its rounded corners. */
+/** The photo: its content box, cropped like `object-fit: cover`, clipped to its rounded corners, grey if asked. */
 async function drawImage(c: Ctx, img: HTMLImageElement, style: CSSStyleDeclaration) {
-  const bytes = await imageBytes(img)
+  const bytes = await imageBytes(img, grayscaleOf(style.filter))
   if (!bytes) return
   const r = img.getBoundingClientRect()
   const inset = (side: string) => (parseFloat(style.getPropertyValue(`border-${side}-width`)) || 0) + (parseFloat(style.getPropertyValue(`padding-${side}`)) || 0)
