@@ -33,7 +33,7 @@ describe('long words in the side column (spec 074)', () => {
  * minimum, so a long word breaks inside it instead of widening it and pushing the other one out.
  */
 describe('long words in the name and the main column (spec 074)', () => {
-  const ALL = ['amber', 'aurora', 'banner', 'chevron', 'classic', 'cobalt', 'compact', 'editorial', 'facet', 'frame', 'harbor', 'ledger', 'meridian', 'modern', 'monogram', 'monograph', 'retro']
+  const ALL = ['amber', 'aurora', 'banner', 'chevron', 'classic', 'cobalt', 'compact', 'editorial', 'facet', 'frame', 'harbor', 'ledger', 'meridian', 'modern', 'monogram', 'monograph', 'retro', 'freelance']
 
   it.each(ALL)('%s breaks a long word in the full name', (id) => {
     expect(rule(source(id), '.name')).toMatch(/overflow-wrap:\s*(break-word|anywhere)/)
@@ -51,6 +51,8 @@ describe('long words in the name and the main column (spec 074)', () => {
     ['cobalt', '.body'],
     ['cobalt', '.head'],
     ['retro', '.retro'],
+    ['freelance', '.freelance'],
+    ['freelance', '.pair'],
   ]
 
   it.each(GRIDS)('%s: %s gives its flexible column no minimum', (id, grid) => {

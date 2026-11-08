@@ -4,7 +4,7 @@ const fs = require('node:fs')
 const path = require('node:path')
 const { check, open, settled, startSample } = require('./lib.cjs')
 
-const IDS = ['amber', 'aurora', 'banner', 'chevron', 'classic', 'cobalt', 'compact', 'editorial', 'facet', 'frame', 'harbor', 'ledger', 'meridian', 'modern', 'monogram', 'monograph', 'retro']
+const IDS = ['amber', 'aurora', 'banner', 'chevron', 'classic', 'cobalt', 'compact', 'editorial', 'facet', 'frame', 'harbor', 'ledger', 'meridian', 'modern', 'monogram', 'monograph', 'retro', 'freelance']
 
 /** Runs in the page: CSS on the CV that the direct PDF has no way to draw. Outer box-shadows (rings, soft shadows) are drawn. */
 const UNSUPPORTED = () => {
@@ -18,7 +18,8 @@ const UNSUPPORTED = () => {
       const note = (what) => out.push(`${what} @ ${where(el, pseudo)}`)
       if (s.backgroundImage !== 'none') note('background-image / gradient')
       if (/\binset\b/.test(s.boxShadow)) note('inset box-shadow')
-      if (s.filter !== 'none') note('filter')
+      // A grey photo the direct PDF draws itself (spec 081): grayscale() alone, on an image.
+      if (s.filter !== 'none' && !(el instanceof HTMLImageElement && /^grayscale\([^)]*\)$/.test(s.filter))) note('filter')
       if (s.textShadow !== 'none') note('text-shadow')
       if (s.outlineStyle !== 'none' && parseFloat(s.outlineWidth) > 0) note('outline')
       if (s.textDecorationLine !== 'none') note('text-decoration ' + s.textDecorationLine)

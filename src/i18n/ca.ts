@@ -308,6 +308,10 @@ const ca: typeof es = {
       description:
         'Pàgina emmarcada en color amb aire retro: salutació i nom gran en serif gruixuda, el titular en una pestanya negra i la foto en un anell. Columna lateral clara amb competències i idiomes sota pestanyes.',
     },
+    freelance: {
+      description:
+        'Targetes amb vora fina i ombra dura sobre paper càlid: el nom molt gran en lletra display, la foto en blanc i negre amb un anell de malla en color. Perfil, competències i idiomes amb barres a un costat; formació i experiència de dues en dues.',
+    },
     cobalt: {
       description:
         'Capçalera de color amb foto rodona, barra lateral pàl·lida per al contacte, les competències i els idiomes, i la trajectòria a la dreta.',
@@ -383,6 +387,7 @@ const ca: typeof es = {
       'c3b1e1': 'Lavanda',
       'b5d99c': 'Sàlvia',
       'ffb17a': 'Albercoc',
+      'ff6b61': 'Aranja',
     },
     cvLanguage: 'Idioma del CV',
     cvLanguageHint: 'Dates i títols de secció del document. No canvia l’idioma de l’aplicació.',

@@ -131,7 +131,7 @@ async function customAndStyle(browser) {
 
   await step(p, 'Plantilla y estilo')
   const lost = []
-  for (const id of ['amber', 'aurora', 'banner', 'chevron', 'cobalt', 'compact', 'editorial', 'facet', 'frame', 'harbor', 'ledger', 'meridian', 'modern', 'monogram', 'monograph', 'retro', 'classic']) {
+  for (const id of ['amber', 'aurora', 'banner', 'chevron', 'cobalt', 'compact', 'editorial', 'facet', 'frame', 'harbor', 'ledger', 'meridian', 'modern', 'monogram', 'monograph', 'retro', 'freelance', 'classic']) {
     const card = p.getByRole('button', { name: new RegExp('^' + id, 'i') }).first()
     if (!(await card.count())) { lost.push(id + ':nocard'); continue; }
     await card.click()

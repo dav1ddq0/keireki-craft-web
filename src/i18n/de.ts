@@ -308,6 +308,10 @@ const de: typeof es = {
       description:
         'Eine farbig gerahmte Seite im Retro-Stil: ein Gruß und ein großer Name in Slab-Serif, die Überschrift auf einem schwarzen Reiter und das Foto in einem Ring. Eine helle Seitenspalte mit Kenntnissen und Sprachen unter Reitern.',
     },
+    freelance: {
+      description:
+        'Karten mit feinem Rand und hartem Schatten auf warmem Papier: der Name sehr groß in einer Display-Schrift, das Foto in Schwarzweiß mit einem farbigen Drahtgitter-Ring. Profil, Kenntnisse und Sprachen mit Balken auf einer Seite; Ausbildung und Berufserfahrung paarweise.',
+    },
     cobalt: {
       description:
         'Farbiges Kopfband mit rundem Foto, eine helle Seitenspalte für Kontakt, Kenntnisse und Sprachen, der Werdegang rechts.',
@@ -383,6 +387,7 @@ const de: typeof es = {
       'c3b1e1': 'Lavendel',
       'b5d99c': 'Salbei',
       'ffb17a': 'Aprikose',
+      'ff6b61': 'Grapefruit',
     },
     cvLanguage: 'Sprache des Lebenslaufs',
     cvLanguageHint: 'Datumsangaben und Abschnittstitel im Dokument. Ändert nicht die Sprache der App.',

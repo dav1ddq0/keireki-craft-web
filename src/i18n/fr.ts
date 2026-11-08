@@ -308,6 +308,10 @@ const fr: typeof es = {
       description:
         'Une page encadrée de couleur à l’allure rétro : une salutation et un grand nom en slab serif, le titre sur un onglet noir et la photo dans un anneau. Une colonne latérale claire avec compétences et langues sous des onglets.',
     },
+    freelance: {
+      description:
+        'Des cartes au trait fin et à l’ombre nette sur un papier chaud : le nom très grand en caractère display, la photo en noir et blanc avec un anneau filaire en couleur. Profil, compétences et langues avec des barres d’un côté ; formation et expérience deux par deux.',
+    },
     cobalt: {
       description:
         'Bandeau d’en-tête coloré avec une photo ronde, une colonne latérale pâle pour le contact, les compétences et les langues, et le parcours à droite.',
@@ -383,6 +387,7 @@ const fr: typeof es = {
       'c3b1e1': 'Lavande',
       'b5d99c': 'Sauge',
       'ffb17a': 'Abricot',
+      'ff6b61': 'Pamplemousse',
     },
     cvLanguage: 'Langue du CV',
     cvLanguageHint: 'Les dates et les titres de section du document. Ne change pas la langue de l’application.',

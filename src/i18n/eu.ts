@@ -308,6 +308,10 @@ const eu: typeof es = {
       description:
         'Kolorezko markoa duen orrialde retroa: agurra eta izen handia serif lodian, titularra fitxa beltz batean eta argazkia eraztun batean. Alboko zutabe argia, gaitasunak eta hizkuntzak fitxen azpian.',
     },
+    freelance: {
+      description:
+        'Ertz fineko eta itzal gogorreko txartelak paper beroaren gainean: izena oso handia display letran, argazkia zuri-beltzean eta sare-eraztun bat kolorez. Profila, gaitasunak eta hizkuntzak barrekin alde batean; prestakuntza eta esperientzia binaka.',
+    },
     cobalt: {
       description:
         'Koloretako goiburua argazki biribilarekin, alboko barra argia kontakturako, gaitasunetarako eta hizkuntzetarako, eta ibilbidea eskuinean.',
@@ -383,6 +387,7 @@ const eu: typeof es = {
       'c3b1e1': 'Izpilikua',
       'b5d99c': 'Salbia',
       'ffb17a': 'Abrikota',
+      'ff6b61': 'Pomeloa',
     },
     cvLanguage: 'CVaren hizkuntza',
     cvLanguageHint: 'Dokumentuko datak eta atalen izenburuak. Ez du aplikazioaren hizkuntza aldatzen.',

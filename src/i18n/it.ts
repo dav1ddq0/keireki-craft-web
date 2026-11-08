@@ -308,6 +308,10 @@ const it: typeof es = {
       description:
         'Pagina incorniciata a colori dall’aria retrò: un saluto e un grande nome in slab serif, il titolo su una linguetta nera e la foto in un anello. Colonna laterale chiara con competenze e lingue sotto linguette.',
     },
+    freelance: {
+      description:
+        'Schede con bordo sottile e ombra netta su carta calda: il nome molto grande in carattere display, la foto in bianco e nero con un anello a reticolo a colori. Profilo, competenze e lingue con barre da un lato; formazione ed esperienza a due a due.',
+    },
     cobalt: {
       description:
         'Fascia d’intestazione colorata con una foto rotonda, una colonna laterale chiara per contatti, competenze e lingue, e il percorso a destra.',
@@ -383,6 +387,7 @@ const it: typeof es = {
       'c3b1e1': 'Lavanda',
       'b5d99c': 'Salvia',
       'ffb17a': 'Albicocca',
+      'ff6b61': 'Pompelmo',
     },
     cvLanguage: 'Lingua del CV',
     cvLanguageHint: 'Date e titoli delle sezioni nel documento. Non cambia la lingua dell’app.',

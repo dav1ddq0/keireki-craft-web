@@ -47,6 +47,11 @@ the page; Retro has a frame and tabs; none has cards with a hard shadow or a dis
 - **Languages' bar** from the level text when it is one the app recognises (`languageLevelScore`:
   "Native", "C1"…); otherwise the level as written, with no bar.
 - **Not in the home carousel** (the owner's choice): Freelance shows in the gallery like any template.
+- **The PDF import learns to read it** (the owner's choice), for any template: entries set two by two
+  are read whole, row by row, the left one first (a column with no headings of its own, about as wide
+  as the one on its left, is the second half of that column's pairs); a name large enough to wrap is
+  joined from its two lines; and a keyword that ends a word broken at its hyphen ("Full-" / "Stack")
+  is part of a title, not a section's heading.
 
 ## Acceptance criteria
 

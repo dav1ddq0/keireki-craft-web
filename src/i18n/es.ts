@@ -309,6 +309,10 @@ export default {
       description:
         'Página enmarcada en color con aire retro: saludo y nombre grande en serif gruesa, el titular en una pestaña negra y la foto en un aro. Columna lateral clara con competencias e idiomas bajo pestañas.',
     },
+    freelance: {
+      description:
+        'Tarjetas con borde fino y sombra dura sobre papel cálido: el nombre muy grande en letra display, la foto en blanco y negro con un aro de malla en color. Resumen, competencias e idiomas con barras a un lado; formación y experiencia de dos en dos.',
+    },
     cobalt: {
       description:
         'Cabecera de color con foto redonda, barra lateral pálida para contacto, competencias e idiomas, y la trayectoria a la derecha.',
@@ -384,6 +388,7 @@ export default {
       'c3b1e1': 'Lavanda',
       'b5d99c': 'Salvia',
       'ffb17a': 'Albaricoque',
+      'ff6b61': 'Pomelo',
     },
     cvLanguage: 'Idioma del CV',
     cvLanguageHint: 'Fechas y títulos de sección del documento. No cambia el idioma de la aplicación.',

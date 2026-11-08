@@ -53,17 +53,34 @@ addition: the direct PDF draws a grey image when the template asks for it.
 6. Template lists that name every id: `tests/templateRender.test.ts`, `tests/longWords.test.ts`,
    `qa/e2e/perf.cjs`, `qa/e2e/fidelity.cjs`, `qa/e2e/flows.cjs`.
 
-### 4 · Verification
+### 4 · The PDF import reads it
+1. `src/services/pdfImport/layout.ts`: before telling columns apart, the strip between a column and
+   one on its right with no headings of its own (or none on either, on a page a section runs on to),
+   about as wide (the narrower ≥ 0.6 of the wider), is the gutter of a pair, not of two columns; a
+   heading counts in the column where it starts. That column is read row by row: a row ends where
+   neither half has text for 1.8 type sizes, and each row is its left half's lines, then its right's.
+   A word in the right half that looks like a heading but is set smaller than the left's headings is
+   not one.
+2. `src/services/pdfImport/heuristics.ts`: the largest type on page 1 on two lines in a row, the second
+   right under the first and aligned with it, short enough for a name, is joined into one line (no
+   space after a hyphen) before the name is looked for; a keyword on the line under one that ends in
+   a hyphen, in its type and where it starts, is not a heading.
+3. `qa/roundtrip.cjs`: the "name as text" check compares without hyphens (pdftotext drops the one a
+   line ends with when it joins the next).
+4. Tests: `pdfLayout.test.ts` (pairs read whole, on a page with no headings too, a narrow label column
+   not taken for a pair), `pdfImport.test.ts` (a name on two lines, with and without a hyphen, a line
+   in other type left alone, "Stack" not a heading); `qa:roundtrip` over every template.
+
+### 5 · Verification
 `npm test`, `npm run build`, `qa:e2e`, `qa:pdf`, `qa:roundtrip`, `qa:consistency`, `qa:security`;
 screenshots with the sample CV (photo / none, default accent / dark); the criteria marked; roadmap
 to "Done".
 
 ## Risks
 
-- **Two-column entries in the PDF import**: entries side by side can interleave their lines. Retro's
-  two-column education came back whole; if `qa:roundtrip` shows experience mixed, the entries are
-  laid so each one's lines are read together (a row per pair, the left entry first), and the spec
-  notes what changed.
+- **Two-column entries in the PDF import**: entries side by side interleaved their lines (task 4).
+  The template keeps the halves 2.4em apart, wider than two of the titles' type sizes: closer text is
+  read as one line across both entries (spec 040).
 - **A card split across pages**: paged.js cuts the box; the border and shadow are kept on both pieces
   (the open edges closed by the fragment rules), checked by `qa:pdf` with a long CV.
 - **Narrow columns**: about 43 mm per entry; long words break (`longWords.test.ts`) and highlights

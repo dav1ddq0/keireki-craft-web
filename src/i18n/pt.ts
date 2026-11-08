@@ -309,6 +309,10 @@ const pt: typeof es = {
       description:
         'Página emoldurada a cor com ar retro: uma saudação e um nome grande em serifa grossa, o título num separador preto e a foto num aro. Coluna lateral clara com competências e idiomas sob separadores.',
     },
+    freelance: {
+      description:
+        'Cartões com contorno fino e sombra dura sobre papel quente: o nome muito grande em letra display, a foto a preto e branco com um anel em malha a cores. Perfil, competências e línguas com barras de um lado; formação e experiência duas a duas.',
+    },
     cobalt: {
       description:
         'Faixa de cabeçalho colorida com uma fotografia redonda, uma coluna lateral clara para o contacto, as competências e os idiomas, e o percurso à direita.',
@@ -384,6 +388,7 @@ const pt: typeof es = {
       'c3b1e1': 'Lavanda',
       'b5d99c': 'Sálvia',
       'ffb17a': 'Damasco',
+      'ff6b61': 'Toranja',
     },
     cvLanguage: 'Idioma do CV',
     cvLanguageHint: 'Datas e títulos de secção no documento. Não muda o idioma da aplicação.',

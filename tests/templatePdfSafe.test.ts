@@ -25,7 +25,8 @@ const sources = templateSources('src/templates').map((file) => {
 const UNSUPPORTED: [string, RegExp][] = [
   ['a gradient', /gradient\s*\(/],
   ['a background image', /background(?:-image)?:[^;]*url\(/],
-  ['a filter', /(?:^|[\s;{])(?:backdrop-)?filter\s*:/m],
+  // Except grayscale() alone, which the direct PDF draws on a photo (spec 081).
+  ['a filter', /(?:^|[\s;{])(?:backdrop-filter\s*:|filter\s*:(?!\s*grayscale\([^)]*\)\s*[;}]))/m],
   ['a text shadow', /text-shadow\s*:(?!\s*none)/],
   ['an underline or strike-through', /text-decoration(?:-line)?\s*:\s*(?!none)[^;]*(?:underline|line-through|overline)/],
   ['an outline', /(?:^|[\s;{])outline\s*:\s*(?!none|0\b)/m],

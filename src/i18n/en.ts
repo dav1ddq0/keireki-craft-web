@@ -308,6 +308,10 @@ const en: typeof es = {
       description:
         'A page framed in colour with a retro feel: a greeting and a large slab-serif name, the headline on a black tab and the photo in a ring. A pale side column with skills and languages under tabs.',
     },
+    freelance: {
+      description:
+        'Cards with a thin border and a hard shadow on warm paper: the name very large in a display face, the photo in black and white with a wireframe ring in colour. Summary, skills and languages with bars on one side; education and experience two by two.',
+    },
     cobalt: {
       description:
         'Colored header band with a round photo, a pale sidebar for contact, skills and languages, and the career on the right.',
@@ -383,6 +387,7 @@ const en: typeof es = {
       'c3b1e1': 'Lavender',
       'b5d99c': 'Sage',
       'ffb17a': 'Apricot',
+      'ff6b61': 'Grapefruit',
     },
     cvLanguage: 'CV language',
     cvLanguageHint: 'Dates and section titles in the document. Does not change the app language.',
