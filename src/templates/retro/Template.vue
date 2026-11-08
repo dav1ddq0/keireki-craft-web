@@ -179,6 +179,9 @@ const CHEVRON = 'M9 5l7 7-7 7'
   line-height: 1.4;
   color: #1a1a1a;
   min-height: 100%;
+  /* The frame's ink part is a shadow that runs past the page's foot; unpaginated (the live preview),
+     nothing else cuts it, so the root does. Paginated, see below. */
+  overflow: clip;
   --gap: calc(1em * var(--cv-spacing-scale));
   --ink: #111;
   --muted: #555;
@@ -199,7 +202,8 @@ const CHEVRON = 'M9 5l7 7-7 7'
  * that it repeats on every page and the direct PDF, which paints in document order, draws it before
  * the text (spec 031). The frame is three solid shadows of the sheet: a thin ink line, the ink lower
  * part (the sheet moved down until its top reaches the 70 % line, spread over the frame's sides) and
- * the accent all round. Past the page's edge they are cut off.
+ * the accent all round. Past the page's edge they are cut off: by the page when paginated, by
+ * the root's `overflow: clip` in the live preview.
  */
 .retro::before {
   content: '';
@@ -218,6 +222,12 @@ const CHEVRON = 'M9 5l7 7-7 7'
     0 0 0 var(--frame-foot) var(--cv-accent);
   print-color-adjust: exact;
   -webkit-print-color-adjust: exact;
+}
+
+/* Paginated (print, direct PDF, paged view), the page's edge cuts the frame; a fragment can be shorter
+   than its page, and clipping it there would cut the frame short. */
+.cv-page--paged .retro {
+  overflow: visible;
 }
 
 /* paged.js unsets ::before and the top padding on a fragment that continues from the last page; the
