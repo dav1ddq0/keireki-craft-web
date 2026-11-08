@@ -557,7 +557,7 @@ const it: typeof es = {
     discard: 'Scarta',
     rawText: 'Testo estratto completo',
     apply: 'Importa in un nuovo CV',
-    applyToCurrent: 'Unisci al CV aperto',
+    applyToCurrent: 'Sostituisci il CV aperto',
     noText: 'Questo PDF non ha testo estraibile: sembra una scansione. Il riconoscimento del testo (OCR) non è previsto nella v1.',
     parseError: 'Impossibile leggere il file.',
     schemaError: 'Questo file proviene da una versione che l’app non comprende.',

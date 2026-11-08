@@ -557,7 +557,7 @@ const de: typeof es = {
     discard: 'Verwerfen',
     rawText: 'Vollständiger extrahierter Text',
     apply: 'In einen neuen Lebenslauf importieren',
-    applyToCurrent: 'In den geöffneten Lebenslauf übernehmen',
+    applyToCurrent: 'Geöffneten Lebenslauf ersetzen',
     noText: 'Dieses PDF enthält keinen extrahierbaren Text – es scheint ein Scan zu sein. Texterkennung (OCR) ist in v1 nicht vorgesehen.',
     parseError: 'Die Datei konnte nicht gelesen werden.',
     schemaError: 'Diese Datei stammt aus einer Version, die die App nicht versteht.',

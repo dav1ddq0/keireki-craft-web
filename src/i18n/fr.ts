@@ -557,7 +557,7 @@ const fr: typeof es = {
     discard: 'Écarter',
     rawText: 'Texte extrait complet',
     apply: 'Importer dans un nouveau CV',
-    applyToCurrent: 'Fusionner avec le CV ouvert',
+    applyToCurrent: 'Remplacer le CV ouvert',
     noText: 'Ce PDF n’a pas de texte extractible — il ressemble à un scan. La reconnaissance de texte (OCR) n’est pas prévue dans la v1.',
     parseError: 'Impossible de lire le fichier.',
     schemaError: 'Ce fichier provient d’une version que l’application ne comprend pas.',

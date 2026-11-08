@@ -557,7 +557,7 @@ const en: typeof es = {
     discard: 'Discard',
     rawText: 'Full extracted text',
     apply: 'Import into a new CV',
-    applyToCurrent: 'Merge into the open CV',
+    applyToCurrent: 'Replace the open CV',
     noText: 'This PDF has no extractable text — it looks like a scan. OCR is out of scope for v1.',
     parseError: 'The file could not be read.',
     schemaError: 'This file comes from a version the app does not understand.',

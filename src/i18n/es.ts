@@ -558,7 +558,7 @@ export default {
     discard: 'Descartar',
     rawText: 'Texto completo extraído',
     apply: 'Importar a un CV nuevo',
-    applyToCurrent: 'Volcar en el CV actual',
+    applyToCurrent: 'Sustituir el CV abierto',
     noText: 'Este PDF no contiene texto extraíble: parece un escaneo. El OCR queda fuera de la versión 1.',
     parseError: 'No se pudo leer el archivo.',
     schemaError: 'El archivo procede de una versión que esta app no entiende.',
