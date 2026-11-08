@@ -91,12 +91,11 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 - **078** · A backup of every CV in one file, restored from Import (asking before it replaces), and a reminder only when 7 days have passed
 - **079** · Back up to a folder on the computer by itself (Chrome, Edge): one file kept up to date and a daily copy of the last 7, named in the interface language, paused when access is not granted
 - **080** · Retro, a framed page with slab headings and black tabs; Roboto Slab and Montserrat bundled
+- **081** · Freelance, cards with a hard shadow and a heavy display name; Dela Gothic One and Work Sans bundled; the PDF import reads entries two by two
 
 ## Next 🔜
 
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
-
-- **081** · Freelance, cards with a hard shadow and a heavy display name; Dela Gothic One and Work Sans bundled
 
 ## Backlog / ideas 💡
 

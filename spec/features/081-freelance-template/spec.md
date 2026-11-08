@@ -1,6 +1,6 @@
 # 081 · Freelance, cards with a hard shadow and a heavy display name
 
-**Status:** draft
+**Status:** done
 
 ## What it does
 
@@ -56,35 +56,55 @@ the page; Retro has a frame and tabs; none has cards with a hard shadow or a dis
 ## Acceptance criteria
 
 ### The template
-- [ ] It registers itself and shows in the gallery with its own thumbnail and a description in the
+- [x] It registers itself and shows in the gallery with its own thumbnail and a description in the
       nine interface languages.
-- [ ] Summary and contacts, skills and languages in the left column; education, experience and
+- [x] Summary and contacts, skills and languages in the left column; education, experience and
       custom sections in the right one, in the order the user set.
-- [ ] Every section is a card with its border and hard shadow; the header card spans the page.
-- [ ] With a photo it shows in black and white with the wireframe shape behind it; without one, no
+- [x] Every section is a card with its border and hard shadow; the header card spans the page.
+- [x] With a photo it shows in black and white with the wireframe shape behind it; without one, no
       empty space and no shape. With an empty name or headline, nothing is left behind.
-- [ ] Experience and education entries in two columns; a long entry grows its row, the next row
+- [x] Experience and education entries in two columns; a long entry grows its row, the next row
       starts under the taller of the two.
-- [ ] Skill levels as bars where given, the name alone otherwise; languages with a bar when their
+- [x] Skill levels as bars where given, the name alone otherwise; languages with a bar when their
       level is recognised, the level text always.
-- [ ] The accent picker sets both wireframe shapes; the font select sets the text, not the titles.
-- [ ] A card that runs on to the next page keeps its border and shadow on both pages; the left
+- [x] The accent picker sets both wireframe shapes; the font select sets the text, not the titles.
+- [x] A card that runs on to the next page keeps its border and shadow on both pages; the left
       column on page one, with the existing warning if it cannot fit (spec 033).
 
 ### Fonts
-- [ ] Dela Gothic One and Work Sans are served from the app (Latin and Latin Extended, with
+- [x] Dela Gothic One and Work Sans are served from the app (Latin and Latin Extended, with
       `unicode-range`), no third-party request; the CSP is unchanged.
-- [ ] The font select offers both, marked as bundled; the direct PDF embeds them.
+- [x] The font select offers both, marked as bundled; the direct PDF embeds them.
 
 ### Output
-- [ ] The direct PDF and the print match the paged preview (`qa:pdf`), the cards, shapes and the
+- [x] The direct PDF and the print match the paged preview (`qa:pdf`), the cards, shapes and the
       grey photo included.
-- [ ] A Freelance PDF imports back complete (`qa:roundtrip`), the two-column entries included.
-- [ ] Nothing overflows on the 360 px phone or the 1024 px laptop (`qa:consistency`).
+- [x] A Freelance PDF imports back complete (`qa:roundtrip`), the two-column entries included.
+- [x] Nothing overflows on the 360 px phone or the 1024 px laptop (`qa:consistency`).
 
 ### Quality
-- [ ] `npm test`, `npm run build`, `qa:e2e`, `qa:pdf`, `qa:roundtrip`, `qa:consistency` pass.
-- [ ] Screenshots with the sample CV, with and without a photo, the default accent and a dark one.
+- [x] `npm test`, `npm run build`, `qa:e2e`, `qa:pdf`, `qa:roundtrip`, `qa:consistency` pass.
+- [x] Screenshots with the sample CV, with and without a photo, the default accent and a dark one.
+
+## Verification
+
+`npm test` (`freelanceTemplate.test.ts`: columns, a contact card without a summary, cards and their
+shadow, the grey photo with the ring under it, an empty CV, pairs, skill and language bars, a
+one-line skill group, the display font's weight, the paper and split rules on every page; the grey
+photo in `pdfDirect.test.ts`; entries two by two in `pdfLayout.test.ts`; a name on two lines and
+"Full-" / "Stack" in `pdfImport.test.ts`; in a clean copy, since the local Vitest cache keeps the
+registry from before `freelance/`), `vue-tsc`, `npm run build`. `qa:pdf freelance` 30/30 (sample,
+photo, long, break, long name, long words; a colour photo goes out grey in print and in the direct
+PDF), `qa:roundtrip` 504/504 (every template; Freelance: name, headline, e-mail, experience 2/2,
+education, skills and languages complete), `qa:e2e` 231/231, `qa:consistency` 13/13 over 425 views,
+`qa:security` 57/57. Screenshots of the sample with a colour photo (grey) and without one, with the
+default accent and `#1f4e79`, and of the gallery card.
+
+Beyond the plan: the import task (4) came from the first roundtrip, which split the name, read the
+pairs interleaved and took "Stack" for a heading; the pair's gap is `2.4em` so its two cells do not
+merge. `templatePdfSafe` and `qa:e2e` fidelity allow `grayscale()` alone on an image. Skill groups
+without levels are one line joined by " · " (as in Amber), so the sample fits one page. paged.js left
+an empty bordered card at a page's foot when a title moved on; an empty card is hidden.
 
 ## Out of scope
 
