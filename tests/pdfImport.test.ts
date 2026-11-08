@@ -416,6 +416,52 @@ describe('layouts that put an entry together from several cells (spec 040)', () 
   })
 })
 
+describe('a headline that wraps in a narrow side column (spec 083)', () => {
+  const at = (text: string, y: number, fontSize = 10.9, x = 394) => ({ text, x, y, fontSize, end: x + 160 })
+  const headline = (...below: Array<ReturnType<typeof at>>) =>
+    analyze(doc([at('Łucja Øster', 680, 27.6), at('Ingeniera de datos · “calidad” y', 629), ...below, at('IDIOMAS', 460)])).headline.value
+
+  it('goes on in the line right under it, in its type and where it starts', () => {
+    expect(headline(at('‘rigor’', 614.5))).toBe('Ingeniera de datos · “calidad” y ‘rigor’')
+  })
+
+  it('does not take in the contact details, a place, a smaller line or one set further down', () => {
+    for (const line of [at('ada@example.com', 614.5), at('Valencia, España', 614.5), at('‘rigor’', 614.5, 9.5), at('‘rigor’', 590)]) {
+      expect(headline(line)).toBe('Ingeniera de datos · “calidad” y')
+    }
+  })
+})
+
+describe('skills beside a circle with their initials (spec 083)', () => {
+  const at = (text: string, x: number, y: number, fontSize = 9.5) => ({ text, x, y, fontSize, end: x + 120 })
+  const assemble = (lines: Array<Partial<ExtractedLine> & { text: string }>) => assembleCV(analyze(doc(lines)))
+  const skills = (cv: ReturnType<typeof assembleCV>) => cv.skills.map((g) => [g.category, g.items.map((i) => i.name)])
+
+  it('leaves out the initials most of a section\'s lines start with', () => {
+    const cv = assemble([
+      at('Ada Lovelace', 40, 800, 22),
+      at('COMPETENCIAS', 40, 760, 12),
+      at('Lenguajes', 40, 740, 8.6),
+      at('Ty TypeScript', 50, 720),
+      at('Go Go', 214, 720),
+      at('V3 Vue 3', 50, 696),
+      at('CM CSS moderno', 214, 696),
+      at('Diseño', 40, 672, 8.6),
+      at('AI Adobe Illustrator', 50, 652),
+      at('Ph Photoshop', 214, 652),
+    ])
+    expect(skills(cv)).toEqual([
+      ['Lenguajes', ['TypeScript', 'Go', 'Vue 3', 'CSS moderno']],
+      ['Diseño', ['Adobe Illustrator', 'Photoshop']],
+    ])
+  })
+
+  it('keeps a short first word that is not the initials of a whole section', () => {
+    const cv = assemble([at('Ada Lovelace', 40, 800, 22), at('COMPETENCIAS', 40, 760, 12), at('Go Gin', 40, 740), at('TypeScript', 40, 726), at('UX Research', 40, 712), at('Vue 3', 40, 698)])
+    expect(skills(cv)).toEqual([['', ['Go Gin', 'TypeScript', 'UX Research', 'Vue 3']]])
+  })
+})
+
 describe('capitals that are not headings (spec 040)', () => {
   it('keeps uppercase skills inside their section when the headings of the CV are not set in capitals', () => {
     const at = (text: string, y: number, fontSize = 10) => ({ text, y, fontSize })

@@ -94,7 +94,7 @@ export function groupIntoLines(items: TextItem[], page: number, boldFonts?: Read
         y,
         x: Math.min(...cell.map((f) => f.x)),
         end: Math.max(...cell.map((f) => f.end)),
-        text: collapseLetterSpacing(joinFragments(cell).replace(/\s+/g, ' ').trim()),
+        text: closeOpeningQuotes(collapseLetterSpacing(joinFragments(cell).replace(/\s+/g, ' ').trim())),
         fontSize: Math.max(...cell.map((f) => f.fontSize)),
         fontName: first.fontName ?? '',
         bold: cell.some((f) => (boldFonts ? boldFonts.has(f.fontName ?? '') : isBold(f.fontName ?? ''))),
@@ -102,6 +102,15 @@ export function groupIntoLines(items: TextItem[], page: number, boldFonts?: Read
     }),
   )
   return readingOrder(lines.filter((line) => line.text.length > 0))
+}
+
+/**
+ * An opening quote that starts a word is drawn apart from it at the start of a line in a printed PDF
+ * ("‘ rigor’", spec 083): the space after it goes. Only where a word starts, so a closing “ or ‘ (the
+ * German „Qualität“ und) keeps the space after it.
+ */
+function closeOpeningQuotes(text: string): string {
+  return text.replace(/(^|\s)([‘“])\s+(?=[\p{L}\p{N}])/gu, '$1$2')
 }
 
 /** The fragments of one line, left to right, cut wherever the gap is wider than `CELL_GAP`. */
@@ -156,7 +165,7 @@ function byColumns(topToBottom: ExtractedLine[]): ExtractedLine[] | null {
   if (!found.length) return null
   // The strip between the two halves of entries set two by two is not a gutter between columns.
   const pairs = pairGutters(topToBottom, found)
-  const gutters = found.filter((gutter) => !pairs.includes(gutter))
+  const gutters = withoutValueStrips(topToBottom, found.filter((gutter) => !pairs.includes(gutter)))
   if (!gutters.length) return pairs.length ? rowByRow(topToBottom, secondOfPairs(topToBottom, pairs, found)) : null
 
   const crosses = (cell: ExtractedLine) => gutters.some((g) => cell.x < g.end && cell.end > g.start)
@@ -166,10 +175,11 @@ function byColumns(topToBottom: ExtractedLine[]): ExtractedLine[] | null {
   if (flowing.length < 2) return null
   // Section headings in one column, their text beside them in another, is a table of labels and
   // values: it reads top to bottom. Columns of their own have headings of their own: several each, or
-  // two side by side on one row, which a table never has.
+  // one set in capitals (a side column with only its languages, spec 083), or two side by side on one
+  // row, which a table never has.
   const headed = flowing.map((index) => columns[index]!.filter((cell) => isSectionHeading(cell.text)))
   const total = headed.reduce((sum, cells) => sum + cells.length, 0)
-  const ownHeadings = headed.every((cells) => cells.length >= Math.max(2, total * COLUMN_HEADING_SHARE))
+  const ownHeadings = headed.every((cells) => cells.length >= Math.max(2, total * COLUMN_HEADING_SHARE) || cells.some((cell) => isCapitals(cell.text)))
   const sideBySide = headed.some((cells, i) => headed.slice(i + 1).some((others) => cells.some((a) => others.some((b) => Math.abs(a.y - b.y) <= SAME_ROW))))
   if (!ownHeadings && !sideBySide) return null
 
@@ -201,7 +211,7 @@ function byColumns(topToBottom: ExtractedLine[]): ExtractedLine[] | null {
  * its own, about as wide as the one on its left, which has them (or which has none either, on a page
  * the section runs on to). The strip between them is the gutter of a pair, not of two columns.
  * An entry's title that wraps can leave a word that looks like a heading ("Stack"); set smaller than
- * the neighbour's headings, it is not one.
+ * the neighbour's headings, it is not one, unless it is set in capitals (spec 083).
  */
 function pairGutters(topToBottom: ExtractedLine[], gutters: Gutter[]): Gutter[] {
   const crosses = (cell: ExtractedLine) => gutters.some((g) => cell.x < g.end && cell.end > g.start)
@@ -218,7 +228,7 @@ function pairGutters(topToBottom: ExtractedLine[], gutters: Gutter[]): Gutter[] 
     if (!flowing[host] || !flowing[index] || pairs.includes(gutters[host - 1]!)) continue
     if (!headed[host]!.length && flowing.filter(Boolean).length > 2) continue
     const smallest = headed[host]!.length ? Math.min(...headed[host]!.map((cell) => cell.fontSize)) : 0
-    if (headed[index]!.some((cell) => cell.fontSize >= COMPANION_HEADING * smallest)) continue
+    if (headed[index]!.some((cell) => cell.fontSize >= COMPANION_HEADING * smallest || isCapitals(cell.text))) continue
     const [a, b] = [span(columns[index]!), span(columns[host]!)]
     if (Math.min(a, b) >= COMPANION_WIDTH * Math.max(a, b)) pairs.push(gutters[host]!)
   }
@@ -288,6 +298,37 @@ const COLUMN_HEADING_SHARE = 0.25
 
 /** Cells whose baselines are this close (PDF units) are on one row. */
 const SAME_ROW = 2.5
+
+/** A value beside a row has at most this many words. */
+const VALUE_WORDS = 3
+
+/**
+ * A column of short values, each on the row of a cell on its left, has no lines of its own: the
+ * levels set at the right edge of a side column, across from their languages (spec 083). It is part
+ * of the column on its left, and the strip between them is no gutter, not even for a name that
+ * crosses it.
+ */
+function withoutValueStrips(topToBottom: ExtractedLine[], gutters: Gutter[]): Gutter[] {
+  const crosses = (cell: ExtractedLine) => gutters.some((g) => cell.x < g.end && cell.end > g.start)
+  const columnOf = (cell: ExtractedLine) => gutters.filter((g) => cell.x >= g.end).length
+  return gutters.filter((_, index) => {
+    const column = topToBottom.filter((cell) => !crosses(cell) && columnOf(cell) === index + 1)
+    return !(column.length && column.every((cell) => isValueBesideRow(cell, topToBottom)))
+  })
+}
+
+function isValueBesideRow(cell: ExtractedLine, topToBottom: ExtractedLine[]): boolean {
+  return (
+    !isSectionHeading(cell.text) &&
+    cell.text.split(/\s+/).length <= VALUE_WORDS &&
+    topToBottom.some((other) => other.end < cell.x && Math.abs(other.y - cell.y) <= SAME_ROW)
+  )
+}
+
+/** Written in capitals, as headings are and words in a sentence are not. */
+function isCapitals(text: string): boolean {
+  return /\p{Lu}/u.test(text) && text === text.toLocaleUpperCase()
+}
 
 /** Text that flows: several cells, most of them a line or two below the one above. */
 function flows(column: ExtractedLine[]): boolean {

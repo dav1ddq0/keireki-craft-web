@@ -177,13 +177,14 @@ function splitMeta(text: string): string[] {
 
 /** "Lenguajes: TypeScript, Go" becomes a group; a category line over its items too (spec 040). */
 function parseSkills(section: DetectedSection) {
-  const labelled = pairLabelColumn(section.lines)
+  const unmarked = withoutInitials(section.lines)
+  const labelled = pairLabelColumn(unmarked)
   if (labelled) return labelled
 
   const groups = []
   const loose: string[] = []
   let current: ReturnType<typeof createSkillGroup> | null = null
-  const lines = mergeWrapped(section.lines)
+  const lines = mergeWrapped(unmarked)
 
   lines.forEach((line, index) => {
     const text = stripBullet(line.text)
@@ -218,6 +219,29 @@ function parseSkills(section: DetectedSection) {
   }
   return groups.filter((group) => group.items.length || group.category)
 }
+
+/**
+ * Skills set beside a circle with their initials (spec 083) reach the import as "Ty TypeScript",
+ * "V3 Vue 3": a word of one or two letters or digits, the first letter of the name and its second
+ * letter or the first of its next word. When most of a section's lines start like that, the circles
+ * are what they are, and their initials are left out.
+ */
+function withoutInitials(lines: ExtractedLine[]): ExtractedLine[] {
+  const marked = lines.map((line) => {
+    const match = line.text.trim().match(/^([\p{L}\p{N}]{1,2})\s+(.+)$/u)
+    if (!match) return null
+    const [mark, name] = [match[1]!.toLocaleLowerCase(), match[2]!]
+    const words = (name.match(/[\p{L}\p{N}]+/gu) ?? []).map((word) => word.toLocaleLowerCase())
+    if (!words.length || mark[0] !== words[0]![0]) return null
+    return mark.length === 1 || mark[1] === words[0]![1] || words.slice(1).some((word) => word[0] === mark[1]) ? name : null
+  })
+  const count = marked.filter(Boolean).length
+  if (count < INITIALS_MIN || count < lines.length / 2) return lines
+  return lines.map((line, index) => (marked[index] ? { ...line, text: marked[index]! } : line))
+}
+
+/** The fewest lines that start with their initials for a section to have circles of initials. */
+const INITIALS_MIN = 3
 
 /**
  * A list that wraps continues on a line that starts in lower case after one that does not end in a

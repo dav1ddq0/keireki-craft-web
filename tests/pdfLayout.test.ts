@@ -17,6 +17,13 @@ describe('groupIntoLines (spec 040)', () => {
     expect(lines.map((line) => line.end)).toEqual([72, 280])
   })
 
+  it('closes the space a printed PDF leaves after an opening quote that starts a word (spec 083)', () => {
+    const text = (str: string) => texts(groupIntoLines([item(str, 394, 614, 120)], 1))[0]
+    expect(text('‘ rigor’')).toBe('‘rigor’')
+    expect(text('datos · “ calidad” y ‘ rigor’')).toBe('datos · “calidad” y ‘rigor’')
+    expect(text('„Qualität“ und ‚Sorgfalt‘ im Team')).toBe('„Qualität“ und ‚Sorgfalt‘ im Team')
+  })
+
   it('keeps the words of one line, and an item list, together', () => {
     const lines = groupIntoLines([item('Cartograf', 45, 600, 45), item('·', 96, 600, 4), item('Remoto', 106, 600, 30)], 1)
     expect(texts(lines)).toEqual(['Cartograf · Remoto'])
@@ -240,5 +247,42 @@ describe('readingOrder, entries two by two (spec 081)', () => {
       ]),
     ]
     expect(texts(readingOrder(rows)).slice(0, 4)).toEqual(['PERFIL', 'text 0.0', '2020 – 2022', 'text 0.1'])
+  })
+})
+
+describe('readingOrder, a side column on the right with only its languages (spec 083)', () => {
+  /** Minimalist: the main column at x 45–350, the side at 394, the levels at its right edge. */
+  const page = (levelsAt = 552) => [
+    cell('Nadia Martín', 394, 774, { end: 538, fontSize: 27 }),
+    cell('Desarrolladora Full-Stack', 394, 725, { end: 520 }),
+    cell('CONTACTO', 394, 691, { end: 460 }),
+    cell('nadia@example.com', 413, 664, { end: 510 }),
+    cell('+34 600 123 456', 413, 646, { end: 474 }),
+    cell('IDIOMAS', 394, 524, { end: 448 }),
+    ...['Español', 'Inglés', 'Francés'].flatMap((name, i) => [
+      cell(name, 394, 497 - i * 18, { end: 426 }),
+      cell(['Nativo', 'C1', 'B1'][i]!, levelsAt, 497 - i * 18, { end: 575 }),
+    ]),
+    ...['RESUMEN', 'resumen 1', 'resumen 2', 'EXPERIENCIA', 'puesto 1', 'puesto 2', 'puesto 3', 'FORMACIÓN', 'grado 1', 'COMPETENCIAS', 'competencia 1'].map((text, i) =>
+      cell(text, 45, 785 - i * 30 - (i % 2) * 8, { end: 350 }),
+    ),
+  ]
+
+  it('reads the side column first, its levels after their languages, then the main column', () => {
+    const order = texts(readingOrder(page()))
+    expect(order.slice(0, 12)).toEqual(['Nadia Martín', 'Desarrolladora Full-Stack', 'CONTACTO', 'nadia@example.com', '+34 600 123 456', 'IDIOMAS', 'Español', 'Nativo', 'Inglés', 'C1', 'Francés', 'B1'])
+    expect(order[12]).toBe('RESUMEN')
+  })
+
+  it('reads the levels with their languages whether the name crosses the strip before them or not', () => {
+    for (const levelsAt of [552, 530]) expect(texts(readingOrder(page(levelsAt))).indexOf('Nativo')).toBe(7)
+  })
+
+  it('still reads a column with a single heading written like a word in a sentence as a table of labels', () => {
+    const rows = [
+      ...['PERFIL', 'EXPERIENCIA', 'FORMACIÓN', 'COMPETENCIAS'].map((text, i) => cell(text, 32, 760 - i * 14, { end: 120 })),
+      ...Array.from({ length: 4 }, (_, i) => cell(i === 2 ? 'Idiomas' : `detail ${i}`, 205, 751 - i * 13, { end: 480 })),
+    ]
+    expect(texts(readingOrder(rows))[1]).toBe('detail 0')
   })
 })

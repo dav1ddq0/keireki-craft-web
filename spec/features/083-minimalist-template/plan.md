@@ -46,6 +46,15 @@ them for skills or glues them to the names, it learns to leave out a one- or two
 apart on the left of a skill's line (`heuristics.ts` or `layout.ts`, with tests). Not needed if the
 roundtrip already passes; then this task records that and closes.
 
+What the roundtrip found: the skills came in as "Ty TypeScript", and the side column was not read as
+one (its only known heading is Idiomas; the levels at its right edge looked like a third column, and
+the name crossed the strip before them), so name, headline and languages were lost. The import now
+leaves out initials most of a skills section's lines start with (`assemble.ts`), counts a heading in
+capitals as a column's own, and reads a column of short values beside rows with the column on its
+left (`layout.ts`). A headline that wraps in the side column goes on in the line right under it, in
+its type and where it starts (`heuristics.ts`); the space a printed PDF leaves after an opening
+quote at the start of that line goes (`layout.ts`).
+
 ### 3 · Verification
 `npm test` (in a clean copy as well: the local Vitest cache keeps the registry from before
 `minimalist/`), `npm run build`, `qa:e2e`, `qa:pdf minimalist`, `qa:roundtrip`, `qa:consistency`,

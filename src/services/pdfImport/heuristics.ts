@@ -4,6 +4,7 @@ import {
   DATE_RANGE_RE,
   EMAIL_RE,
   headingLanguage,
+  isSectionHeading,
   MONTH_INDEX,
   normalizeHeading,
   PHONE_RE,
@@ -415,11 +416,27 @@ function findHeadline(headerLines: ExtractedLine[], nameLine: ExtractedLine | un
     : undefined
   const next = below ?? headerLines[index + 1]
   if (!next || index < 0) return { value: '', confidence: 'low' }
-  const text = next.text.trim()
+  const text = withWrappedLine(next, headerLines)
   if (!text || EMAIL_RE.test(text) || PHONE_RE.test(text) || text.length > 80) {
     return { value: '', confidence: 'low' }
   }
   return { value: text, confidence: 'medium' }
+}
+
+/**
+ * A headline that wraps in a narrow side column (spec 083) goes on in the line right under it, in its
+ * type and where it starts; a line with contact details, a place or a heading is not that.
+ */
+function withWrappedLine(line: ExtractedLine, headerLines: ExtractedLine[]): string {
+  const text = line.text.trim()
+  const after = headerLines
+    .filter((other) => other.page === line.page && other.y < line.y)
+    .sort((a, b) => b.y - a.y)[0]
+  if (!after || line.y - after.y > NAME_LINE_STEP * line.fontSize) return text
+  if (Math.abs(after.fontSize - line.fontSize) > 0.5 || Math.abs(after.x - line.x) > 2) return text
+  const rest = after.text.trim()
+  if (EMAIL_RE.test(rest) || PHONE_RE.test(rest) || new RegExp(URL_RE.source, 'i').test(rest) || LOCATION_RE.test(rest) || isSectionHeading(rest)) return text
+  return `${text} ${rest}`
 }
 
 const LOCATION_RE = /^[\p{L}\s.'-]+(?:,\s*[\p{L}\s.'-]+)+$/u
