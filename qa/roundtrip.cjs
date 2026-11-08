@@ -124,8 +124,11 @@ const pdfImages = (file) => execFileSync('pdfimages', ['-list', file]).toString(
       const changed = diff(withoutPhoto(src), withoutPhoto(down))
       check(id, 'downloaded JSON = uploaded JSON, apart from the photo', changed.length === 0, changed.slice(0, 4).join(' | '))
 
-      const text = squash(pdfText(f('direct.pdf')))
-      const missing = ['Łucja Øster-Ñúñez', 'lucja.oster@example.com', 'Dvořák', 'Straße', '“calidad”', 'ř'].filter((s) => !text.includes(squash(s)))
+      // Without hyphens: pdftotext drops the one a line ends with when it joins the next, and a large
+      // name may wrap at "Øster-" (spec 081).
+      const unhyphen = (value) => squash(value).replace(/-/g, '')
+      const text = unhyphen(pdfText(f('direct.pdf')))
+      const missing = ['Łucja Øster-Ñúñez', 'lucja.oster@example.com', 'Dvořák', 'Straße', '“calidad”', 'ř'].filter((s) => !text.includes(unhyphen(s)))
       check(id, 'direct PDF has the name, e-mail and accents as text', missing.length === 0, missing.join(', '))
       check(id, 'direct PDF and print have the same pages', pdfPages(f('direct.pdf')) === pdfPages(f('print.pdf')), `${pdfPages(f('direct.pdf'))}/${pdfPages(f('print.pdf'))}`)
       const images = pdfImages(f('direct.pdf'))

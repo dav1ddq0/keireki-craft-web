@@ -580,3 +580,36 @@ describe('headings as bold as the text (spec 040)', () => {
     expect(analyze({ ...page(), lines }).unclassified.find((b) => b.heading === 'Premios')).toBeUndefined()
   })
 })
+
+describe('a large name on two lines, and a title broken at its hyphen (spec 081)', () => {
+  const lines = (name: Array<Partial<ExtractedLine> & { text: string }>) =>
+    doc([
+      ...name,
+      { text: 'Ingeniera de datos', fontSize: 16, y: 690 },
+      { text: 'lucja.oster@example.com', y: 670 },
+      { text: 'EXPERIENCIA', fontSize: 15, y: 640 },
+      { text: 'Desarrolladora Full-', fontSize: 11, y: 620 },
+      { text: 'Stack', fontSize: 11, y: 607 },
+      { text: 'sep 2019 – feb 2022', y: 594 },
+      { text: 'Estudio Nube · Valencia', y: 580 },
+      { text: 'FORMACIÓN', fontSize: 15, y: 550 },
+      { text: 'Grado en Informática', fontSize: 11, y: 530 },
+      { text: 'sep 2014 – jun 2018', y: 517 },
+    ])
+
+  it('joins the second line of the name, without a space after a hyphen, and keeps the headline', () => {
+    const draft = analyze(lines([{ text: 'Łucja Øster-', fontSize: 30, y: 745 }, { text: 'Ñúñez', fontSize: 30, y: 714 }]))
+    expect(draft.fullName.value).toBe('Łucja Øster-Ñúñez')
+    expect(draft.headline.value).toBe('Ingeniera de datos')
+  })
+
+  it('joins words a line apart with a space, and leaves a line in other type alone', () => {
+    expect(analyze(lines([{ text: 'Carol', fontSize: 30, y: 745 }, { text: 'Ronals Vega', fontSize: 30, y: 714 }])).fullName.value).toBe('Carol Ronals Vega')
+    expect(analyze(lines([{ text: 'Carol Ronals', fontSize: 30, y: 745 }, { text: 'Freelance', fontSize: 20, y: 714 }])).fullName.value).toBe('Carol Ronals')
+  })
+
+  it('reads "Stack" under "Full-" as the end of the title, not as a section of skills', () => {
+    const draft = analyze(lines([{ text: 'Łucja Øster-Ñúñez', fontSize: 30, y: 745 }]))
+    expect(draft.sections.map((section) => section.kind)).toEqual(['experience', 'education'])
+  })
+})

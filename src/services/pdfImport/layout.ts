@@ -152,8 +152,12 @@ function inBands(topToBottom: ExtractedLine[]): ExtractedLine[] {
 
 /** `topToBottom` read column by column, or null when it has no two columns of flowing text. */
 function byColumns(topToBottom: ExtractedLine[]): ExtractedLine[] | null {
-  const gutters = findGutters(topToBottom)
-  if (!gutters.length) return null
+  const found = findGutters(topToBottom)
+  if (!found.length) return null
+  // The strip between the two halves of entries set two by two is not a gutter between columns.
+  const pairs = pairGutters(topToBottom, found)
+  const gutters = found.filter((gutter) => !pairs.includes(gutter))
+  if (!gutters.length) return pairs.length ? rowByRow(topToBottom, secondOfPairs(topToBottom, pairs, found)) : null
 
   const crosses = (cell: ExtractedLine) => gutters.some((g) => cell.x < g.end && cell.end > g.start)
   const columnOf = (cell: ExtractedLine) => gutters.filter((g) => cell.x >= g.end).length
@@ -174,11 +178,12 @@ function byColumns(topToBottom: ExtractedLine[]): ExtractedLine[] | null {
   const largest = topToBottom.filter((cell) => !crosses(cell)).reduce((best, cell) => (cell.fontSize > best.fontSize ? cell : best))
   const first = target(columnOf(largest))
   const order = [first, ...flowing.filter((index) => index !== first)]
+  const second = secondOfPairs(topToBottom, pairs, found)
 
   const out: ExtractedLine[] = []
   let band = new Map<number, ExtractedLine[]>(order.map((index) => [index, []]))
   const flush = () => {
-    for (const index of order) out.push(...band.get(index)!)
+    for (const index of order) out.push(...rowByRow(band.get(index)!, second))
     band = new Map(order.map((index) => [index, []]))
   }
   for (const cell of topToBottom) {
@@ -191,8 +196,75 @@ function byColumns(topToBottom: ExtractedLine[]): ExtractedLine[] | null {
   return out
 }
 
+/**
+ * Entries set two by two (spec 081): the second of each pair stands in a column with no headings of
+ * its own, about as wide as the one on its left, which has them (or which has none either, on a page
+ * the section runs on to). The strip between them is the gutter of a pair, not of two columns.
+ * An entry's title that wraps can leave a word that looks like a heading ("Stack"); set smaller than
+ * the neighbour's headings, it is not one.
+ */
+function pairGutters(topToBottom: ExtractedLine[], gutters: Gutter[]): Gutter[] {
+  const crosses = (cell: ExtractedLine) => gutters.some((g) => cell.x < g.end && cell.end > g.start)
+  const columnOf = (cell: ExtractedLine) => gutters.filter((g) => cell.x >= g.end).length
+  const columns = Array.from({ length: gutters.length + 1 }, (_, index) => topToBottom.filter((cell) => !crosses(cell) && columnOf(cell) === index))
+  const flowing = columns.map((column) => flows(column))
+  // A heading counts where it starts, even across the strip: it may be as wide as both entries.
+  const headed = columns.map((_, index) => topToBottom.filter((cell) => columnOf(cell) === index && isSectionHeading(cell.text)))
+  const span = (cells: ExtractedLine[]) => Math.max(...cells.map((c) => c.end)) - Math.min(...cells.map((c) => c.x))
+
+  const pairs: Gutter[] = []
+  for (let index = 1; index < columns.length; index++) {
+    const host = index - 1
+    if (!flowing[host] || !flowing[index] || pairs.includes(gutters[host - 1]!)) continue
+    if (!headed[host]!.length && flowing.filter(Boolean).length > 2) continue
+    const smallest = headed[host]!.length ? Math.min(...headed[host]!.map((cell) => cell.fontSize)) : 0
+    if (headed[index]!.some((cell) => cell.fontSize >= COMPANION_HEADING * smallest)) continue
+    const [a, b] = [span(columns[index]!), span(columns[host]!)]
+    if (Math.min(a, b) >= COMPANION_WIDTH * Math.max(a, b)) pairs.push(gutters[host]!)
+  }
+  return pairs
+}
+
+/** The cells between a pair's gutter and the next gutter on the page: the second entry of each pair. */
+function secondOfPairs(topToBottom: ExtractedLine[], pairs: Gutter[], gutters: Gutter[]): Set<ExtractedLine> {
+  const inSecond = (cell: ExtractedLine, pair: Gutter) => cell.x >= pair.end && cell.end <= (gutters.find((g) => g.start >= pair.end)?.start ?? Infinity)
+  return new Set(topToBottom.filter((cell) => pairs.some((pair) => inSecond(cell, pair))))
+}
+
+/** A pair's two columns are about as wide: the narrower at least this share of the wider. */
+const COMPANION_WIDTH = 0.6
+
+/** A heading in a pair's second column is set at least this share of the size of its first's. */
+const COMPANION_HEADING = 0.9
+
+/** Rows of pairs are this many type sizes apart, baseline to baseline, more than lines of one entry. */
+const ROW_GAP = 1.8
+
+/**
+ * A column and the second column of its pairs, top to bottom, read row by row: where neither has
+ * text for a while a row ends, and each row is its first column's lines, then its second's.
+ */
+function rowByRow(cells: ExtractedLine[], second: ReadonlySet<ExtractedLine>): ExtractedLine[] {
+  if (!cells.some((cell) => second.has(cell))) return cells
+  const out: ExtractedLine[] = []
+  let row: ExtractedLine[] = []
+  const end = () => {
+    out.push(...row.filter((cell) => !second.has(cell)), ...row.filter((cell) => second.has(cell)))
+    row = []
+  }
+  cells.forEach((cell, i) => {
+    const above = cells[i - 1]
+    if (above && above.y - cell.y > ROW_GAP * Math.max(above.fontSize, cell.fontSize)) end()
+    row.push(cell)
+  })
+  end()
+  return out
+}
+
 /** The vertical strips, inside the text, that no cell but a header crosses. */
-function findGutters(cells: ExtractedLine[]): Array<{ start: number; end: number }> {
+type Gutter = { start: number; end: number }
+
+function findGutters(cells: ExtractedLine[]): Gutter[] {
   const left = Math.min(...cells.map((c) => c.x))
   const right = Math.max(...cells.map((c) => c.end))
   const sizes = cells.map((c) => c.fontSize).sort((a, b) => a - b)
@@ -202,7 +274,7 @@ function findGutters(cells: ExtractedLine[]): Array<{ start: number; end: number
     .sort((a, b) => a.x - b.x)
 
   // The stretches of the page that body text covers, merged; the wide gaps between them are gutters.
-  const gutters: Array<{ start: number; end: number }> = []
+  const gutters: Gutter[] = []
   let covered = body[0]?.end ?? 0
   for (const cell of body) {
     if (cell.x - covered >= GUTTER_MIN) gutters.push({ start: covered, end: cell.x })

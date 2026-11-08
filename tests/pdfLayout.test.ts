@@ -196,3 +196,49 @@ describe('joinFragments next to letter-spaced text (spec 040)', () => {
     expect(joinFragments([f('Ł', 0), f('ucja', 6.4)])).toBe('Ł ucja')
   })
 })
+
+describe('readingOrder, entries two by two (spec 081)', () => {
+  /** An entry of `lines` lines at x, its title in larger type: rows 14 apart, entries 30 apart. */
+  const entry = (name: string, x: number, top: number, lines: number) => [
+    cell(`${name} title`, x, top, { end: x + 110, fontSize: 11 }),
+    ...Array.from({ length: lines }, (_, i) => cell(`${name} ${i}`, x, top - 14 * (i + 1), { end: x + 100 })),
+  ]
+  /** A side column at x 30–150 with two sections; the main one at 200–340 with entries in pairs beside 370–510. */
+  const page = () => [
+    cell('COMPETENCIAS', 30, 760, { end: 120, fontSize: 15 }),
+    ...Array.from({ length: 6 }, (_, i) => cell(`side ${i}`, 30, 742 - i * 14, { end: 150 })),
+    cell('IDIOMAS', 30, 640, { end: 100, fontSize: 15 }),
+    ...Array.from({ length: 3 }, (_, i) => cell(`lang ${i}`, 30, 622 - i * 14, { end: 150 })),
+    cell('EXPERIENCIA', 200, 760, { end: 400, fontSize: 15 }),
+    ...entry('a', 200, 740, 4),
+    ...entry('b', 370, 740, 2),
+    ...entry('c', 200, 640, 2),
+    ...entry('d', 370, 640, 3),
+    cell('FORMACIÓN', 200, 560, { end: 330, fontSize: 15 }),
+    ...entry('e', 200, 540, 2),
+  ]
+  const run = (name: string, lines: number) => [`${name} title`, ...Array.from({ length: lines }, (_, i) => `${name} ${i}`)]
+
+  it('reads each row of entries whole, the left one first, inside its own column', () => {
+    const order = texts(readingOrder(page()))
+    const main = order.slice(order.indexOf('EXPERIENCIA'))
+    expect(main).toEqual(['EXPERIENCIA', ...run('a', 4), ...run('b', 2), ...run('c', 2), ...run('d', 3), 'FORMACIÓN', ...run('e', 2)])
+    expect(order.slice(0, order.indexOf('EXPERIENCIA'))[0]).toBe('COMPETENCIAS')
+  })
+
+  it('does so on a page the section runs on to, with no headings at all', () => {
+    const rest = [...entry('a', 200, 760, 4), ...entry('b', 370, 760, 2), ...entry('c', 200, 660, 2), ...entry('d', 370, 660, 3)]
+    expect(texts(readingOrder(rest))).toEqual([...run('a', 4), ...run('b', 2), ...run('c', 2), ...run('d', 3)])
+  })
+
+  it('takes a column of labels for no pair: it is much narrower than the text beside it', () => {
+    const rows = [
+      ...['PERFIL', 'EXPERIENCIA', 'FORMACIÓN'].flatMap((heading, s) => [
+        cell(heading, 30, 760 - s * 60, { end: 90 }),
+        cell('2020 – 2022', 30, 746 - s * 60, { end: 90 }),
+        ...Array.from({ length: 3 }, (_, i) => cell(`text ${s}.${i}`, 170, 760 - s * 60 - i * 14, { end: 520 })),
+      ]),
+    ]
+    expect(texts(readingOrder(rows)).slice(0, 4)).toEqual(['PERFIL', 'text 0.0', '2020 – 2022', 'text 0.1'])
+  })
+})

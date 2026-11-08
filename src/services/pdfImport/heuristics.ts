@@ -57,7 +57,7 @@ export interface ImportDraft {
  * reaches the store — the review screen (stage 3) decides what is applied.
  */
 export function analyze(doc: ExtractedDocument): ImportDraft {
-  const { lines } = doc
+  const lines = joinNameLines(doc.lines)
   // The name is found first: it is typically the largest, boldest, shortest line
   // on the page, which is exactly the shape of a section header. Excluding it up
   // front stops it from being read as one.
@@ -103,6 +103,24 @@ export function analyze(doc: ExtractedDocument): ImportDraft {
 
 /* ---- headings ---------------------------------------------------------- */
 
+/**
+ * The end of a word the line above broke at its hyphen: "Stack" under "Desarrolladora Full-", in its
+ * type, where it starts (spec 081). A keyword there is part of a title, not a section's heading.
+ */
+function continuesHyphenated(lines: ExtractedLine[], index: number): boolean {
+  const line = lines[index]!
+  const above = lines[index - 1]
+  return (
+    !!above &&
+    above.page === line.page &&
+    /\p{L}-$/u.test(above.text.trim()) &&
+    Math.abs(above.x - line.x) <= 2 &&
+    Math.abs(above.fontSize - line.fontSize) <= 0.5 &&
+    above.y - line.y > 0 &&
+    above.y - line.y <= 1.6 * line.fontSize
+  )
+}
+
 interface HeadingHit {
   index: number
   kind: SectionKind | null
@@ -134,7 +152,7 @@ function findHeadings(lines: ExtractedLine[], skipIndex: number): HeadingHit[] {
     if (!normalized || normalized.length > 40) return
 
     const keyword = SECTION_KEYWORDS.find((entry) => entry.words.includes(normalized))
-    if (keyword) {
+    if (keyword && !continuesHyphenated(lines, index)) {
       hits.push({ index, kind: keyword.kind, text: line.text.trim() })
       return
     }
@@ -305,6 +323,33 @@ function nameCandidates(lines: ExtractedLine[]): number[] {
       return words.length >= 2 && words.length <= 5 && line.text.length <= 60
     })
     .map(({ index }) => index)
+}
+
+/** The second line of a name is at most this many type sizes below the first, baseline to baseline. */
+const NAME_LINE_STEP = 1.6
+
+/**
+ * A name set large enough to wrap reaches the extraction as two lines ("Łucja Øster-" over "Ñúñez",
+ * spec 081). The largest type on page 1 on two lines in a row, the second right under the first and
+ * aligned with it, short enough for a name, is one name: joined here, before it is looked for. A line
+ * that ends in a hyphen joins the next without a space.
+ */
+function joinNameLines(lines: ExtractedLine[]): ExtractedLine[] {
+  const firstPage = lines.filter((line) => line.page === 1)
+  if (!firstPage.length) return lines
+  const largest = Math.max(...firstPage.map((line) => line.fontSize))
+  const index = lines.findIndex((line) => line.page === 1 && line.fontSize === largest)
+  const top = lines[index]
+  const next = lines[index + 1]
+  if (!top || !next || next.page !== 1 || Math.abs(next.fontSize - largest) > 0.5) return lines
+  const step = top.y - next.y
+  if (step <= 0 || step > NAME_LINE_STEP * largest) return lines
+  const centre = (line: ExtractedLine) => (line.x + line.end) / 2
+  if (Math.abs(next.x - top.x) > 2 && Math.abs(centre(next) - centre(top)) > 2) return lines
+  const text = top.text.endsWith('-') ? `${top.text}${next.text}` : `${top.text} ${next.text}`
+  if (text.split(/\s+/).length > 5 || text.length > 60 || EMAIL_RE.test(text)) return lines
+  const joined = { ...top, text, x: Math.min(top.x, next.x), end: Math.max(top.end, next.end) }
+  return [...lines.slice(0, index), joined, ...lines.slice(index + 2)]
 }
 
 /** The name is usually the largest text on page 1 (spec §7.2). */
