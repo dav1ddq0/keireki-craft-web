@@ -24,14 +24,15 @@ As Amber (071): first the fonts join the bundled ones the way Raleway did, then 
    `customFont`, `multiPage`, `skillLevels`; defaults accent mint (`#8be0d4`, sampled from the
    reference), Montserrat; tags two-column, photo, bold; its own palette.
 2. `src/templates/retro/Template.vue`:
-   - The frame: solid boxes behind the sheet, the accent above and ink at the bottom, and a thin ink
-     line around the white sheet; repeated on every page as Amber's side band is (pseudo-elements on
-     the root, set again on paged.js's `[data-split-from]` fragments).
-   - Header: greeting (`GREETINGS` per CV language, in the template), the name in Roboto Slab 700,
+   - The frame: one `::before` on the root is the white sheet, its right border the side band, and
+     the frame its solid shadows (a thin ink line, the ink lower part, the accent all round): the
+     direct PDF paints in document order and ignores `z-index`, so an `::after` would cover the
+     text. Set again on paged.js's `[data-split-from]` fragments, so it repeats on every page.
+   - Header: greeting (`greeting.ts`, per CV language), the name in Roboto Slab 700,
      the headline in a black tab; the photo in an ink ring with the triangle as inline SVG; the
      zig-zag as inline SVG; contact row with `contactIcons.ts`.
-   - Summary band across the page; then `<aside data-side>` with skills (one tab per group: the
-     group's category, else the section's title) and languages; main: experience, education (two
+   - Summary band across the page; then `<aside data-side>` with skills (a tab with the section's
+     title, each group's name a little smaller than its skills) and languages; main: experience, education (two
      columns, dotted divider), custom sections. `SIDE_KINDS = new Set(['skills', 'languages'])`.
    - Headings use `'Roboto Slab'` fixed; everything else `var(--cv-font)`.
    - Text on the accent uses `onAccent`; the pale band and side column are the accent mixed with
@@ -39,8 +40,8 @@ As Amber (071): first the fonts join the bundled ones the way Raleway did, then 
 3. `src/templates/retro/thumbnail.ts`: an SVG thumbnail in the style of the others.
 4. `templates.retro.description` in the nine dictionaries.
 5. `tests/retroTemplate.test.ts`: columns, greeting per language and none without a name, photo / no
-   photo (no ring, no triangle), empty headline (no tab), tabs per skill group (category or section
-   title), levels as text.
+   photo (no ring, no triangle), empty headline (no tab), the skills' tab and group names, levels
+   as dots.
 6. Template lists that name every id: `tests/templateRender.test.ts`, `tests/longWords.test.ts`,
    `qa/e2e/perf.cjs`, `qa/e2e/fidelity.cjs`, `qa/e2e/flows.cjs`, and the `qa:pdf` / `qa:roundtrip`
    lists if they name ids.

@@ -304,6 +304,10 @@ const eu: typeof es = {
       description:
         'Alboko zutabe iluna zure argazkiarekin, kontaktuarekin, prestakuntzarekin eta hizkuntzekin, eta azentu beroko denbora-lerroa. Abizena azentu-kolorean nabarmentzen da.',
     },
+    retro: {
+      description:
+        'Kolorezko markoa duen orrialde retroa: agurra eta izen handia serif lodian, titularra fitxa beltz batean eta argazkia eraztun batean. Alboko zutabe argia, gaitasunak eta hizkuntzak fitxen azpian.',
+    },
     cobalt: {
       description:
         'Koloretako goiburua argazki biribilarekin, alboko barra argia kontakturako, gaitasunetarako eta hizkuntzetarako, eta ibilbidea eskuinean.',
@@ -372,6 +376,13 @@ const eu: typeof es = {
       '7b5ea7': 'Purpura',
       '558236': 'Goroldioa',
       '8a8f98': 'Grisa',
+      '8be0d4': 'Menda',
+      'f6c85f': 'Ziapea',
+      'f4a6a6': 'Izokina',
+      'a7c7e7': 'Zeru-urdina',
+      'c3b1e1': 'Izpilikua',
+      'b5d99c': 'Salbia',
+      'ffb17a': 'Abrikota',
     },
     cvLanguage: 'CVaren hizkuntza',
     cvLanguageHint: 'Dokumentuko datak eta atalen izenburuak. Ez du aplikazioaren hizkuntza aldatzen.',

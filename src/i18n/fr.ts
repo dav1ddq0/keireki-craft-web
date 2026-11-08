@@ -304,6 +304,10 @@ const fr: typeof es = {
       description:
         'Une colonne latérale sombre avec votre photo, le contact, la formation et les langues, et une frise chronologique à l’accent chaleureux. Votre nom de famille ressort dans la couleur d’accent.',
     },
+    retro: {
+      description:
+        'Une page encadrée de couleur à l’allure rétro : une salutation et un grand nom en slab serif, le titre sur un onglet noir et la photo dans un anneau. Une colonne latérale claire avec compétences et langues sous des onglets.',
+    },
     cobalt: {
       description:
         'Bandeau d’en-tête coloré avec une photo ronde, une colonne latérale pâle pour le contact, les compétences et les langues, et le parcours à droite.',
@@ -372,6 +376,13 @@ const fr: typeof es = {
       '7b5ea7': 'Pourpre',
       '558236': 'Mousse',
       '8a8f98': 'Gris',
+      '8be0d4': 'Menthe',
+      'f6c85f': 'Moutarde',
+      'f4a6a6': 'Saumon',
+      'a7c7e7': 'Bleu ciel',
+      'c3b1e1': 'Lavande',
+      'b5d99c': 'Sauge',
+      'ffb17a': 'Abricot',
     },
     cvLanguage: 'Langue du CV',
     cvLanguageHint: 'Les dates et les titres de section du document. Ne change pas la langue de l’application.',

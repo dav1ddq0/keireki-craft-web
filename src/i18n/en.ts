@@ -304,6 +304,10 @@ const en: typeof es = {
       description:
         "A dark side column with your photo, contact, education and languages, and a timeline with a warm accent. Your last name stands out in the accent colour.",
     },
+    retro: {
+      description:
+        'A page framed in colour with a retro feel: a greeting and a large slab-serif name, the headline on a black tab and the photo in a ring. A pale side column with skills and languages under tabs.',
+    },
     cobalt: {
       description:
         'Colored header band with a round photo, a pale sidebar for contact, skills and languages, and the career on the right.',
@@ -372,6 +376,13 @@ const en: typeof es = {
       '7b5ea7': 'Purple',
       '558236': 'Moss',
       '8a8f98': 'Grey',
+      '8be0d4': 'Mint',
+      'f6c85f': 'Mustard',
+      'f4a6a6': 'Salmon',
+      'a7c7e7': 'Sky blue',
+      'c3b1e1': 'Lavender',
+      'b5d99c': 'Sage',
+      'ffb17a': 'Apricot',
     },
     cvLanguage: 'CV language',
     cvLanguageHint: 'Dates and section titles in the document. Does not change the app language.',

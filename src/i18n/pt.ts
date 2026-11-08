@@ -305,6 +305,10 @@ const pt: typeof es = {
       description:
         'Uma coluna lateral escura com a sua fotografia, o contacto, a formação e os idiomas, e uma linha do tempo com um acento quente. O apelido destaca-se na cor de acento.',
     },
+    retro: {
+      description:
+        'Página emoldurada a cor com ar retro: uma saudação e um nome grande em serifa grossa, o título num separador preto e a foto num aro. Coluna lateral clara com competências e idiomas sob separadores.',
+    },
     cobalt: {
       description:
         'Faixa de cabeçalho colorida com uma fotografia redonda, uma coluna lateral clara para o contacto, as competências e os idiomas, e o percurso à direita.',
@@ -373,6 +377,13 @@ const pt: typeof es = {
       '7b5ea7': 'Púrpura',
       '558236': 'Musgo',
       '8a8f98': 'Cinza',
+      '8be0d4': 'Menta',
+      'f6c85f': 'Mostarda',
+      'f4a6a6': 'Salmão',
+      'a7c7e7': 'Azul-céu',
+      'c3b1e1': 'Lavanda',
+      'b5d99c': 'Sálvia',
+      'ffb17a': 'Damasco',
     },
     cvLanguage: 'Idioma do CV',
     cvLanguageHint: 'Datas e títulos de secção no documento. Não muda o idioma da aplicação.',

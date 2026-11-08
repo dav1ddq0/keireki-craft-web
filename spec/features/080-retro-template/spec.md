@@ -11,7 +11,8 @@ black tabs). The idea is redrawn in CSS; the proportions, details and code are o
   ink, with a thin ink line around the white sheet. On every page when paginated.
 - **Header**: a short greeting above the name (see decisions), the name in a heavy slab serif, very
   large; the headline in a black tab under it. The photo round, in a thick ink ring, at the top
-  right, with an ink triangle pointing at it from the frame. A small zig-zag mark at the top edge.
+  right, rising a little over the sheet's top edge, with an ink triangle half its height pointing
+  at it from the page's edge, its tip short of the ring. A small zig-zag mark at the top edge.
   Without a photo, no empty ring and no triangle; the name takes the width.
 - **Contact** in one row under the header, right-aligned, each with its icon (shared
   `contactIcons.ts`), over a thin rule with a small notch under the summary title.
@@ -19,10 +20,11 @@ black tabs). The idea is redrawn in CSS; the proportions, details and code are o
   right-aligned, then a vertical ink bar, then the text.
 - **Main column**: experience, education and the custom sections, in the CV's order. Entries begin
   with a chevron; the dates on the right in bold. **Education in two columns** with a dotted divider.
-- **Side column**, in a pale accent, on the right: **each skill group is a black tab with its
-  category** ("Skills", "Software" in the original), its skills as a bullet list (the level as text,
-  e.g. "(Avanzado)", where `skillLevels` gives one); then **languages**, as a tab with "Idioma
-  (Nivel)" bullets.
+- **Side column**, in a pale accent, on the right: the **skills under a black tab** with the
+  section's title, each group's name above its bullets, a little smaller than the skills (as in
+  Amber: a PDF import finds the skills by the section's title and tells a group from a skill by its
+  size; a tab per group, as in the original, would leave the skills without a title); the level as
+  dots where `skillLevels` gives one. Then **languages**, as a tab with "Idioma (Nivel)" bullets.
 - **Section titles** in the slab serif, large, in ink.
 - Supports `photo`, `sidebar`, `accentColor`, `customFont`, `multiPage`, `skillLevels`.
 
@@ -51,8 +53,8 @@ has a border but no tabs or band; Amber and Cobalt have side columns but no fram
       and languages in the side column, in the order the user set.
 - [ ] With a photo it shows in the ring with the triangle; without one, no empty ring or triangle.
       With an empty name or headline, nothing is left behind (no empty black tab).
-- [ ] Each skill group is a tab with its category; without a category, the tab reads the section's
-      title. Levels show as text where given, the name alone otherwise.
+- [ ] The skills hang under a tab with the section's title, each group named above its skills, a
+      little smaller. Levels show as dots where given, the name alone otherwise.
 - [ ] The accent picker and the font select apply; with a dark accent the frame and band stay
       readable (text on the accent uses the readable ink).
 - [ ] The frame is on every page; the side column reaches the foot of every page; if it cannot fit
@@ -77,6 +79,7 @@ has a border but no tabs or band; Amber and Cobalt have side columns but no fram
 
 ## Out of scope
 
-- The original's percentages next to software ("(100%)"): levels are the model's words, not numbers.
+- The original's percentages next to software ("(100%)"): levels are the model's 1–5, drawn as dots.
+- A tab per skill group: the PDF import would not find the skills (see above).
 - Two phone numbers or a second e-mail: the model has one of each.
 - Android: its templates are its own.

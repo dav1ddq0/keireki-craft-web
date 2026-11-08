@@ -304,6 +304,10 @@ const it: typeof es = {
       description:
         'Una colonna laterale scura con la Sua foto, i contatti, la formazione e le lingue, e una linea del tempo con un accento caldo. Il cognome risalta nel colore d’accento.',
     },
+    retro: {
+      description:
+        'Pagina incorniciata a colori dall’aria retrò: un saluto e un grande nome in slab serif, il titolo su una linguetta nera e la foto in un anello. Colonna laterale chiara con competenze e lingue sotto linguette.',
+    },
     cobalt: {
       description:
         'Fascia d’intestazione colorata con una foto rotonda, una colonna laterale chiara per contatti, competenze e lingue, e il percorso a destra.',
@@ -372,6 +376,13 @@ const it: typeof es = {
       '7b5ea7': 'Porpora',
       '558236': 'Muschio',
       '8a8f98': 'Grigio',
+      '8be0d4': 'Menta',
+      'f6c85f': 'Senape',
+      'f4a6a6': 'Salmone',
+      'a7c7e7': 'Celeste',
+      'c3b1e1': 'Lavanda',
+      'b5d99c': 'Salvia',
+      'ffb17a': 'Albicocca',
     },
     cvLanguage: 'Lingua del CV',
     cvLanguageHint: 'Date e titoli delle sezioni nel documento. Non cambia la lingua dell’app.',

@@ -304,6 +304,10 @@ const de: typeof es = {
       description:
         'Eine dunkle Seitenspalte mit Ihrem Foto, Kontakt, Ausbildung und Sprachen, dazu eine Zeitleiste mit warmem Akzent. Ihr Nachname hebt sich in der Akzentfarbe ab.',
     },
+    retro: {
+      description:
+        'Eine farbig gerahmte Seite im Retro-Stil: ein Gruß und ein großer Name in Slab-Serif, die Überschrift auf einem schwarzen Reiter und das Foto in einem Ring. Eine helle Seitenspalte mit Kenntnissen und Sprachen unter Reitern.',
+    },
     cobalt: {
       description:
         'Farbiges Kopfband mit rundem Foto, eine helle Seitenspalte für Kontakt, Kenntnisse und Sprachen, der Werdegang rechts.',
@@ -372,6 +376,13 @@ const de: typeof es = {
       '7b5ea7': 'Purpur',
       '558236': 'Moos',
       '8a8f98': 'Grau',
+      '8be0d4': 'Mint',
+      'f6c85f': 'Senf',
+      'f4a6a6': 'Lachs',
+      'a7c7e7': 'Himmelblau',
+      'c3b1e1': 'Lavendel',
+      'b5d99c': 'Salbei',
+      'ffb17a': 'Aprikose',
     },
     cvLanguage: 'Sprache des Lebenslaufs',
     cvLanguageHint: 'Datumsangaben und Abschnittstitel im Dokument. Ändert nicht die Sprache der App.',

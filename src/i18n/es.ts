@@ -305,6 +305,10 @@ export default {
       description:
         "Columna lateral oscura con tu foto, el contacto, la formación y los idiomas, y una línea de tiempo con acento cálido. El último apellido destaca en el color de acento.",
     },
+    retro: {
+      description:
+        'Página enmarcada en color con aire retro: saludo y nombre grande en serif gruesa, el titular en una pestaña negra y la foto en un aro. Columna lateral clara con competencias e idiomas bajo pestañas.',
+    },
     cobalt: {
       description:
         'Cabecera de color con foto redonda, barra lateral pálida para contacto, competencias e idiomas, y la trayectoria a la derecha.',
@@ -373,6 +377,13 @@ export default {
       '7b5ea7': 'Púrpura',
       '558236': 'Musgo',
       '8a8f98': 'Gris',
+      '8be0d4': 'Menta',
+      'f6c85f': 'Mostaza',
+      'f4a6a6': 'Salmón',
+      'a7c7e7': 'Celeste',
+      'c3b1e1': 'Lavanda',
+      'b5d99c': 'Salvia',
+      'ffb17a': 'Albaricoque',
     },
     cvLanguage: 'Idioma del CV',
     cvLanguageHint: 'Fechas y títulos de sección del documento. No cambia el idioma de la aplicación.',

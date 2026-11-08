@@ -304,6 +304,10 @@ const ca: typeof es = {
       description:
         'Columna lateral fosca amb la vostra foto, el contacte, la formació i els idiomes, i una línia de temps amb un accent càlid. El cognom destaca en el color d’accent.',
     },
+    retro: {
+      description:
+        'Pàgina emmarcada en color amb aire retro: salutació i nom gran en serif gruixuda, el titular en una pestanya negra i la foto en un anell. Columna lateral clara amb competències i idiomes sota pestanyes.',
+    },
     cobalt: {
       description:
         'Capçalera de color amb foto rodona, barra lateral pàl·lida per al contacte, les competències i els idiomes, i la trajectòria a la dreta.',
@@ -372,6 +376,13 @@ const ca: typeof es = {
       '7b5ea7': 'Porpra',
       '558236': 'Molsa',
       '8a8f98': 'Gris',
+      '8be0d4': 'Menta',
+      'f6c85f': 'Mostassa',
+      'f4a6a6': 'Salmó',
+      'a7c7e7': 'Blau cel',
+      'c3b1e1': 'Lavanda',
+      'b5d99c': 'Sàlvia',
+      'ffb17a': 'Albercoc',
     },
     cvLanguage: 'Idioma del CV',
     cvLanguageHint: 'Dates i títols de secció del document. No canvia l’idioma de l’aplicació.',
