@@ -53,6 +53,12 @@ on the code before it, and dropping the row limit or the "right of the heading" 
 summary and links now exact, task 1 showed 38 link failures and 4 summary ones, all gone), `qa:e2e`
 231/231.
 
+The review found two things, fixed after task 5: a summary line that reads like a place ("Datos,
+diseño y producto."), close above the e-mail, was taken for the place and so left out of the summary;
+the place is now looked for below the contact details first. And only text above a heading, on its
+row, moves after it: a line lower than the heading but read before it is another column's. A test for
+each fails on the code before; 1204 tests, `qa:roundtrip` 608/608.
+
 ## Out of scope
 
 - How the review screen shows a detected link or the summary: unchanged.

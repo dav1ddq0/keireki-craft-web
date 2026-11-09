@@ -256,8 +256,10 @@ function lineSpacing(lines: ExtractedLine[]): number {
 /**
  * Text set beside a heading, on its row, reads after it: Retro's tab puts the summary right of
  * "Resumen" and a little higher, so in reading order it comes first (spec 084). A line just before a
- * heading, on its page, starting right of the heading's end and with its baseline within the
- * heading's type size of the heading's, moves to just after it; the headings' indices follow.
+ * heading, on its page, starting right of the heading's end and with its baseline at most the
+ * heading's type size above the heading's, moves to just after it; the headings' indices follow.
+ * Text lower than the heading reads after it already; one before it in reading order is another
+ * column's (spec 084 review).
  */
 function withRowAfterHeading(lines: ExtractedLine[], headings: HeadingHit[], skipIndex: number): { lines: ExtractedLine[]; headings: HeadingHit[] } {
   const ordered = [...lines]
@@ -272,7 +274,8 @@ function withRowAfterHeading(lines: ExtractedLine[], headings: HeadingHit[], ski
         !moved.some((other) => other.index === index) &&
         before.page === line.page &&
         before.x >= line.end &&
-        Math.abs(before.y - line.y) <= line.fontSize
+        before.y >= line.y &&
+        before.y - line.y <= line.fontSize
       )
     }
     while (besideAt(heading.index - 1)) {
@@ -294,10 +297,15 @@ function sliceSections(lines: ExtractedLine[], headings: HeadingHit[]): Detected
   return sections
 }
 
-/** The lines within a few of the e-mail or phone line: a contact block lists the place beside them. */
+/**
+ * The lines within a few of the e-mail or phone line: a contact block lists the place beside them. Those
+ * below the first come first: a card lists the place after them, and the lines above may be the end of
+ * a summary that reads like a place ("Datos, diseño y producto."), as in Freelance (spec 084 review).
+ */
 function nearContact(lines: ExtractedLine[], email: string, phone: string): ExtractedLine[] {
   const at = lines.flatMap((line, index) => ((email && line.text.includes(email)) || (phone && line.text.includes(phone)) ? [index] : []))
-  return lines.filter((_, index) => at.some((contact) => Math.abs(contact - index) <= CONTACT_REACH))
+  const near = lines.flatMap((line, index) => (at.some((contact) => Math.abs(contact - index) <= CONTACT_REACH) ? [{ line, index }] : []))
+  return [...near.filter(({ index }) => index > at[0]!), ...near.filter(({ index }) => index <= at[0]!)].map(({ line }) => line)
 }
 
 const CONTACT_REACH = 3

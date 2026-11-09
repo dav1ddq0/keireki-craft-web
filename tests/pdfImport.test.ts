@@ -441,6 +441,19 @@ describe('the contact details under the summary (spec 084)', () => {
     expect(summary('Analista de sistemas.', 'ada@example.com · github.com/ada')).toBe('Analista de sistemas.')
   })
 
+  it('keeps a summary line that reads like a place, and leaves out the place of the card under it', () => {
+    const draft = analyze(
+      doc([
+        { text: 'Ada Lovelace', fontSize: 22 },
+        { text: 'Resumen', fontSize: 15 },
+        ...['Analista de sistemas con oficio.', 'Datos, diseño y producto.', 'ada@example.com', '+34 600 123 456', 'Valencia, España'].map((text) => ({ text })),
+        { text: 'Competencias', fontSize: 15 },
+      ]),
+    )
+    expect(draft.location.value).toBe('Valencia, España')
+    expect(assembleCV(draft).summary).toBe('Analista de sistemas con oficio. Datos, diseño y producto.')
+  })
+
   it('keeps a sentence that names one of them', () => {
     expect(summary('Analista de sistemas.', 'Mi obra está en github.com/ada, escríbeme a ada@example.com.', 'github.com/ada')).toBe(
       'Analista de sistemas. Mi obra está en github.com/ada, escríbeme a ada@example.com.',
@@ -477,6 +490,12 @@ describe('text beside a heading, on its row (spec 084)', () => {
   it('leaves a line above the heading\'s row where it is', () => {
     // 25 pt above a 21 pt heading: a line of the header, not of the heading's row.
     expect(cv(at('Disponible desde enero.', 680, 190), at('Analista de sistemas.', 660, 190), at('Resumen', 655.2, 63, 21)).summary).toBe(
+      'Analista de sistemas.',
+    )
+  })
+
+  it('leaves a line lower than the heading but read before it, another column\'s, where it is', () => {
+    expect(cv(at('Disponible desde enero.', 650, 190), at('Resumen', 655.2, 63, 21), at('Analista de sistemas.', 640, 63)).summary).toBe(
       'Analista de sistemas.',
     )
   })
