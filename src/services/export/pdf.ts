@@ -276,6 +276,25 @@ export function remeasureAfterCut(overflow: Range | undefined, rendered: Element
   return cut
 }
 
+/**
+ * After paged.js removes what it cut, Chrome can keep the page's earlier fragmentation: a row that
+ * fits stays drawn in the column past the sheet, where nothing prints it (Ledger's sections as
+ * blocks, spec 082). The breaks and the content are already final; laying each page's content out
+ * afresh (hidden, measured, shown) puts every box where it belongs. Exported for its tests.
+ */
+export function relayoutPages(container: HTMLElement): void {
+  for (const area of container.querySelectorAll<HTMLElement>('.pagedjs_page_content')) {
+    const content = area.firstElementChild
+    if (!(content instanceof HTMLElement)) continue
+    const before = content.getAttribute('style')
+    content.style.display = 'none'
+    void area.offsetHeight
+    if (before === null) content.removeAttribute('style')
+    else content.setAttribute('style', before)
+  }
+  void container.offsetHeight
+}
+
 let remeasureRegistered = false
 
 /** Registers `remeasureAfterCut` on paged.js's overflow hook, once for every later run. */
@@ -332,6 +351,7 @@ export async function paginateInto(
     const page = `<div class="cv-page cv-page--paged">${html}</div>`
     // An object entry feeds paged.js raw CSS text instead of a URL to fetch.
     await previewer.preview(page, [{ 'cv-export-app.css': css.app }, { 'cv-export-print.css': css.print }], container)
+    relayoutPages(container)
     return container.querySelector('.pagedjs_page') !== null
   } catch (error) {
     // A failed run leaves its half-built pages behind; printed before the fallback they were blank sheets.
