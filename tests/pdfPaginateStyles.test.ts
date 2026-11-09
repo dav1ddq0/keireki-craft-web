@@ -4,21 +4,38 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 /** What `<head>` held a moment after paged.js added its styles, while it was still at work. */
 let whileWorking: string[] = []
 
+declare global {
+  interface Window {
+    /** Set by a test: a style not paged.js's appears in <head> while paged.js is at work. */
+    __addWhileWorking?: boolean
+  }
+}
+
 /** paged.js that succeeds and leaves, like the real one, a style of its own and one per sheet it was given. */
 vi.mock('pagedjs', () => ({
   Handler: class {},
   registerHandlers: () => {},
   Previewer: class {
+    // Like paged.js's polisher, it lists the styles it inserts.
+    polisher = { inserted: [] as HTMLStyleElement[] }
     async preview(_html: string, sheets: Array<Record<string, string>>, container: HTMLElement) {
       const base = document.createElement('style')
       base.textContent = ':root{--pagedjs-width:8.5in}'
       document.head.appendChild(base)
+      this.polisher.inserted.push(base)
       for (const sheet of sheets) {
         const style = document.createElement('style')
         style.textContent = Object.values(sheet)[0]!
         document.head.appendChild(style)
+        this.polisher.inserted.push(style)
       }
-      // Layout and paging take time: the browser may paint in between.
+      // Layout and paging take time: the browser may paint in between, and the page may add a
+      // style of its own (Vite's dev server puts a template's style in <head> when it loads).
+      if (window.__addWhileWorking) {
+        const own = document.createElement('style')
+        own.textContent = '.template-own{color:red}'
+        document.head.appendChild(own)
+      }
       await new Promise((resolve) => setTimeout(resolve, 0))
       whileWorking = heads()
       container.innerHTML = '<div class="pagedjs_pages"><div class="pagedjs_page"></div></div>'
@@ -78,6 +95,20 @@ describe('where paged.js leaves its styles (spec 041)', () => {
     releasePagination(container)
     expect(tagged()).toBe(0)
     expect(heads()).toHaveLength(1)
+  })
+
+  it('releases only the styles paged.js inserted, not one the page added meanwhile (spec 085)', async () => {
+    window.__addWhileWorking = true
+    try {
+      const container = document.createElement('div')
+      await paginateInto(container, '<p>CV</p>', exportCss())
+      expect(heads()).toContain('.template-own{color:red}')
+      expect(document.head.querySelectorAll(`style[${PAGED_STYLE_ATTR}]`)).toHaveLength(3)
+      releasePagination(container)
+      expect(heads()).toEqual([expect.stringContaining('.editor--rail'), '.template-own{color:red}'])
+    } finally {
+      window.__addWhileWorking = false
+    }
   })
 
   it('does not fail when the sheet cannot be found, and does not move it twice on a second run', async () => {

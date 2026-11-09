@@ -5,6 +5,8 @@ declare module 'pagedjs' {
       stylesheets?: Array<string | Record<string, string>>,
       renderTo?: Element,
     ): Promise<{ total: number; performance: number }>
+    /** Where paged.js keeps the `<style>` elements it puts in `<head>`: one per sheet and its own base, and one more of its own. */
+    polisher: { inserted: HTMLStyleElement[]; styleEl?: HTMLStyleElement }
   }
 
   /** The part of paged.js's page layout a handler's hooks are given (spec 075). */

@@ -8,10 +8,11 @@ const received: string[] = []
 /** paged.js that builds a page and then fails, the way it did inside a `display: none` root. */
 vi.mock('pagedjs', () => ({
   Previewer: class {
+    polisher = { inserted: [] as HTMLStyleElement[] }
     async preview(html: string, _css: unknown, container: HTMLElement) {
       received.push(html)
-      // Like paged.js, leave a style behind in <head> on every run.
-      document.head.appendChild(document.createElement('style'))
+      // Like paged.js, leave a style behind in <head> on every run, listed by its polisher.
+      this.polisher.inserted.push(document.head.appendChild(document.createElement('style')))
       container.innerHTML = '<div class="pagedjs_pages"><div class="pagedjs_page"></div></div>'
       throw new TypeError("Cannot read properties of null (reading 'getBoundingClientRect')")
     }

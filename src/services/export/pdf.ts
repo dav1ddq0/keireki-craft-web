@@ -324,7 +324,7 @@ export async function paginateInto(
   css: ExportCss,
 ): Promise<boolean> {
   releasePagination(container)
-  const before = new Set(document.head.querySelectorAll('style'))
+  let previewer: import('pagedjs').Previewer | undefined
   // paged.js appends a copy of the document's CSS, interface included, after the original. Equal
   // rules then come twice and the later copy wins their ties, so a base rule beat the media query
   // that overrides it and the app re-laid itself out for as long as the pages existed: the rail
@@ -345,7 +345,7 @@ export async function paginateInto(
     const pagedjs = await import('pagedjs')
     registerRemeasure(pagedjs)
     const { Previewer } = pagedjs
-    const previewer = new Previewer()
+    previewer = new Previewer()
     // The `.cv-page` wrapper is what every print.css rule is scoped to (keep entries whole, section
     // page breaks); without it paged.js laid the CV out ignoring all of them (spec 022).
     const page = `<div class="cv-page cv-page--paged">${html}</div>`
@@ -360,7 +360,12 @@ export async function paginateInto(
     return false
   } finally {
     mover.disconnect()
-    const added = [...document.head.querySelectorAll('style')].filter((style) => !before.has(style))
+    // Only the styles paged.js inserted, as its polisher lists them, not every style added meanwhile:
+    // a template's own style, put in <head> while paged.js was at work (Vite's dev server), was taken
+    // for one of them and removed with them; the next export of that template came out unstyled, in
+    // the interface's font, which the direct PDF cannot embed (spec 085).
+    const polisher = previewer?.polisher
+    const added = polisher ? [...polisher.inserted, ...(polisher.styleEl ? [polisher.styleEl] : [])].filter((style) => style.isConnected) : []
     for (const style of added) style.setAttribute(PAGED_STYLE_ATTR, '')
     pagedStyles.set(container, added)
   }
