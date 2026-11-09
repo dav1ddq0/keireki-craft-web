@@ -167,19 +167,22 @@ const languages = computed(() => resolveLanguages(props.data))
   text-decoration: none;
 }
 
+/* Title and content side by side as blocks, not a grid: Chrome does not split a grid inside
+   paged.js's columns, so a long Experience moved whole to page 2 and left page 1 three-quarters
+   empty (spec 082). */
 .section {
-  display: grid;
-  grid-template-columns: 23% 1fr;
-  gap: 0 var(--gap);
+  display: flow-root;
   margin-top: var(--gap);
   padding-top: var(--gap);
   border-top: 1px dashed var(--cv-accent);
 }
 
-/* Beside its content in the section's grid, the title has no "next" to keep with: its
-   break-after: avoid (print.css) spread to the whole section, so no break between sections was
-   allowed and Chrome broke right after the header (spec 075). */
+/* Floated beside its content, the title has no "next" to keep with: its break-after: avoid
+   (print.css) spread to the whole section, so no break between sections was allowed and Chrome
+   broke right after the header (spec 075). */
 .label {
+  float: left;
+  width: 23%;
   break-after: auto;
   page-break-after: auto;
   margin: 0;
@@ -188,6 +191,10 @@ const languages = computed(() => resolveLanguages(props.data))
   text-transform: uppercase;
   letter-spacing: 0.12em;
   color: var(--cv-accent-text);
+}
+
+.content {
+  margin-left: calc(23% + var(--gap));
 }
 
 .summary {
