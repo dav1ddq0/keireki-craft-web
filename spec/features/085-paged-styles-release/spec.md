@@ -1,6 +1,6 @@
 # 085 · A pagination releases only paged.js's styles
 
-**Status:** draft
+**Status:** done
 
 ## What it does
 
@@ -28,13 +28,13 @@ finds why and fixes it.
 
 ## Acceptance criteria
 
-- [ ] `releasePagination` removes the styles paged.js inserted (its polisher's list) and no other:
+- [x] `releasePagination` removes the styles paged.js inserted (its polisher's list) and no other:
       a style added to `<head>` while paged.js works stays (unit test, failing before the fix).
-- [ ] The rest of spec 022 and 041 holds: paged.js's styles tagged and released, the copy of the app
+- [x] The rest of spec 022 and 041 holds: paged.js's styles tagged and released, the copy of the app
       CSS first, the print rules last (the existing tests).
-- [ ] `qa:pdf` under load (four runs at once over classic, cobalt, editorial and facet, 25 minutes)
+- [x] `qa:pdf` under load (four runs at once over classic, cobalt, editorial and facet, 25 minutes)
       shows no "converts" failure; before the fix the same load showed four.
-- [ ] `npm test`, `npm run build`, `qa:pdf`, `qa:e2e` as before.
+- [x] `npm test`, `npm run build`, `qa:pdf`, `qa:e2e` as before.
 
 ## Out of scope
 
