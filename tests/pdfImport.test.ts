@@ -416,6 +416,20 @@ describe('layouts that put an entry together from several cells (spec 040)', () 
   })
 })
 
+describe('links beside the e-mail (spec 084)', () => {
+  const links = (...texts: string[]) => analyze(doc([{ text: 'Ada Lovelace', fontSize: 22 }, ...texts.map((text) => ({ text })), { text: 'EXPERIENCIA', fontSize: 13 }])).links
+
+  it('does not take the halves of an e-mail for two links', () => {
+    expect(links('lucja.oster@example.com')).toEqual([])
+    expect(links('ada.lovelace@mail.example.co.uk', '+34 600 123 456')).toEqual([])
+  })
+
+  it('still finds a link on the e-mail\'s line, and one inside a sentence', () => {
+    expect(links('ada@example.com · github.com/ada')).toEqual([{ label: 'GitHub', url: 'github.com/ada' }])
+    expect(links('Portfolio en https://ada.dev/obra, con ejemplos.')).toEqual([{ label: 'Web', url: 'https://ada.dev/obra' }])
+  })
+})
+
 describe('a headline that wraps in a narrow side column (spec 083)', () => {
   const at = (text: string, y: number, fontSize = 10.9, x = 394) => ({ text, x, y, fontSize, end: x + 160 })
   const headline = (...below: Array<ReturnType<typeof at>>) =>

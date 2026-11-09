@@ -295,12 +295,17 @@ function findPhone(lines: ExtractedLine[]): DetectedField<string> {
   return { value: '', confidence: 'low' }
 }
 
+/**
+ * The web addresses of the CV. A line's e-mails are taken out first: `URL_RE` would find the two
+ * halves of "lucja.oster@example.com" as two addresses (spec 084).
+ */
 function findLinks(lines: ExtractedLine[]): Array<{ label: string; url: string }> {
   const seen = new Set<string>()
   const links: Array<{ label: string; url: string }> = []
+  const emails = new RegExp(EMAIL_RE.source, 'g')
 
   for (const line of lines) {
-    for (const match of line.text.matchAll(URL_RE)) {
+    for (const match of line.text.replace(emails, ' ').matchAll(URL_RE)) {
       const url = match[0].replace(/[.,;)]$/, '')
       if (EMAIL_RE.test(url) || !url.includes('.')) continue
       const key = url.toLowerCase()
