@@ -29,6 +29,12 @@
    - The `.label` rule of spec 075 (`break-after: auto`) stays; its comment is updated (the title is
      no longer a grid item).
    - An absolutely positioned title was also tried; it changed the heights by 10 px, so not that.
+   - Alone, the floats broke spec 075's growing side column: Chrome kept page 1's layout from
+     before paged.js's cut and drew its last row past the sheet. So first, in
+     `src/services/export/pdf.ts`, `relayoutPages(container)`: once paged.js is done, each page's
+     content is hidden and shown once, so Chrome lays it out afresh. The breaks and the content are
+     already final; only where Chrome draws them changes. Unit-tested for leaving each page's
+     inline style as it was.
 
 ## Decisions
 
@@ -36,6 +42,10 @@
   (Ledger's long CV); measuring only the page protects them all. Amber's CSS is not touched.
 - **Fix 3 in Ledger, not in paged.js or print.css.** Only Ledger puts a grid around a section that
   can be long; the review found no other template moving a whole section.
+- **But the stale layout is fixed in `paginateInto`, for every template.** It is Chrome's, not
+  Ledger's; a fresh layout of a final page changes nothing where the layout was not stale. Tried
+  against HEAD: in `qa:pdf` only Ledger changes (long 3 → 2 pages, break 4 → 3, longname 5 → 3),
+  every other template keeps its pages and diffs, `ledger-sidegrow` passes.
 - **Retro's live sheet grows; it is not cut into A4 pages.** The live preview is one sheet for every
   template; drawing page breaks there is the paged view's job.
 
@@ -52,6 +62,7 @@
 ## Files
 
 - `src/services/export/pdfDirect.ts`, `tests/pdfDirect.test.ts`
+- `src/services/export/pdf.ts` and its tests
 - `qa/pdf-compare.cjs`
 - `src/templates/retro/Template.vue`
 - `src/templates/ledger/Template.vue`

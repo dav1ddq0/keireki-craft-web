@@ -38,6 +38,12 @@ CV of two pages. 3 wastes most of the first page, the one a recruiter reads.
    grid, its title beside the content. When Experience does not fit on page 1, Chrome moves the
    whole grid to the next column instead of breaking between entries, and paged.js then cuts before
    it. As a block the same section breaks between entries (tried: page 1 then holds 5 of 6 entries).
+   - **And Chrome keeps a stale layout after the cut.** As blocks, a page that only just fits
+     (spec 075's growing side column, 2 to 7 extra skills) drew its last row («Francés»,
+     «Backend») in the column past the sheet with 45 px still free. paged.js's breaks were right;
+     after it removes what it cut, Chrome reuses the page's old fragmentation. Laying the page's
+     content out afresh (hidden and shown once) puts the row back; a width change or a style on
+     the sections does not.
 
 ## Acceptance criteria
 
@@ -55,6 +61,7 @@ CV of two pages. 3 wastes most of the first page, the one a recruiter reads.
 - [ ] Ledger, the sample CV: unchanged to the eye (section heights equal within 1 px).
 - [ ] Ledger, sample with its experiences ×3 and ×4: Experience starts on page 1 and breaks between
       entries; no entry split; print and direct PDF agree (`qa:pdf`).
+- [ ] Ledger, spec 075's growing side column (0 to 20 extra skills): no text off its page.
 - [ ] No other template changes: `qa:pdf` and `qa:e2e` as before, `npm test`, `npm run build` pass.
 
 ## Out of scope
