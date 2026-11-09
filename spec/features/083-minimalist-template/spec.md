@@ -58,31 +58,53 @@ keep it on the left; Freelance draws cards) and the name set in a light italic.
 ## Acceptance criteria
 
 ### The template
-- [ ] It registers itself and shows in the gallery with its own thumbnail and a description in the
+- [x] It registers itself and shows in the gallery with its own thumbnail and a description in the
       nine interface languages.
-- [ ] Photo, name and headline, contact and languages in the right column; summary, education,
+- [x] Photo, name and headline, contact and languages in the right column; summary, education,
       experience, skills and custom sections in the left one, in the order the user set.
-- [ ] Both papers reach the foot of every page, the side column's on the right of each.
-- [ ] With a photo it shows in a circle; without one, no empty space. With an empty name or headline,
+- [x] Both papers reach the foot of every page, the side column's on the right of each.
+- [x] With a photo it shows in a circle; without one, no empty space. With an empty name or headline,
       nothing is left behind.
-- [ ] Side titles on their pale band; main titles in capitals, in Montserrat; the font select sets
+- [x] Side titles on their pale band; main titles in capitals, in Montserrat; the font select sets
       the text and the name, not the titles.
-- [ ] Education entries two by two; experience with its squares; custom sections on a timeline.
-- [ ] Skills in two columns with a circle and initials each; a bar where a level is given, none
+- [x] Education entries two by two; experience with its squares; custom sections on a timeline.
+- [x] Skills in two columns with a circle and initials each; a bar where a level is given, none
       otherwise; languages with a bar when their level is recognised, the level text always.
-- [ ] The accent picker sets both papers and the circles, and the text stays readable on them.
-- [ ] The side column on page one, with the existing warning if it cannot fit (spec 033).
+- [x] The accent picker sets both papers and the circles, and the text stays readable on them.
+- [x] The side column on page one, with the existing warning if it cannot fit (spec 033).
 
 ### Output
-- [ ] The direct PDF and the print match the paged preview (`qa:pdf`), the papers, circles, squares
+- [x] The direct PDF and the print match the paged preview (`qa:pdf`), the papers, circles, squares
       and timeline included.
-- [ ] A Minimalist PDF imports back complete (`qa:roundtrip`): the skills' initials are not taken for
+- [x] A Minimalist PDF imports back complete (`qa:roundtrip`): the skills' initials are not taken for
       skills, the two-by-two entries are read whole.
-- [ ] Nothing overflows on the 360 px phone or the 1024 px laptop (`qa:consistency`).
+- [x] Nothing overflows on the 360 px phone or the 1024 px laptop (`qa:consistency`).
 
 ### Quality
-- [ ] `npm test`, `npm run build`, `qa:e2e`, `qa:pdf`, `qa:roundtrip`, `qa:consistency` pass.
-- [ ] Screenshots with the sample CV, with and without a photo, the default accent and a dark one.
+- [x] `npm test`, `npm run build`, `qa:e2e`, `qa:pdf`, `qa:roundtrip`, `qa:consistency` pass.
+- [x] Screenshots with the sample CV, with and without a photo, the default accent and a dark one.
+
+## Verification
+
+`npm test` (`minimalistTemplate.test.ts`: the side column on the right, the photo circle and an empty
+CV, the bands and the links in Contact, pairs, squares and the timeline, skill circles with their
+initials and bars, language bars, Montserrat titles, both papers on every page, and the initials of
+thirteen names; a side column with only its languages, the levels at its edge and a name across their
+strip in `pdfLayout.test.ts`; initials left out, a wrapped headline and the space after an opening
+quote in `pdfImport.test.ts` and `pdfLayout.test.ts`; in a clean copy, since the local Vitest cache
+keeps the registry from before `minimalist/`), `vue-tsc`, `npm run build`. `qa:pdf minimalist` 33/33
+(sample, photo, long, break, long name, long words, a growing side column), `qa:roundtrip` 532/532
+(every template; Minimalist: name, headline, e-mail, experience 2/2, education, skills 12/12 without
+their initials, languages 3/3), `qa:e2e` 231/231, `qa:consistency` 13/13 over 425 views, `qa:security`
+57/57. Screenshots of the sample with a photo and without one, with the default accent and a dark one,
+of a three-page CV in the direct PDF and of the gallery card.
+
+Beyond the plan: the first roundtrip found the skills as "Ty TypeScript" and the side column not read
+as one (one known heading; its levels looked like a third column, which the name crossed), so name,
+headline and languages were lost; and a headline that wraps in the side column, with the space a
+printed PDF leaves after its opening quote. Task 2 fixed the import for all of them (see the plan).
+The import also takes an e-mail for two links ("lucja.oster", "example.com") in every template; that
+was so before this spec and is left as it is.
 
 ## Out of scope
 
