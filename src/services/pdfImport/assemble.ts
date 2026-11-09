@@ -52,7 +52,7 @@ export function assembleCV(draft: ImportDraft, decisions: ReviewDecisions = {}):
   for (const section of draft.sections) {
     switch (section.kind) {
       case 'summary':
-        cv.summary = joinLines(section).trim()
+        cv.summary = joinLines({ ...section, lines: section.lines.filter((line) => !isContactLine(line.text, draft)) }).trim()
         break
       case 'experience':
         cv.experience.push(...parseExperience(section))
@@ -503,6 +503,16 @@ function splitItems(text: string): string[] {
     .split(/[,;·•|]/)
     .map((item) => item.trim())
     .filter(Boolean)
+}
+
+/**
+ * A line that is nothing but contact details the import has found already: Freelance sets its contact
+ * card, with no heading of its own, under the summary (spec 084). A sentence that names one is not.
+ */
+function isContactLine(text: string, draft: ImportDraft): boolean {
+  const details = [draft.email.value, draft.phone.value, draft.location.value, ...draft.links.map((link) => link.url)].filter(Boolean)
+  const rest = details.reduce((left, detail) => left.split(detail).join(' '), text)
+  return rest !== text && !/[\p{L}\p{N}]/u.test(rest)
 }
 
 function joinLines(section: DetectedSection): string {

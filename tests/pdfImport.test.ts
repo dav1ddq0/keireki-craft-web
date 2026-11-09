@@ -430,6 +430,24 @@ describe('links beside the e-mail (spec 084)', () => {
   })
 })
 
+describe('the contact details under the summary (spec 084)', () => {
+  const summary = (...texts: string[]) =>
+    assembleCV(analyze(doc([{ text: 'Ada Lovelace', fontSize: 22 }, { text: 'Resumen', fontSize: 15 }, ...texts.map((text) => ({ text })), { text: 'Competencias', fontSize: 15 }]))).summary
+
+  it('leaves out the lines that are only the e-mail, phone, place or a link, as Freelance sets them', () => {
+    expect(summary('Analista de sistemas,', 'con diez años de oficio.', 'ada@example.com', '+34 600 123 456', 'Valencia, España', 'github.com/ada')).toBe(
+      'Analista de sistemas, con diez años de oficio.',
+    )
+    expect(summary('Analista de sistemas.', 'ada@example.com · github.com/ada')).toBe('Analista de sistemas.')
+  })
+
+  it('keeps a sentence that names one of them', () => {
+    expect(summary('Analista de sistemas.', 'Mi obra está en github.com/ada, escríbeme a ada@example.com.', 'github.com/ada')).toBe(
+      'Analista de sistemas. Mi obra está en github.com/ada, escríbeme a ada@example.com.',
+    )
+  })
+})
+
 describe('a headline that wraps in a narrow side column (spec 083)', () => {
   const at = (text: string, y: number, fontSize = 10.9, x = 394) => ({ text, x, y, fontSize, end: x + 160 })
   const headline = (...below: Array<ReturnType<typeof at>>) =>
