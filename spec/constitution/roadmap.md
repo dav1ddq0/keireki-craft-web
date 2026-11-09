@@ -92,6 +92,7 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 - **079** · Back up to a folder on the computer by itself (Chrome, Edge): one file kept up to date and a daily copy of the last 7, named in the interface language, paused when access is not granted
 - **080** · Retro, a framed page with slab headings and black tabs; Roboto Slab and Montserrat bundled
 - **081** · Freelance, cards with a hard shadow and a heavy display name; Dela Gothic One and Work Sans bundled; the PDF import reads entries two by two
+- **082** · Fixes from the template consistency review: the direct PDF draws only what is on its page (Amber), Retro's live sheet follows the content, Ledger's long Experience starts on page 1 (each paged page laid out afresh)
 - **083** · Minimalist, a dusty rose page with the side column on the right; skills with a circle of initials; the PDF import reads a side column on the right
 - **084** · The PDF import: the e-mail is not two links; Freelance's and Retro's summaries come back whole
 

@@ -1,6 +1,6 @@
 # 082 · Fixes from the template consistency review
 
-**Status:** draft
+**Status:** done
 
 ## What it does
 
@@ -47,22 +47,22 @@ CV of two pages. 3 wastes most of the first page, the one a recruiter reads.
 
 ## Acceptance criteria
 
-- [ ] Amber, four-line name, Amber's style: the direct PDF's page 1 matches the print (`qa:pdf`
+- [x] Amber, four-line name, Amber's style: the direct PDF's page 1 matches the print (`qa:pdf`
       diff ≤ 4 %), side column, header and main column visible.
-- [ ] The direct PDF draws a box only where it is on its page: a fragment outside the sheet is not
+- [x] The direct PDF draws a box only where it is on its page: a fragment outside the sheet is not
       painted (a unit-level check on the measuring, and `qa:pdf` across all templates).
-- [ ] `qa:pdf` covers a four-line name with each template's own style, so 1 cannot come back
+- [x] `qa:pdf` covers a four-line name with each template's own style, so 1 cannot come back
       unseen.
-- [ ] Retro, live preview, a CV of 2 and 3 pages, a long name, JetBrains Mono: every line of text on
+- [x] Retro, live preview, a CV of 2 and 3 pages, a long name, JetBrains Mono: every line of text on
       the white sheet; the frame (accent above, ink below) down to the foot of the content; nothing
       painted past the page box.
-- [ ] Retro, one-page CV: the live preview unchanged (as fixed in 080 task 4).
-- [ ] Retro, paginated (print, direct PDF, paged view): unchanged, `qa:pdf` identical.
-- [ ] Ledger, the sample CV: unchanged to the eye (section heights equal within 1 px).
-- [ ] Ledger, sample with its experiences ×3 and ×4: Experience starts on page 1 and breaks between
+- [x] Retro, one-page CV: the live preview unchanged (as fixed in 080 task 4).
+- [x] Retro, paginated (print, direct PDF, paged view): unchanged, `qa:pdf` identical.
+- [x] Ledger, the sample CV: unchanged to the eye (section heights equal within 1 px).
+- [x] Ledger, sample with its experiences ×3 and ×4: Experience starts on page 1 and breaks between
       entries; no entry split; print and direct PDF agree (`qa:pdf`).
-- [ ] Ledger, spec 075's growing side column (0 to 20 extra skills): no text off its page.
-- [ ] No other template changes: `qa:pdf` and `qa:e2e` as before, `npm test`, `npm run build` pass.
+- [x] Ledger, spec 075's growing side column (0 to 20 extra skills): no text off its page.
+- [x] No other template changes: `qa:pdf` and `qa:e2e` as before, `npm test`, `npm run build` pass.
 
 ## Out of scope
 
@@ -72,3 +72,6 @@ CV of two pages. 3 wastes most of the first page, the one a recruiter reads.
 - Why paged.js leaves slivers in the next column at all: the print hides them, and after 1 the
   direct PDF does too.
 - Other templates' bands in a multi-page live preview: the review found no defect there.
+- Monogram, four-line name with its own style: the print sets the entry titles of page 2 in a
+  fallback italic, the direct PDF in the right one (`qa:pdf` "every word where the print has it").
+  A font matching question, found by the new mode, not one of the three defects; as before 082.
