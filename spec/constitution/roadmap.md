@@ -93,12 +93,11 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 - **080** · Retro, a framed page with slab headings and black tabs; Roboto Slab and Montserrat bundled
 - **081** · Freelance, cards with a hard shadow and a heavy display name; Dela Gothic One and Work Sans bundled; the PDF import reads entries two by two
 - **083** · Minimalist, a dusty rose page with the side column on the right; skills with a circle of initials; the PDF import reads a side column on the right
+- **084** · The PDF import: the e-mail is not two links; Freelance's and Retro's summaries come back whole
 
 ## Next 🔜
 
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
-
-- **084** · The PDF import: the e-mail is not two links; Freelance's and Retro's summaries come back whole
 
 ## Backlog / ideas 💡
 

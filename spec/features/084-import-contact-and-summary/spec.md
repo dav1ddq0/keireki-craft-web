@@ -1,6 +1,6 @@
 # 084 · The PDF import: the e-mail, and the summary in Freelance and Retro
 
-**Status:** proposed
+**Status:** done
 
 ## What it does
 
@@ -26,19 +26,32 @@ does not count them as failures today, only shows "partial" and "lost", so they 
 
 ## Acceptance criteria
 
-- [ ] A CV's e-mail no longer comes back as links, in any template; a link the CV has comes back once.
-- [ ] A link written inside a sentence and an e-mail on the same line are still told apart: the link
+- [x] A CV's e-mail no longer comes back as links, in any template; a link the CV has comes back once.
+- [x] A link written inside a sentence and an e-mail on the same line are still told apart: the link
       comes back, the e-mail's pieces do not.
-- [ ] Freelance's summary comes back as its own text, without the contact details; the e-mail, phone,
+- [x] Freelance's summary comes back as its own text, without the contact details; the e-mail, phone,
       place and links are still found.
-- [ ] A summary sentence that mentions an e-mail or a web address keeps it: only lines that are
+- [x] A summary sentence that mentions an e-mail or a web address keeps it: only lines that are
       nothing but a contact detail are left out.
-- [ ] Retro's summary comes back whole, in the direct PDF and in print.
-- [ ] Text beside a heading, on its row, belongs to that heading's section, whether it sits a little
+- [x] Retro's summary comes back whole, in the direct PDF and in print.
+- [x] Text beside a heading, on its row, belongs to that heading's section, whether it sits a little
       higher or lower than the heading; a line above the heading's row does not.
-- [ ] `qa:roundtrip` checks the summary and the links exactly, so "partial" and "lost" are failures
+- [x] `qa:roundtrip` checks the summary and the links exactly, so "partial" and "lost" are failures
       and the extra links are caught; it passes over every template, direct PDF and print.
-- [ ] `npm test`, `npm run build`, `qa:roundtrip` pass; the import tests cover each case.
+- [x] `npm test`, `npm run build`, `qa:roundtrip` pass; the import tests cover each case.
+
+## Verification
+
+`npm test` (`pdfImport.test.ts`: an e-mail alone and one with a long domain give no links, a link on
+the e-mail's line and one inside a sentence still come back; Freelance's order, the summary and then
+the contact lines, and a line of an e-mail and a link together, are left out of the summary, a sentence
+naming them is kept; Retro's tab, text a little lower than the heading, a line above the heading's row
+and the section before's last line close above the heading stay where they belong; each new test fails
+on the code before it, and dropping the row limit or the "right of the heading" condition fails one;
+1202 tests, and in a clean copy all but the five files that need the real tree's environment),
+`vue-tsc`, `npm run build`. `qa:roundtrip` 608/608 (every template, direct PDF and print; with the
+summary and links now exact, task 1 showed 38 link failures and 4 summary ones, all gone), `qa:e2e`
+231/231.
 
 ## Out of scope
 
