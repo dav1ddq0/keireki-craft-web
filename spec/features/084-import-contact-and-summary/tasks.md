@@ -4,4 +4,4 @@
 - [x] 2 · The e-mail is not taken for two links: `findLinks`, with tests — commit: 50c8523
 - [x] 3 · The contact details are left out of the summary: Freelance, with tests — commit: abb811a
 - [x] 4 · Text beside a heading reads after it: Retro's summary, with tests — commit: b28d075
-- [ ] 5 · Verification: suites, roundtrip over every template, criteria marked, roadmap to "Done"
+- [x] 5 · Verification: suites, roundtrip over every template, criteria marked, roadmap to "Done" — commit: d11c623
