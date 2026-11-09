@@ -5,6 +5,7 @@
 //     photo shows) and both PDFs go through PDF import (name and e-mail recovered whole).
 //   - The name, the headline and the sections PDF import rebuilds are checked too (spec 040): the experiences, education entries,
 //     skill items and languages of the uploaded CV come back in number, in every template and both PDFs.
+//     The summary and the links come back exactly (spec 084).
 //     The CV is the app's own, so this measures the heuristics on the 13 layouts, not on any PDF.
 // Usage: npm run qa:roundtrip (builds first). Files in .qa/roundtrip/.
 const fs = require('node:fs')
@@ -44,6 +45,8 @@ const diff = (a, b, at = '') => {
 const fold = (text) => text.replace(/\s+/g, ' ').toLocaleLowerCase('es')
 /** pdftotext spaces out letter-spaced text ("ca l i d a d"), so PDF text is compared without spaces. */
 const squash = (text) => fold(text).replace(/ /g, '')
+/** A link as the import may write it: without the scheme or a trailing slash. */
+const links = (cv) => cv.personal.links.map((link) => link.url.replace(/^https?:\/\//i, '').replace(/\/$/, '').toLowerCase()).sort()
 const pdfText = (file) => execFileSync('pdftotext', [file, '-']).toString()
 const pdfPages = (file) => Number(/Pages:\s+(\d+)/.exec(execFileSync('pdfinfo', [file]).toString())[1])
 const pdfImages = (file) => execFileSync('pdfimages', ['-list', file]).toString().trim().split('\n').slice(2).filter(Boolean)
@@ -166,6 +169,10 @@ const pdfImages = (file) => execFileSync('pdfimages', ['-list', file]).toString(
         if (!NAME_NOT_RECOVERED.has(id)) check(id, `${kind} PDF import recovers the name`, got.personal.fullName === src.personal.fullName, JSON.stringify(got.personal.fullName))
         check(id, `${kind} PDF import recovers the headline`, fold(got.personal.headline) === fold(src.personal.headline), JSON.stringify(got.personal.headline))
         check(id, `${kind} PDF import recovers the e-mail`, got.personal.email === src.personal.email, JSON.stringify(got.personal.email))
+        // The summary and the links whole, not just there (spec 084): the e-mail is not two links, and
+        // neither the contact details nor nothing stand for the summary.
+        check(id, `${kind} PDF import recovers the summary`, fold(got.summary).trim() === fold(src.summary).trim(), JSON.stringify(got.summary).slice(0, 90))
+        check(id, `${kind} PDF import recovers the links, and no more`, links(got).join(' ') === links(src).join(' '), links(got).join(', '))
         const items = (cv) => cv.skills.reduce((n, g) => n + g.items.length, 0)
         for (const [what, found, wanted] of [['experiences', got.experience.length, src.experience.length], ['education entries', got.education.length, src.education.length], ['skill items', items(got), items(src)], ['languages', got.languages.length, src.languages.length]]) {
           check(id, `${kind} PDF import recovers the ${what}`, found === wanted, `${found}/${wanted}`)
