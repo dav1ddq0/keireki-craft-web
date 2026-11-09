@@ -58,12 +58,12 @@ export interface ImportDraft {
  * reaches the store — the review screen (stage 3) decides what is applied.
  */
 export function analyze(doc: ExtractedDocument): ImportDraft {
-  const lines = joinNameLines(doc.lines)
+  const joined = joinNameLines(doc.lines)
   // The name is found first: it is typically the largest, boldest, shortest line
   // on the page, which is exactly the shape of a section header. Excluding it up
   // front stops it from being read as one.
-  const nameIndex = findNameIndex(lines)
-  const headings = findHeadings(lines, nameIndex)
+  const nameIndex = findNameIndex(joined)
+  const { lines, headings } = withRowAfterHeading(joined, findHeadings(joined, nameIndex), nameIndex)
   const sections = sliceSections(lines, headings)
   const headerLines = lines.slice(0, headings[0]?.index ?? Math.min(lines.length, 12))
 
@@ -251,6 +251,36 @@ function lineSpacing(lines: ExtractedLine[]): number {
   if (!gaps.length) return Infinity
   gaps.sort((a, b) => a - b)
   return gaps[Math.floor(gaps.length / 4)]!
+}
+
+/**
+ * Text set beside a heading, on its row, reads after it: Retro's tab puts the summary right of
+ * "Resumen" and a little higher, so in reading order it comes first (spec 084). A line just before a
+ * heading, on its page, starting right of the heading's end and with its baseline within the
+ * heading's type size of the heading's, moves to just after it; the headings' indices follow.
+ */
+function withRowAfterHeading(lines: ExtractedLine[], headings: HeadingHit[], skipIndex: number): { lines: ExtractedLine[]; headings: HeadingHit[] } {
+  const ordered = [...lines]
+  const moved = headings.map((heading) => ({ ...heading }))
+  for (const heading of moved) {
+    const line = ordered[heading.index]!
+    const besideAt = (index: number) => {
+      const before = ordered[index]
+      return (
+        !!before &&
+        index !== skipIndex &&
+        !moved.some((other) => other.index === index) &&
+        before.page === line.page &&
+        before.x >= line.end &&
+        Math.abs(before.y - line.y) <= line.fontSize
+      )
+    }
+    while (besideAt(heading.index - 1)) {
+      ordered.splice(heading.index - 1, 2, line, ordered[heading.index - 1]!)
+      heading.index -= 1
+    }
+  }
+  return { lines: ordered, headings: moved }
 }
 
 function sliceSections(lines: ExtractedLine[], headings: HeadingHit[]): DetectedSection[] {

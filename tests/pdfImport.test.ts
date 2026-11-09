@@ -448,6 +448,44 @@ describe('the contact details under the summary (spec 084)', () => {
   })
 })
 
+describe('text beside a heading, on its row (spec 084)', () => {
+  const at = (text: string, y: number, x: number, fontSize = 10) => ({ text, y, x, end: x + text.length * fontSize * 0.5, fontSize })
+  const cv = (...beside: Array<ReturnType<typeof at>>) =>
+    assembleCV(
+      analyze(
+        doc([
+          at('Ada Lovelace', 760, 50, 29),
+          at('ada@example.com', 694, 140, 9),
+          ...beside,
+          at('Experiencia', 616, 50, 15.5),
+          at('Analista — Cartograf 2022 - 2024', 598, 66),
+        ]),
+      ),
+    )
+
+  it('reads the text a little higher than the heading after it, as Retro\'s tab sets it', () => {
+    // In reading order the text, 5 pt above a 21 pt "Resumen", comes before the heading.
+    const imported = cv(at('Analista de sistemas con diez años de oficio.', 660, 190), at('Resumen', 655.2, 63, 21))
+    expect(imported.summary).toBe('Analista de sistemas con diez años de oficio.')
+    expect(imported.experience).toHaveLength(1)
+  })
+
+  it('keeps the text a little lower than the heading in its section', () => {
+    expect(cv(at('Resumen', 660, 63, 21), at('Analista de sistemas.', 655, 190)).summary).toBe('Analista de sistemas.')
+  })
+
+  it('leaves a line above the heading\'s row where it is', () => {
+    // 25 pt above a 21 pt heading: a line of the header, not of the heading's row.
+    expect(cv(at('Disponible desde enero.', 680, 190), at('Analista de sistemas.', 660, 190), at('Resumen', 655.2, 63, 21)).summary).toBe(
+      'Analista de sistemas.',
+    )
+  })
+
+  it('leaves the section before\'s last line, close above the heading but not beside it, in its section', () => {
+    expect(cv(at('Resumen', 690, 63, 21), at('Analista de sistemas.', 628, 63)).summary).toBe('Analista de sistemas.')
+  })
+})
+
 describe('a headline that wraps in a narrow side column (spec 083)', () => {
   const at = (text: string, y: number, fontSize = 10.9, x = 394) => ({ text, x, y, fontSize, end: x + 160 })
   const headline = (...below: Array<ReturnType<typeof at>>) =>
