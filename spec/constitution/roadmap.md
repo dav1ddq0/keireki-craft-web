@@ -96,6 +96,7 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 - **083** · Minimalist, a dusty rose page with the side column on the right; skills with a circle of initials; the PDF import reads a side column on the right
 - **084** · The PDF import: the e-mail is not two links; Freelance's and Retro's summaries come back whole
 - **085** · A pagination releases only paged.js's styles: a template's own style is never removed with them (the intermittent RangeError of `qa:pdf`)
+- **086** · The live preview marks each section that starts on a new page of the PDF: a dashed line and "New page in the PDF", over the page, at any zoom
 
 ## Next 🔜
 
