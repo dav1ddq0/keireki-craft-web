@@ -624,6 +624,7 @@ const pt: typeof es = {
     copied: 'Copiada',
     copyFailed: 'Não foi possível copiar',
     shareImage: 'Partilhar',
+    pageBreak: 'Nova página no PDF',
   },
   cv: {
     present: 'Presente',

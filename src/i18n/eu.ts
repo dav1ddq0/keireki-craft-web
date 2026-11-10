@@ -623,6 +623,7 @@ const eu: typeof es = {
     copied: 'Kopiatuta',
     copyFailed: 'Ezin izan da kopiatu',
     shareImage: 'Partekatu',
+    pageBreak: 'Orri berria PDFan',
   },
   cv: {
     present: 'Gaur egun',

@@ -623,6 +623,7 @@ const fr: typeof es = {
     copied: 'Copiée',
     copyFailed: 'Copie impossible',
     shareImage: 'Partager',
+    pageBreak: 'Nouvelle page dans le PDF',
   },
   cv: {
     present: 'Aujourd’hui',

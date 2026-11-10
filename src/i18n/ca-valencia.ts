@@ -623,6 +623,7 @@ const caValencia: typeof es = {
     copied: 'Copiat',
     copyFailed: 'No s’ha pogut copiar',
     shareImage: 'Comparteix',
+    pageBreak: 'Pàgina nova en el PDF',
   },
   cv: {
     present: 'Actualitat',

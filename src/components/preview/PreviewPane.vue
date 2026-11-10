@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /** Live, reactive preview. Paginated output is a separate component on purpose —
  *  paged.js must never touch a Vue-managed subtree (spec §6). */
-import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from 'vue'
 import { useCvStore } from '@/stores/cv'
 import { useUiStore } from '@/stores/ui'
 import { useI18n } from '@/i18n'
@@ -9,6 +9,7 @@ import { useIsCompact, useIsDesktop, useIsPhone } from '@/composables/useIsPhone
 import { getTemplate } from '@/templates/registry'
 import CvRenderer from './CvRenderer.vue'
 import CopyImageButton from './CopyImageButton.vue'
+import { measureBreakMarks, type BreakMark } from './breakMarks'
 
 const cv = useCvStore()
 const ui = useUiStore()
@@ -29,14 +30,37 @@ const zoom = ref(0.72)
 /** A4 width in CSS px (210mm at 96dpi). */
 const PAGE_PX = 793.7
 const scroller = useTemplateRef<HTMLElement>('scroller')
+const frame = useTemplateRef<HTMLElement>('frame')
 const page = useTemplateRef<HTMLElement>('page')
 const available = ref(0)
 /** The page's unscaled height: a long CV is taller than one sheet. */
 const pageHeight = ref(0)
 let observer: ResizeObserver | undefined
+let mutations: MutationObserver | undefined
 let userZoomed = false
 
+/*
+ * The sections that start on a new page of the PDF, marked over the page (spec 086): the live sheet
+ * is one continuous page, so without them a break set in the order list showed nowhere until the PDF.
+ */
+const breakMarks = ref<BreakMark[]>([])
+let measureFrame = 0
+function measureBreaks() {
+  if (measureFrame) return
+  measureFrame = requestAnimationFrame(() => {
+    measureFrame = 0
+    if (page.value && frame.value) breakMarks.value = measureBreakMarks(page.value, frame.value)
+  })
+}
+
 onMounted(() => {
+  measureBreaks()
+  // Edits, the break switch and a template swap all change the page's DOM.
+  if (typeof MutationObserver !== 'undefined' && page.value) {
+    mutations = new MutationObserver(measureBreaks)
+    mutations.observe(page.value, { childList: true, subtree: true, characterData: true, attributes: true })
+  }
+  document.fonts?.addEventListener?.('loadingdone', measureBreaks)
   if (typeof ResizeObserver === 'undefined') return
   observer = new ResizeObserver((entries) => {
     for (const entry of entries) {
@@ -48,11 +72,17 @@ onMounted(() => {
         pageHeight.value = (entry.target as HTMLElement).offsetHeight
       }
     }
+    measureBreaks()
   })
   if (scroller.value) observer.observe(scroller.value)
   if (page.value) observer.observe(page.value)
 })
-onBeforeUnmount(() => observer?.disconnect())
+onBeforeUnmount(() => {
+  observer?.disconnect()
+  mutations?.disconnect()
+  document.fonts?.removeEventListener?.('loadingdone', measureBreaks)
+  cancelAnimationFrame(measureFrame)
+})
 
 /** On phones and tablets the page is fitted to its column instead of using the slider (specs 013, 016). */
 const effectiveZoom = computed(() => {
@@ -98,6 +128,8 @@ const frameStyle = computed(() => ({
   height: pageHeight.value ? `${pageHeight.value * effectiveZoom.value}px` : undefined,
 }))
 const scaleStyle = computed(() => ({ transform: `scale(${effectiveZoom.value})` }))
+// A transform does not resize the page, so its observer misses a zoom.
+watch(effectiveZoom, measureBreaks)
 </script>
 
 <template>
@@ -141,11 +173,22 @@ const scaleStyle = computed(() => ({ transform: `scale(${effectiveZoom.value})` 
     </header>
     <!-- The phone has no toolbar: the copy button floats over the page's corner (spec 062). -->
     <div ref="scroller" class="scroll">
-      <div class="page-frame" :style="frameStyle">
+      <div ref="frame" class="page-frame" :style="frameStyle">
         <div ref="page" class="page-wrap cv-preview-paper" :style="scaleStyle" :data-highlight="highlight">
           <div class="cv-page">
             <CvRenderer :data="cv.data" :template-id="cv.templateId" />
           </div>
+        </div>
+        <!-- Beside the scaled page, not in it: the label keeps its size at any zoom, and the template's
+             DOM, the one the exports render, never holds it (spec 086). -->
+        <div
+          v-for="(mark, i) in breakMarks"
+          :key="i"
+          class="break-mark"
+          aria-hidden="true"
+          :style="{ top: `${mark.top}px`, left: `${mark.left}px`, width: `${mark.width}px` }"
+        >
+          <span class="break-label">{{ t('preview.pageBreak') }}</span>
         </div>
       </div>
     </div>
@@ -323,7 +366,32 @@ const scaleStyle = computed(() => ({ transform: `scale(${effectiveZoom.value})` 
 }
 
 .page-frame {
+  position: relative;
   flex-shrink: 0;
+}
+
+/* A dashed rule just above the section, its label at the end, over the rule (spec 086). It lies on the
+   paper, light in either theme, so it keeps the light theme's primary: the dark one's pale blue
+   hardly showed on it. */
+.break-mark {
+  --mark: #1552d9;
+  position: absolute;
+  height: 0;
+  margin-top: -4px;
+  border-top: 2px dashed var(--mark);
+  pointer-events: none;
+}
+
+.break-label {
+  position: absolute;
+  bottom: 2px;
+  inset-inline-end: 0;
+  padding: 1px 8px;
+  border-radius: var(--shape-full);
+  background: var(--mark);
+  color: #fff;
+  font: var(--type-label-small);
+  white-space: nowrap;
 }
 
 .page-wrap {

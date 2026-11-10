@@ -624,6 +624,7 @@ export default {
     copied: 'Copiado',
     copyFailed: 'No se pudo copiar',
     shareImage: 'Compartir',
+    pageBreak: 'Página nueva en el PDF',
   },
   cv: {
     present: 'Actualidad',

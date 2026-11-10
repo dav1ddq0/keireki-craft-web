@@ -623,6 +623,7 @@ const ca: typeof es = {
     copied: 'Copiat',
     copyFailed: 'No s’ha pogut copiar',
     shareImage: 'Comparteix',
+    pageBreak: 'Pàgina nova al PDF',
   },
   cv: {
     present: 'Actualitat',
