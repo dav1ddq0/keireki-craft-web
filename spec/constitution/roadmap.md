@@ -97,6 +97,7 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 - **084** · The PDF import: the e-mail is not two links; Freelance's and Retro's summaries come back whole
 - **085** · A pagination releases only paged.js's styles: a template's own style is never removed with them (the intermittent RangeError of `qa:pdf`)
 - **086** · The live preview marks each section that starts on a new page of the PDF: a dashed line and "New page in the PDF", over the page, at any zoom
+- **087** · A faster PDF: paged.js no longer downloads every font of the app before paginating, and the direct PDF unwraps each font once (first export of a visit 3–20 s → 1–3 s)
 
 ## Next 🔜
 

@@ -1,6 +1,6 @@
 # 087 · A faster PDF
 
-**Status:** in progress
+**Status:** done
 
 ## What it does
 
@@ -24,14 +24,14 @@ clicking "Descargar PDF":
 
 ## Acceptance criteria
 
-- [ ] A pagination does not request fonts the CV does not use; it still waits for the ones it does.
-- [ ] The direct PDF hands pdfkit each bundled font as plain TrueType/OpenType (converted from its
+- [x] A pagination does not request fonts the CV does not use; it still waits for the ones it does.
+- [x] The direct PDF hands pdfkit each bundled font as plain TrueType/OpenType (converted from its
       WOFF once per visit, in the browser, with no new dependency); a file that is not WOFF goes as
       it is.
-- [ ] The PDFs are the same as before: the 19 templates, a normal and a long CV — same text, fonts,
+- [x] The PDFs are the same as before: the 19 templates, a normal and a long CV — same text, fonts,
       page count and pixels.
-- [ ] First export at ~1.6 Mbit/s well under the 13–20 s of now; later exports faster than now.
-- [ ] `npm test`, `npm run build`, `qa:e2e`, `qa:pdf` as before.
+- [x] First export at ~1.6 Mbit/s well under the 13–20 s of now; later exports faster than now.
+- [x] `npm test`, `npm run build`, `qa:e2e`, `qa:pdf` as before.
 
 ## Out of scope
 
