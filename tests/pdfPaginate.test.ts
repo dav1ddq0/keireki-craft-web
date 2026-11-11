@@ -7,6 +7,11 @@ const received: string[] = []
 
 /** paged.js that builds a page and then fails, the way it did inside a `display: none` root. */
 vi.mock('pagedjs', () => ({
+  Chunker: class {
+    loadFonts() {
+      return Promise.resolve()
+    }
+  },
   Previewer: class {
     polisher = { inserted: [] as HTMLStyleElement[] }
     async preview(html: string, _css: unknown, container: HTMLElement) {

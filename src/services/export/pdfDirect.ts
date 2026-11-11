@@ -130,11 +130,66 @@ function loadFont(url: string): Promise<ArrayBuffer> {
     pending = fetch(url).then((r) => {
       if (!r.ok) throw new Error(`Font ${url}: ${r.status}`)
       return r.arrayBuffer()
-    })
+    }).then(woffToSfnt)
     pending.catch(() => fontBytes.delete(url))
     fontBytes.set(url, pending)
   }
   return pending
+}
+
+/**
+ * The TrueType/OpenType font a WOFF 1.0 file wraps; any other file as it is. Fontkit reads a WOFF
+ * table by inflating all of it again, in plain JavaScript, for every glyph it looks up: about half
+ * the drawing time of a PDF (spec 087). Unwrapped once here, it reads plain tables.
+ */
+export async function woffToSfnt(buf: ArrayBuffer): Promise<ArrayBuffer> {
+  const woff = new DataView(buf)
+  if (buf.byteLength < 44 || woff.getUint32(0) !== 0x774f4646 /* wOFF */) return buf
+  const count = woff.getUint16(12)
+  // Table directory: 20 bytes per table after the 44-byte header, sorted by tag as sfnt wants them.
+  const tables = await Promise.all(
+    Array.from({ length: count }, async (_, i) => {
+      const entry = 44 + i * 20
+      const tag = woff.getUint32(entry)
+      const offset = woff.getUint32(entry + 4)
+      const compLength = woff.getUint32(entry + 8)
+      const origLength = woff.getUint32(entry + 12)
+      const checksum = woff.getUint32(entry + 16)
+      let data = new Uint8Array(buf, offset, compLength)
+      if (compLength < origLength) {
+        const inflated = new Response(data).body!.pipeThrough(new DecompressionStream('deflate'))
+        data = new Uint8Array(await new Response(inflated).arrayBuffer())
+      }
+      if (data.length !== origLength) throw new Error('Malformed WOFF table')
+      return { tag, checksum, data }
+    }),
+  )
+  const pad = (n: number) => (n + 3) & ~3
+  const head = 12 + 16 * count
+  const out = new Uint8Array(tables.reduce((size, t) => size + pad(t.data.length), head))
+  const sfnt = new DataView(out.buffer)
+  let power = 1
+  let log = 0
+  while (power * 2 <= count) {
+    power *= 2
+    log++
+  }
+  sfnt.setUint32(0, woff.getUint32(4)) // flavor: 0x00010000 (TrueType) or 'OTTO' (CFF)
+  sfnt.setUint16(4, count)
+  sfnt.setUint16(6, power * 16) // searchRange
+  sfnt.setUint16(8, log) // entrySelector
+  sfnt.setUint16(10, count * 16 - power * 16) // rangeShift
+  let at = head
+  tables.forEach((table, i) => {
+    const record = 12 + i * 16
+    sfnt.setUint32(record, table.tag)
+    sfnt.setUint32(record + 4, table.checksum)
+    sfnt.setUint32(record + 8, at)
+    sfnt.setUint32(record + 12, table.data.length)
+    out.set(table.data, at)
+    at += pad(table.data.length)
+  })
+  return out.buffer
 }
 
 /* ---- drawing ---------------------------------------------------------------------------------- */

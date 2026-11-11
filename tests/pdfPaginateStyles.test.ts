@@ -13,6 +13,11 @@ declare global {
 
 /** paged.js that succeeds and leaves, like the real one, a style of its own and one per sheet it was given. */
 vi.mock('pagedjs', () => ({
+  Chunker: class {
+    loadFonts() {
+      return Promise.resolve()
+    }
+  },
   Handler: class {},
   registerHandlers: () => {},
   Previewer: class {

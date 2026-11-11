@@ -310,6 +310,17 @@ function registerRemeasure(pagedjs: typeof import('pagedjs')): void {
 }
 
 /**
+ * Before each layout paged.js loads every `@font-face` of the document, and this one declares all
+ * the font picker offers: about 3.4 MB on the first export of a visit, for a CV that uses two or
+ * three faces (spec 087). Those are loaded already: every caller renders the CV through
+ * `renderTemplateHtml` first, which lays it out and waits for the fonts it asks for (spec 026). So
+ * paged.js waits for the fonts in flight, and asks for no others.
+ */
+function waitForFontsInUse(pagedjs: typeof import('pagedjs')): void {
+  pagedjs.Chunker.prototype.loadFonts = () => document.fonts?.ready ?? Promise.resolve()
+}
+
+/**
  * Paginates `html` into `container` using paged.js.
  *
  * `container` MUST live outside the Vue-managed tree: paged.js chunks and
@@ -344,6 +355,7 @@ export async function paginateInto(
   try {
     const pagedjs = await import('pagedjs')
     registerRemeasure(pagedjs)
+    waitForFontsInUse(pagedjs)
     const { Previewer } = pagedjs
     previewer = new Previewer()
     // The `.cv-page` wrapper is what every print.css rule is scoped to (keep entries whole, section
