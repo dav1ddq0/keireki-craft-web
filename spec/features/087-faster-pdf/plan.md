@@ -18,6 +18,9 @@
   paged.js; an upgrade of paged.js would need checking anyway.
 - **Convert in the browser, not ship TTF files.** The WOFF twins stay as they are (smaller to
   download and cache); the conversion takes milliseconds.
+- **Speed never costs the PDF.** Found in review: the conversion needs `DecompressionStream`, which
+  the app's oldest browsers (Safari 16.2–16.3) lack, and a failure rejected the whole export. The
+  conversion now hands the WOFF on untouched when it cannot run or fails; fontkit reads it as before.
 
 ## Verification
 

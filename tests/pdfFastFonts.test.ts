@@ -68,6 +68,30 @@ describe('a WOFF font unwrapped once for the direct PDF (spec 087)', () => {
     })
   }
 
+  it('hands the WOFF on as it is where it cannot be unwrapped, so the PDF still comes out', async () => {
+    const woff = bytes('inter/files/inter-latin-400-normal.woff')
+    // A browser without DecompressionStream (Safari before 16.4, Firefox before 113).
+    // Not a fault there, so nothing is reported.
+    vi.stubGlobal('DecompressionStream', undefined)
+    const quiet = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    try {
+      expect(await woffToSfnt(woff)).toBe(woff)
+      expect(quiet).not.toHaveBeenCalled()
+    } finally {
+      vi.unstubAllGlobals()
+      quiet.mockRestore()
+    }
+    // A damaged table: its compressed bytes overwritten, so it does not inflate.
+    const damaged = woff.slice(0)
+    const view = new DataView(damaged)
+    const firstTable = view.getUint32(44 + 4)
+    new Uint8Array(damaged, firstTable, 8).fill(0xff)
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    expect(await woffToSfnt(damaged)).toBe(damaged)
+    expect(warn).toHaveBeenCalledOnce()
+    warn.mockRestore()
+  })
+
   it('leaves a file that is not WOFF as it is', async () => {
     const woff2 = bytes('inter/files/inter-latin-400-normal.woff2')
     expect(await woffToSfnt(woff2)).toBe(woff2)

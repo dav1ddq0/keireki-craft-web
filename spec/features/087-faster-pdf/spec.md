@@ -28,6 +28,9 @@ clicking "Descargar PDF":
 - [x] The direct PDF hands pdfkit each bundled font as plain TrueType/OpenType (converted from its
       WOFF once per visit, in the browser, with no new dependency); a file that is not WOFF goes as
       it is.
+- [x] Where the WOFF cannot be converted (a browser without `DecompressionStream`: Safari before
+      16.4, Firefox before 113; or a damaged file) it goes to pdfkit as it is: the PDF comes out as
+      before this spec, only slower.
 - [x] The PDFs are the same as before: the 19 templates, a normal and a long CV — same text, fonts,
       page count and pixels.
 - [x] First export at ~1.6 Mbit/s well under the 13–20 s of now; later exports faster than now.

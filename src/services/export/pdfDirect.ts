@@ -141,10 +141,23 @@ function loadFont(url: string): Promise<ArrayBuffer> {
  * The TrueType/OpenType font a WOFF 1.0 file wraps; any other file as it is. Fontkit reads a WOFF
  * table by inflating all of it again, in plain JavaScript, for every glyph it looks up: about half
  * the drawing time of a PDF (spec 087). Unwrapped once here, it reads plain tables.
+ *
+ * Where it cannot be unwrapped (a browser without `DecompressionStream`, a damaged table) the WOFF
+ * goes as it is: fontkit reads it too, only slower, so the PDF never fails for the sake of speed.
  */
 export async function woffToSfnt(buf: ArrayBuffer): Promise<ArrayBuffer> {
+  if (buf.byteLength < 44 || new DataView(buf).getUint32(0) !== 0x774f4646 /* wOFF */) return buf
+  if (typeof DecompressionStream === 'undefined') return buf
+  try {
+    return await unwrapWoff(buf)
+  } catch (error) {
+    console.warn('[export] a WOFF font could not be unwrapped; using it as it is', error)
+    return buf
+  }
+}
+
+async function unwrapWoff(buf: ArrayBuffer): Promise<ArrayBuffer> {
   const woff = new DataView(buf)
-  if (buf.byteLength < 44 || woff.getUint32(0) !== 0x774f4646 /* wOFF */) return buf
   const count = woff.getUint16(12)
   // Table directory: 20 bytes per table after the 44-byte header, sorted by tag as sfnt wants them.
   const tables = await Promise.all(
