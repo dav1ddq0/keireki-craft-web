@@ -14,6 +14,8 @@ import DocumentCard from './DocumentCard.vue'
 import DocumentActionsSheet from './DocumentActionsSheet.vue'
 import DocumentTemplateTag from './DocumentTemplateTag.vue'
 import BackupReminder from './BackupReminder.vue'
+import HighlightedText from './HighlightedText.vue'
+import { matchesQuery } from '@/core/searchMatch'
 import type { CVSummary } from '@/types/cv'
 
 const cv = useCvStore()
@@ -35,13 +37,16 @@ const vFocusSelect = {
 }
 
 const label = (doc: CVSummary) => doc.fullName || doc.title || t('documents.untitled')
+/** The "untitled" fallback is the interface's word, not the CV's: never searched, never marked. */
+const labelQuery = (doc: CVSummary) => (doc.fullName || doc.title ? query.value : '')
 
-/** Case- and accent-insensitive, on the name and the document title (spec 018). */
-const fold = (value: string) => value.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase()
+/**
+ * Case- and accent-insensitive, on the name and the document title (spec 018), each on its own so
+ * a card that stays always shows what matched (spec 089).
+ */
 const shown = computed(() => {
-  const q = fold(query.value.trim())
-  if (!q) return cv.documents
-  return cv.documents.filter((doc) => fold(`${doc.fullName ?? ''} ${doc.title ?? ''}`).includes(q))
+  if (!query.value.trim()) return cv.documents
+  return cv.documents.filter((doc) => matchesQuery(doc.fullName ?? '', query.value) || matchesQuery(doc.title ?? '', query.value))
 })
 
 async function open(id: string) {
@@ -143,8 +148,8 @@ async function confirmDelete(id: string) {
         </li>
         <li v-for="doc in shown" :key="doc.id" class="tile" :class="{ 'tile--active': doc.id === cv.data.meta.id }">
           <button type="button" class="tile-open" @click="open(doc.id)">
-            <span class="tile-name">{{ label(doc) }}</span>
-            <span v-if="doc.title && doc.title !== label(doc)" class="meta">{{ doc.title }}</span>
+            <span class="tile-name"><HighlightedText :text="label(doc)" :query="labelQuery(doc)" /></span>
+            <span v-if="doc.title && doc.title !== label(doc)" class="meta"><HighlightedText :text="doc.title" :query="query" /></span>
             <span class="meta">{{ t('documents.updated', { date: formatDate(doc.updatedAt) }) }}</span>
             <DocumentTemplateTag :doc="doc" />
           </button>
