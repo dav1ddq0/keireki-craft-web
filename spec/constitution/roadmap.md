@@ -100,12 +100,11 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 - **087** · A faster PDF: paged.js no longer downloads every font of the app before paginating, and the direct PDF unwraps each font once (first export of a visit 3–20 s → 1–3 s)
 - **088** · A made-up bold in the direct PDF: bold italic titles (Monogram, Minimalist) as heavy as in the print; `qa:pdf` passes whole
 - **089** · My CVs marks what the search matched: the letters found in the name and the title, accents ignored
+- **090** · My CVs: each card has Open, a ⋮ menu (Rename, Duplicate) and a trash button apart; deleting is confirmed in a modal window
 
 ## Next 🔜
 
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
-
-- **090** · My CVs: each card has Open, a ⋮ menu (Rename, Duplicate) and a trash button apart; deleting is confirmed in a modal window
 
 ## Backlog / ideas 💡
 

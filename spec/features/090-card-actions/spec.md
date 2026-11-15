@@ -1,6 +1,6 @@
 # 090 · My CVs: Open, a ⋮ menu and a trash button on each card
 
-**Status:** proposed
+**Status:** done
 
 ## What it does
 
@@ -27,23 +27,23 @@ shop's cart, a file manager). The summary in the window matters because several 
 
 ## Acceptance criteria
 
-- [ ] Each card shows Abrir, ⋮ and the trash button on one row, the trash at the far end, at every
+- [x] Each card shows Abrir, ⋮ and the trash button on one row, the trash at the far end, at every
       card width the grid allows (240 px and up).
-- [ ] The ⋮ menu: opens on click, Enter or Space; arrow keys move between its two items; Esc or a
+- [x] The ⋮ menu: opens on click, Enter or Space; arrow keys move between its two items; Esc or a
       click outside closes it and the focus returns to ⋮; choosing an item closes it. Only one menu is
       open at a time.
-- [ ] Renombrar from the menu opens today's rename form in the card; Duplicar duplicates as today.
-- [ ] The trash button has an accessible name with the CV ("Eliminar «Mi CV»") and the tooltip
+- [x] Renombrar from the menu opens today's rename form in the card; Duplicar duplicates as today.
+- [x] The trash button has an accessible name with the CV ("Eliminar «Mi CV»") and the tooltip
       "Eliminar"; hover and focus show the error colour, and the bin's lid lifts (none with reduced
       motion).
-- [ ] The confirmation is a modal `<dialog>`: the page behind is dimmed and inert; the focus starts on
+- [x] The confirmation is a modal `<dialog>`: the page behind is dimmed and inert; the focus starts on
       Cancelar; Esc and Cancelar close it without deleting; Eliminar deletes and closes it; the focus
       then goes to a sensible place (the search field, or the next card).
-- [ ] The window names the CV as its card does (name, else title, else "untitled") and shows its
+- [x] The window names the CV as its card does (name, else title, else "untitled") and shows its
       template and last change.
-- [ ] Light and dark theme; text and icons keep 4.5:1 (3:1 for icons) over their background.
-- [ ] Strings in the nine interface languages.
-- [ ] `npm test`, `npm run build`, `qa:e2e` (updated for the new controls). `qa:pdf` not run: no
+- [x] Light and dark theme; text and icons keep 4.5:1 (3:1 for icons) over their background.
+- [x] Strings in the nine interface languages.
+- [x] `npm test`, `npm run build`, `qa:e2e` (updated for the new controls). `qa:pdf` not run: no
       export is touched.
 
 ## Out of scope
