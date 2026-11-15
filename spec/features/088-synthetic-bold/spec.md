@@ -36,5 +36,11 @@ print has it": Desarrolladora, Senior, Full-Stack, Grado, Ingeniería on page 2)
 - A made-up italic (oblique) for families with no italic file (Roboto Slab, Dela Gothic One): no
   template asks for it.
 - `font-synthesis: none`: no template uses it.
+- Semi-transparent text with a made-up bold (found in review): a PDF fills and strokes the outline
+  as two paints, so where they overlap, a band about half the stroke wide (≈ 0.15 pt at 10 pt), the
+  text is darker: at an opacity of 0.85, 98 % against 85 %. Chromium paints one shape. pdfkit has no
+  transparency groups to avoid it. No template reaches it today: the made-up bold titles (Monogram,
+  Minimalist) are opaque; it would show in Modern's, Meridian's and Harbor's side group titles (650,
+  opacity 0.85) with a font that has no bold, such as Dela Gothic One.
 - Viewers that draw a thin stroke at least a pixel wide (poppler) show this bold a little heavier at
   low zoom.

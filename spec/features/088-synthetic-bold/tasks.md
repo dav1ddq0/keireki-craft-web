@@ -9,3 +9,8 @@
     bold check fails (−31.2 %).
   - `npm test` 1217 passed (3 skipped), typecheck and build OK, `qa:e2e` 231/231, `qa:pdf` 485/485
     (`monogram-longname4` passes; two new checks).
+- [x] 3 · From the review: the limit with semi-transparent text noted under "Out of scope"; the direct PDF of the three `qa:pdf` fixtures made by one helper (`directFixturePdf`)
+  - Review of 7e7f99c: mutations of `syntheticBold` — `> 600` and no face check fail the tests;
+    the face's own limit (`<= 600`, `< 700`) does not, a case no bundled family reaches (left as is).
+  - `qa:pdf monogram` 35/35 after the refactor: fixture, look and bold checks with the same figures
+    (bold +2.9 %, italic +0.9 %).

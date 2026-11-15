@@ -296,6 +296,34 @@ function shapeBands(img) {
   return bands
 }
 
+/**
+ * A fixture page through the direct PDF in the app's page, written to `.qa/pdf/<name>.direct.pdf`.
+ * `font`, a CSS font shorthand, is loaded first where the page asks for a face the app has not used.
+ */
+async function directFixturePdf(page, name, html, css, font) {
+  const direct = await page.evaluate(
+    async ([name, html, css, font, SRC]) => {
+      const { paginateInto, releasePagination } = await import(`${SRC}/services/export/pdf.ts`)
+      const { pdfFromPagination } = await import(`${SRC}/services/export/pdfDirect.ts`)
+      if (font) await document.fonts.load(font)
+      const host = document.createElement('div')
+      host.style.cssText = 'position:fixed;left:-10000px;top:0'
+      document.body.appendChild(host)
+      try {
+        if (!(await paginateInto(host, html, { app: css, print: '' }))) throw new Error('Pagination failed')
+        return window.__base64(await pdfFromPagination(host, name, 'en'))
+      } finally {
+        releasePagination(host)
+        host.remove()
+      }
+    },
+    [name, html, css, font ?? null, SRC],
+  )
+  const file = path.join(OUT, `${name}.direct.pdf`)
+  fs.writeFileSync(file, Buffer.from(direct, 'base64'))
+  return file
+}
+
 async function compareFixture(browser, page) {
   const printPage = await browser.newPage()
   await printPage.setContent(`<!doctype html><html><head><style>${FIXTURE_CSS} body{margin:0}</style></head><body>${FIXTURE_HTML}</body></html>`)
@@ -303,25 +331,7 @@ async function compareFixture(browser, page) {
   fs.writeFileSync(printPdf, await printPage.pdf({ preferCSSPageSize: true, printBackground: true }))
   await printPage.close()
 
-  const direct = await page.evaluate(
-    async ([html, css, SRC]) => {
-      const { paginateInto, releasePagination } = await import(`${SRC}/services/export/pdf.ts`)
-      const { pdfFromPagination } = await import(`${SRC}/services/export/pdfDirect.ts`)
-      const host = document.createElement('div')
-      host.style.cssText = 'position:fixed;left:-10000px;top:0'
-      document.body.appendChild(host)
-      try {
-        if (!(await paginateInto(host, html, { app: css, print: '' }))) throw new Error('Pagination failed')
-        return window.__base64(await pdfFromPagination(host, 'Fixture', 'en'))
-      } finally {
-        releasePagination(host)
-        host.remove()
-      }
-    },
-    [FIXTURE_HTML, FIXTURE_CSS, SRC],
-  )
-  const directPdf = path.join(OUT, 'fixture.direct.pdf')
-  fs.writeFileSync(directPdf, Buffer.from(direct, 'base64'))
+  const directPdf = await directFixturePdf(page, 'fixture', FIXTURE_HTML, FIXTURE_CSS)
 
   const [print] = renderPages(printPdf, FIXTURE_DPI)
   const [conv] = renderPages(directPdf, FIXTURE_DPI)
@@ -376,25 +386,7 @@ async function compareLook(browser, page) {
   const printPdf = path.join(OUT, 'look.print.pdf')
   fs.writeFileSync(printPdf, await printPage.pdf({ preferCSSPageSize: true, printBackground: true }))
   await printPage.close()
-  const direct = await page.evaluate(
-    async ([html, css, SRC]) => {
-      const { paginateInto, releasePagination } = await import(`${SRC}/services/export/pdf.ts`)
-      const { pdfFromPagination } = await import(`${SRC}/services/export/pdfDirect.ts`)
-      const host = document.createElement('div')
-      host.style.cssText = 'position:fixed;left:-10000px;top:0'
-      document.body.appendChild(host)
-      try {
-        if (!(await paginateInto(host, html, { app: css, print: '' }))) throw new Error('Pagination failed')
-        return window.__base64(await pdfFromPagination(host, 'Look', 'en'))
-      } finally {
-        releasePagination(host)
-        host.remove()
-      }
-    },
-    [LOOK_HTML, FIXTURE_CSS, SRC],
-  )
-  const directPdf = path.join(OUT, 'look.direct.pdf')
-  fs.writeFileSync(directPdf, Buffer.from(direct, 'base64'))
+  const directPdf = await directFixturePdf(page, 'look', LOOK_HTML, FIXTURE_CSS)
   const [print] = renderPages(printPdf, FIXTURE_DPI)
   const [conv] = renderPages(directPdf, FIXTURE_DPI)
   const [a, b] = [inked(print), inked(conv)]
@@ -439,26 +431,7 @@ async function compareSyntheticBold(browser, page) {
   const printPdf = path.join(OUT, 'bold.print.pdf')
   fs.writeFileSync(printPdf, await printPage.pdf({ preferCSSPageSize: true, printBackground: true }))
   await printPage.close()
-  const direct = await page.evaluate(
-    async ([html, css, SRC]) => {
-      const { paginateInto, releasePagination } = await import(`${SRC}/services/export/pdf.ts`)
-      const { pdfFromPagination } = await import(`${SRC}/services/export/pdfDirect.ts`)
-      await document.fonts.load('italic 700 14pt Gelasio')
-      const host = document.createElement('div')
-      host.style.cssText = 'position:fixed;left:-10000px;top:0'
-      document.body.appendChild(host)
-      try {
-        if (!(await paginateInto(host, html, { app: css, print: '' }))) throw new Error('Pagination failed')
-        return window.__base64(await pdfFromPagination(host, 'Bold', 'en'))
-      } finally {
-        releasePagination(host)
-        host.remove()
-      }
-    },
-    [BOLD_HTML, BOLD_CSS, SRC],
-  )
-  const directPdf = path.join(OUT, 'bold.direct.pdf')
-  fs.writeFileSync(directPdf, Buffer.from(direct, 'base64'))
+  const directPdf = await directFixturePdf(page, 'bold', BOLD_HTML, BOLD_CSS, 'italic 700 14pt Gelasio')
   const p = lineInk(renderPages(printPdf, FIXTURE_DPI)[0])
   const d = lineInk(renderPages(directPdf, FIXTURE_DPI)[0])
   if (p.length !== 2 || d.length !== 2) {
