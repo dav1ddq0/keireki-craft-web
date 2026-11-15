@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /** Multi-CV management (spec §8.2, phase 4). */
-import { computed, ref } from 'vue'
+import { computed, nextTick, ref, useTemplateRef } from 'vue'
 import { useCvStore } from '@/stores/cv'
 import { useUiStore } from '@/stores/ui'
 import { formatDate, useI18n } from '@/i18n'
@@ -15,6 +15,8 @@ import DocumentActionsSheet from './DocumentActionsSheet.vue'
 import DocumentTemplateTag from './DocumentTemplateTag.vue'
 import BackupReminder from './BackupReminder.vue'
 import HighlightedText from './HighlightedText.vue'
+import DocumentTileActions from './DocumentTileActions.vue'
+import DeleteDocumentDialog from './DeleteDocumentDialog.vue'
 import { matchesQuery } from '@/core/searchMatch'
 import type { CVSummary } from '@/types/cv'
 
@@ -22,7 +24,8 @@ const cv = useCvStore()
 const ui = useUiStore()
 const { t, locale } = useI18n()
 
-const pendingDelete = ref<string | null>(null)
+const pendingDelete = ref<CVSummary | null>(null)
+const searchField = useTemplateRef<HTMLInputElement>('searchField')
 const isPhone = useIsPhone()
 const menuDoc = ref<CVSummary | null>(null)
 const query = ref('')
@@ -95,9 +98,14 @@ async function removeFromMenu(id: string) {
   menuDoc.value = null
 }
 
-async function confirmDelete(id: string) {
-  await cv.remove(id)
+/** Desktop: deleting is confirmed in a dialog (spec 090); its card is gone, so the focus goes to the search. */
+async function confirmDelete() {
+  const doc = pendingDelete.value
+  if (!doc) return
+  await cv.remove(doc.id)
   pendingDelete.value = null
+  await nextTick()
+  searchField.value?.focus()
 }
 </script>
 
@@ -134,7 +142,7 @@ async function confirmDelete(id: string) {
       <label class="search">
         <span class="sr-only">{{ t('documents.search') }}</span>
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
-        <input v-model="query" type="search" :placeholder="t('documents.search')" />
+        <input ref="searchField" v-model="query" type="search" :placeholder="t('documents.search')" />
         <span class="count">{{ cv.documents.length === 1 ? t('documents.countOne') : t('documents.count', { n: cv.documents.length }) }}</span>
       </label>
 
@@ -166,23 +174,17 @@ async function confirmDelete(id: string) {
               </BaseButton>
             </div>
           </form>
-          <div v-else-if="pendingDelete === doc.id" class="confirm">
-            <span class="confirm-text">{{ t('documents.deleteConfirm', { title: doc.title }) }}</span>
-            <BaseButton size="sm" @click="pendingDelete = null">{{ t('actions.cancel') }}</BaseButton>
-            <BaseButton size="sm" variant="danger" @click="confirmDelete(doc.id)">
-              {{ t('actions.confirm') }}
-            </BaseButton>
-          </div>
-          <div v-else class="actions">
-            <BaseButton size="sm" @click="open(doc.id)">{{ t('actions.open') }}</BaseButton>
-            <BaseButton size="sm" @click="startRename(doc)">{{ t('actions.rename') }}</BaseButton>
-            <BaseButton size="sm" @click="cv.duplicate(doc.id)">{{ t('actions.duplicate') }}</BaseButton>
-            <BaseButton size="sm" variant="danger" @click="pendingDelete = doc.id">
-              {{ t('actions.remove') }}
-            </BaseButton>
-          </div>
+          <DocumentTileActions
+            v-else
+            :title="label(doc)"
+            @open="open(doc.id)"
+            @rename="startRename(doc)"
+            @duplicate="cv.duplicate(doc.id)"
+            @remove="pendingDelete = doc"
+          />
         </li>
       </ul>
+      <DeleteDocumentDialog :open="pendingDelete !== null" :doc="pendingDelete" @close="pendingDelete = null" @confirm="confirmDelete" />
       <p v-if="query && !shown.length" class="empty">{{ t('documents.noMatch', { q: query }) }}</p>
     </template>
     <!-- On a phone the dock keeps its three actions; the backup sits with the list (spec 078). -->
@@ -361,7 +363,6 @@ async function confirmDelete(id: string) {
   color: var(--text-muted);
 }
 
-.actions,
 .confirm {
   display: flex;
   align-items: center;
@@ -404,10 +405,5 @@ async function confirmDelete(id: string) {
 .big {
   min-height: 52px;
   justify-content: center;
-}
-
-.confirm-text {
-  font-size: var(--size-12);
-  color: var(--text-muted);
 }
 </style>
