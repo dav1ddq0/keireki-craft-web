@@ -1,6 +1,6 @@
 # 088 · A made-up bold in the direct PDF
 
-**Status:** in progress
+**Status:** done
 
 ## What it does
 
@@ -23,13 +23,13 @@ print has it": Desarrolladora, Senior, Full-Stack, Grado, Ingeniería on page 2)
 
 ## Acceptance criteria
 
-- [ ] Bold asked for (600 or more) of a bundled face lighter than that is drawn filled and stroked,
+- [x] Bold asked for (600 or more) of a bundled face lighter than that is drawn filled and stroked,
       the stroke a 32nd of the size: the ink of the print, ± 6 %. A real bold face, bold not asked
       for, and the PDF standard fonts are drawn as before.
-- [ ] `qa:pdf` compares a Type 3 word of the print by its x and by lying within its box; a word drawn
+- [x] `qa:pdf` compares a Type 3 word of the print by its x and by lying within its box; a word drawn
       a line off still fails.
-- [ ] `qa:pdf` checks the ink of a made-up bold (and of the italic beside it) against the print.
-- [ ] `npm test`, `npm run build`, `qa:e2e`, `qa:pdf` pass, `monogram-longname4` included.
+- [x] `qa:pdf` checks the ink of a made-up bold (and of the italic beside it) against the print.
+- [x] `npm test`, `npm run build`, `qa:e2e`, `qa:pdf` pass, `monogram-longname4` included.
 
 ## Out of scope
 
