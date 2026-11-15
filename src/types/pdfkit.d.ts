@@ -8,6 +8,9 @@ declare module 'pdfkit' {
     baseline?: 'alphabetic' | 'top' | number
     characterSpacing?: number
     horizontalScaling?: number
+    /** Both true: text render mode 2, the outline filled and stroked (a made-up bold, spec 088). */
+    fill?: boolean
+    stroke?: boolean
   }
 
   interface StandardFontData {
@@ -35,6 +38,7 @@ declare module 'pdfkit' {
     lineWidth(width: number): this
     lineCap(cap: 'butt' | 'round' | 'square'): this
     lineJoin(join: 'miter' | 'round' | 'bevel'): this
+    miterLimit(limit: number): this
     dash(length: number, options?: { space?: number; phase?: number }): this
     undash(): this
     text(text: string, x: number, y: number, options?: TextOptions): this

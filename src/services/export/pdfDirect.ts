@@ -117,6 +117,14 @@ export function standardFont(stack: string[], weight: number, italic: boolean): 
   return `Helvetica${bold ? '-Bold' : ''}${italic ? (bold ? 'Oblique' : '-Oblique') : ''}`
 }
 
+/**
+ * Whether the browser makes the bold up: bold asked for (600 or more) and only a lighter face of the
+ * family to draw it with, as with every bundled italic (spec 088). Chrome then thickens the outlines.
+ */
+export function syntheticBold(face: Face | null, weight: number): boolean {
+  return !!face && weight >= 600 && face.weight < 600
+}
+
 /** `…/inter-latin-400-normal-C38fXH4l.woff2` (built) or `…/inter-latin-400-normal.woff2` (dev) → its WOFF URL. */
 export function woffFor(woff2Url: string): string {
   const file = woff2Url.split('/').pop()!.replace(/\.woff2$/, '')
@@ -669,12 +677,19 @@ async function drawRun(
   // wrong measurement cannot stretch a word visibly.
   const natural = c.doc.widthOfString(text, { characterSpacing: spacing })
   const scaling = natural > 0 ? Math.min(115, Math.max(85, ((rect.width * c.k - spacing) / natural) * 100)) : 100
+  // A bold the browser made up is drawn as it does: the outline stroked as well as filled, a 32nd of
+  // the size wide (Skia's fake bold; it matched the print's ink, spec 088).
+  const bolder = syntheticBold(face, weight)
+  if (bolder) c.doc.save().lineWidth(size / 32).lineJoin('miter').miterLimit(4).strokeColor(rgbOf(color), color.a)
   c.doc.text(text, X(c, rect.left), Y(c, rect.bottom - descent), {
     lineBreak: false,
     baseline: 'alphabetic',
     characterSpacing: spacing,
     horizontalScaling: scaling,
+    fill: true,
+    stroke: bolder,
   })
+  if (bolder) c.doc.restore()
 }
 
 function drawLinks(c: Ctx, page: Element) {

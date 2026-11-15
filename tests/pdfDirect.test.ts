@@ -11,6 +11,7 @@ import {
   pickFace,
   shapePath,
   standardFont,
+  syntheticBold,
   transformText,
   woffFor,
   type Face,
@@ -189,5 +190,23 @@ describe('a box only where it is on its page (spec 082)', () => {
 
   it('keeps a box that runs past the edge of the page, as the print clips it there', () => {
     expect(boxOnPage([box(-34, 0, 828, 1200)], page)).toEqual(box(-34, 0, 828, 1200))
+  })
+})
+
+describe('a bold the browser makes up (spec 088)', () => {
+  const a = 'a'.codePointAt(0)!
+  it('is made up where bold is asked for and the face picked is lighter: every bundled italic', () => {
+    // Monogram's entry titles: 700 italic, and the family has only a 400 italic.
+    expect(syntheticBold(pickFace(FACES, ['source sans 3'], 700, true, a), 700)).toBe(true)
+    // Minimalist's: 600 italic.
+    expect(syntheticBold(pickFace(FACES, ['source sans 3'], 600, true, a), 600)).toBe(true)
+  })
+
+  it('is not where the family has the bold, where bold is not asked for, or for a standard font', () => {
+    expect(syntheticBold(pickFace(FACES, ['source sans 3'], 700, false, a), 700)).toBe(false)
+    expect(syntheticBold(pickFace(FACES, ['source sans 3'], 500, true, a), 500)).toBe(false)
+    expect(syntheticBold(pickFace(FACES, ['source sans 3'], 400, true, a), 400)).toBe(false)
+    // A system-font stack goes out in Times-Bold or Helvetica-Bold, a real bold.
+    expect(syntheticBold(faceFor(FACES, ['georgia', 'serif'], 700, true, a), 700)).toBe(false)
   })
 })

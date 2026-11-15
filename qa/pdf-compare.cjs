@@ -6,6 +6,7 @@
 //      high); with the long words, no text out of its column or the page (spec 074);
 //   2. a fixture page (half-opaque box, list bullet, dashed and dotted borders) printed by Chromium
 //      and converted, compared shape by shape, which the whole-page threshold is too coarse to see;
+//      a bold the browser makes up (spec 088), inked as much as in the print;
 //   3. the side-column warning (spec 033): off for the sample, on for a side column longer than a page;
 //   4. a growing side column (spec 075): every template, the sample plus 0 to 20 skills, no text laid
 //      out off its page in the print, the direct PDF with the same pages and text, and the warning
@@ -47,14 +48,14 @@ function check(name, ok, detail = '') {
 const isBlank = (img) => img.pixels.every((v) => v > 250)
 const pdfText = (pdf) => execFileSync('pdftotext', [pdf, '-']).toString().replace(/\s+/g, '').toLowerCase()
 
-/** Each word of a PDF with its page and top-left corner, in points. */
+/** Each word of a PDF with its page, top-left corner and bottom, in points. */
 function pdfWords(pdf) {
   const html = execFileSync('pdftotext', ['-bbox', pdf, '-']).toString()
   const words = []
   let page = -1
-  for (const m of html.matchAll(/<page |<word xMin="([\d.]+)" yMin="([\d.]+)"[^>]*>([^<]*)<\/word>/g)) {
+  for (const m of html.matchAll(/<page |<word xMin="([\d.]+)" yMin="([\d.]+)" xMax="[\d.]+" yMax="([\d.]+)">([^<]*)<\/word>/g)) {
     if (m[0] === '<page ') page++
-    else words.push({ page, x: Number(m[1]), y: Number(m[2]), text: m[3] })
+    else words.push({ page, x: Number(m[1]), y: Number(m[2]), bottom: Number(m[3]), text: m[4] })
   }
   return words
 }
@@ -62,14 +63,22 @@ function pdfWords(pdf) {
 /**
  * Words of the print that the direct PDF draws more than `tolerance` points away (spec 072). Words
  * of four letters or more: letter-spaced headings come out of pdftotext as single letters.
+ * A bold Chromium makes up (spec 088) goes into its PDF as a Type 3 font, whose words pdftotext boxes
+ * with the whole font's height: Gelasio's is twice a line. Where the print's box is taller by more
+ * than the tolerance, the word must start where it does and lie within that box; a word drawn a line
+ * off still falls outside it.
  */
 function misplacedWords(printPdf, directPdf, tolerance = 3) {
   const direct = pdfWords(directPdf)
+  const away = (p, d) =>
+    p.bottom - p.y - (d.bottom - d.y) > tolerance
+      ? Math.abs(d.x - p.x) > tolerance || d.y < p.y - tolerance || d.bottom > p.bottom + tolerance
+      : Math.hypot(d.x - p.x, d.y - p.y) > tolerance
   return pdfWords(printPdf)
     .filter((word) => word.text.length >= 4)
     .filter((word) => {
       const same = direct.filter((other) => other.page === word.page && other.text === word.text)
-      return same.length > 0 && Math.min(...same.map((o) => Math.hypot(o.x - word.x, o.y - word.y))) > tolerance
+      return same.length > 0 && same.every((other) => away(word, other))
     })
     .map((word) => `${word.text} (p${word.page + 1})`)
 }
@@ -392,6 +401,75 @@ async function compareLook(browser, page) {
   check('look: soft shadow, ring, SVG disc and round stroke inked as much as the print (± 4 %)', Math.abs(a - b) / a <= 0.04, `inked pixels print ${a}, direct ${b}`)
 }
 
+/* ---- fixture: a bold the browser makes up (spec 088) -------------------------------------------- */
+
+// Gelasio has no bold italic: Chromium thickens its 400 italic. The print page declares only that face
+// (the app declares the same file for the direct PDF); the second line, real italic, is the control.
+const GELASIO_ITALIC = path.join(ROOT, 'node_modules/@fontsource/gelasio/files/gelasio-latin-400-italic.woff2')
+const BOLD_HTML = `
+<div style="padding:20mm;margin:0;font:italic 14pt/1.6 Gelasio;color:#000">
+  <p style="margin:0;font-weight:700">Desarrolladora Senior · Ingeniería Informática · Grado en Matemáticas</p>
+  <p style="margin:10mm 0 0;font-weight:400">Desarrolladora Senior · Ingeniería Informática · Grado en Matemáticas</p>
+</div>`
+const BOLD_CSS = '@page { size: A4; margin: 0 }'
+/** Ink of the rows of each line of text, as the sum of how dark each pixel is. */
+function lineInk(img) {
+  const rows = []
+  for (let y = 0; y < img.height; y++) {
+    let ink = 0
+    for (let x = 0; x < img.width; x++) ink += 255 - img.pixels[y * img.width + x]
+    rows.push(ink)
+  }
+  const lines = []
+  for (let y = 0; y < rows.length; y++) {
+    if (!rows[y]) continue
+    if (!lines.length || !rows[y - 1]) lines.push(0)
+    lines[lines.length - 1] += rows[y]
+  }
+  return lines
+}
+
+async function compareSyntheticBold(browser, page) {
+  const printPage = await browser.newPage()
+  const font = `data:font/woff2;base64,${fs.readFileSync(GELASIO_ITALIC).toString('base64')}`
+  await printPage.setContent(
+    `<!doctype html><html><head><style>@font-face { font-family: Gelasio; font-style: italic; font-weight: 400; src: url(${font}) format('woff2') } ${BOLD_CSS} body{margin:0}</style></head><body>${BOLD_HTML}</body></html>`,
+  )
+  await printPage.evaluate(() => document.fonts.load('italic 400 14pt Gelasio'))
+  const printPdf = path.join(OUT, 'bold.print.pdf')
+  fs.writeFileSync(printPdf, await printPage.pdf({ preferCSSPageSize: true, printBackground: true }))
+  await printPage.close()
+  const direct = await page.evaluate(
+    async ([html, css, SRC]) => {
+      const { paginateInto, releasePagination } = await import(`${SRC}/services/export/pdf.ts`)
+      const { pdfFromPagination } = await import(`${SRC}/services/export/pdfDirect.ts`)
+      await document.fonts.load('italic 700 14pt Gelasio')
+      const host = document.createElement('div')
+      host.style.cssText = 'position:fixed;left:-10000px;top:0'
+      document.body.appendChild(host)
+      try {
+        if (!(await paginateInto(host, html, { app: css, print: '' }))) throw new Error('Pagination failed')
+        return window.__base64(await pdfFromPagination(host, 'Bold', 'en'))
+      } finally {
+        releasePagination(host)
+        host.remove()
+      }
+    },
+    [BOLD_HTML, BOLD_CSS, SRC],
+  )
+  const directPdf = path.join(OUT, 'bold.direct.pdf')
+  fs.writeFileSync(directPdf, Buffer.from(direct, 'base64'))
+  const p = lineInk(renderPages(printPdf, FIXTURE_DPI)[0])
+  const d = lineInk(renderPages(directPdf, FIXTURE_DPI)[0])
+  if (p.length !== 2 || d.length !== 2) {
+    check('bold: two lines in both PDFs', false, `print ${p.length}, direct ${d.length}`)
+    return
+  }
+  const pct = (a, b) => `${((b / a - 1) * 100).toFixed(1)} %`
+  check('bold: a made-up bold inked as much as the print (± 6 %)', Math.abs(d[0] / p[0] - 1) <= 0.06, `direct ${pct(p[0], d[0])}`)
+  check('bold: the italic beside it unchanged (± 6 %)', Math.abs(d[1] / p[1] - 1) <= 0.06, `direct ${pct(p[1], d[1])}`)
+}
+
 /* ---- side-column warning ---------------------------------------------------------------------- */
 
 async function checkSideColumn(page) {
@@ -504,6 +582,7 @@ async function checkSideGrowth(page, url, ids) {
     const ids = only ?? (await page.evaluate(async (SRC) => (await import(`${SRC}/templates/registry.ts`)).templates.map((t) => t.id), SRC))
     await compareFixture(browser, page)
     await compareLook(browser, page)
+    await compareSyntheticBold(browser, page)
     await checkSideColumn(page)
     await compareTemplates(page, server.url, ids)
     await checkSideGrowth(page, server.url, ids)
