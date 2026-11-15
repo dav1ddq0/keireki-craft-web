@@ -16,3 +16,5 @@
   - The lid: rotated 16° on hover; `none` with `prefers-reduced-motion: reduce`.
   - `npm test` 1232 passed (3 skipped), build OK, `qa:e2e` 232/232. `qa:pdf` not run: no export is
     touched.
+- [x] 3 · From the user, after: on hover or focus the bin grows a little (×1.15) and trembles, as an iOS app about to be deleted (±7°, 0.32 s, repeated while hovered); the lid no longer lifts; none with reduced motion
+  - Built site: at rest no animation and no scale; on hover `jiggle` (rotation swinging between about −7° and +7°) and scale 1.15; nothing with `prefers-reduced-motion: reduce`. No console errors. Build OK.

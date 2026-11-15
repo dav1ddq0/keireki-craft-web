@@ -34,7 +34,7 @@ shop's cart, a file manager). The summary in the window matters because several 
       open at a time.
 - [x] Renombrar from the menu opens today's rename form in the card; Duplicar duplicates as today.
 - [x] The trash button has an accessible name with the CV ("Eliminar «Mi CV»") and the tooltip
-      "Eliminar"; hover and focus show the error colour, and the bin's lid lifts (none with reduced
+      "Eliminar"; hover and focus show the error colour, the bin grows a little and trembles, as an iOS app about to be deleted (none with reduced
       motion).
 - [x] The confirmation is a modal `<dialog>`: the page behind is dimmed and inert; the focus starts on
       Cancelar; Esc and Cancelar close it without deleting; Eliminar deletes and closes it; the focus

@@ -19,8 +19,7 @@ const { t } = useI18n()
     <span class="trash-wrap">
       <button type="button" class="trash m3-state m3-target" :aria-label="t('documents.deleteOne', { title: props.title })" @click="emit('remove')">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <!-- The lid on its own, so it can lift on hover. -->
-          <g class="lid"><path d="M4 7h16" /><path d="M9 7V4h6v3" /></g>
+          <path d="M4 7h16" /><path d="M9 7V4h6v3" />
           <path d="M10 11v6" /><path d="M14 11v6" /><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" />
         </svg>
       </button>
@@ -92,17 +91,31 @@ const { t } = useI18n()
   opacity: 1;
 }
 
-/* On hover or focus the lid lifts from its right end, as a bin opening; never with reduced motion. */
+/* On hover or focus the bin grows a little and trembles, as an iOS app about to be deleted; never
+   with reduced motion. `scale` is apart from `transform`, so the growth eases in under the tremble. */
 @media (prefers-reduced-motion: no-preference) {
-  .lid {
-    transform-box: fill-box;
-    transform-origin: right bottom;
-    transition: transform var(--duration-short) var(--motion-standard);
+  .trash svg {
+    transform-origin: 50% 60%;
+    transition: scale var(--duration-short) var(--motion-standard);
   }
 
-  .trash:hover .lid,
-  .trash:focus-visible .lid {
-    transform: translateY(-1px) rotate(16deg);
+  .trash:hover svg,
+  .trash:focus-visible svg {
+    scale: 1.15;
+    animation: jiggle 0.32s ease-in-out infinite;
+  }
+
+  @keyframes jiggle {
+    0%,
+    100% {
+      transform: rotate(0);
+    }
+    25% {
+      transform: rotate(-7deg);
+    }
+    75% {
+      transform: rotate(7deg);
+    }
   }
 }
 
