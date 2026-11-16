@@ -99,12 +99,12 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', onPointerDown)
     <div v-if="open" :id="menuId" role="menu" class="menu" :aria-label="t('documents.more', { title: props.title })" @keydown="onMenuKeydown">
       <button type="button" role="menuitem" tabindex="-1" class="item m3-state" @click="choose('rename')">
         <!-- A text field with its cursor: renaming, not editing the CV. -->
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 7H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h9" /><path d="M19 5v14" /><path d="M17 5h4" /><path d="M17 19h4" /><path d="M7 12h4" /></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 7H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h9" /><g class="caret"><path d="M19 5v14" /><path d="M17 5h4" /><path d="M17 19h4" /></g><path d="M7 12h4" /></svg>
         {{ t('actions.rename') }}
       </button>
       <button type="button" role="menuitem" tabindex="-1" class="item m3-state" @click="choose('duplicate')">
-        <!-- A page with a plus: a new copy, not the clipboard. -->
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" /><path d="M14 3v5h5" /><path d="M12 11v6" /><path d="M9 14h6" /></svg>
+        <!-- A page with a plus: a new copy, not the clipboard. Behind it, the copy that rises on hover. -->
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="sheet" d="M7.5 3V2.5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2h-.5" /><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" /><path d="M14 3v5h5" /><path d="M12 11v6" /><path d="M9 14h6" /></svg>
         {{ t('actions.duplicate') }}
       </button>
     </div>
@@ -134,7 +134,7 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', onPointerDown)
   --layer: calc(var(--state-pressed) * 100%);
 }
 
-/* M3 menu: a container surface, level 2, 4 dp corners; under ⋮, over the cards below. */
+/* M3 menu under ⋮, over the cards below. */
 .menu {
   position: absolute;
   top: calc(100% + 4px);
@@ -169,5 +169,50 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', onPointerDown)
 .item svg {
   flex-shrink: 0;
   color: var(--md-on-surface-variant);
+}
+
+/* The copy behind the page shows only when it rises (below). */
+.sheet {
+  opacity: 0;
+}
+
+/* On hover or keyboard focus each icon acts out its item: Renombrar's cursor steps out of the field and
+   blinks; Duplicar's copy rises from behind the page. Both in primary; none with reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .item svg {
+    overflow: visible;
+  }
+
+  .caret,
+  .sheet {
+    transition:
+      translate var(--duration-short) var(--motion-standard),
+      opacity var(--duration-short) var(--motion-standard),
+      color var(--duration-short) var(--motion-standard);
+  }
+
+  .sheet {
+    translate: -2.5px 2.5px;
+  }
+
+  .item:hover .caret,
+  .item:focus-visible .caret {
+    color: var(--md-primary);
+    translate: 2px 0;
+    animation: blink 1s step-end infinite;
+  }
+
+  .item:hover .sheet,
+  .item:focus-visible .sheet {
+    color: var(--md-primary);
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  @keyframes blink {
+    60% {
+      opacity: 0;
+    }
+  }
 }
 </style>

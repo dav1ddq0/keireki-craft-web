@@ -18,3 +18,6 @@
     touched.
 - [x] 3 · From the user, after: on hover or focus the bin grows a little (×1.15) and trembles, as an iOS app about to be deleted (±7°, 0.32 s, repeated while hovered); the lid no longer lifts; none with reduced motion
   - Built site: at rest no animation and no scale; on hover `jiggle` (rotation swinging between about −7° and +7°) and scale 1.15; nothing with `prefers-reduced-motion: reduce`. No console errors. Build OK.
+- [x] 4 · From the user (a screencast): Renombrar's and Duplicar's icons come alive on hover or keyboard focus, in primary: the cursor steps 2 px out of the field and blinks (1 s); a second page rises from behind the first, up and right; none with reduced motion
+  - Built site, light and dark: at rest as before (the copy hidden); on hover the caret in primary, moved 2 px, `blink`; on Duplicar the copy at full opacity in primary; ↓ onto Duplicar with the keyboard shows it too. With `reduce`: no movement, no copy. No console errors.
+  - `npm test` 1232 passed (3 skipped), build OK, `qa:e2e` 232/232.
