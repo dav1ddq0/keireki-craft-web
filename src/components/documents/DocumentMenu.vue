@@ -143,10 +143,11 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', onPointerDown)
   display: flex;
   flex-direction: column;
   min-width: 180px;
-  padding: 8px 0;
-  border-radius: var(--shape-xs);
-  background: var(--md-surface-container);
-  box-shadow: var(--elevation-2);
+  /* The recipe of the app's floating lists: the selects' (spec 091), the phone prefix's, the AI's. */
+  padding: 4px;
+  border-radius: var(--shape-md);
+  background: var(--md-surface-container-highest);
+  box-shadow: var(--elevation-3), inset 0 0 0 1px var(--md-outline-variant);
 }
 
 .item {
@@ -157,6 +158,7 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', onPointerDown)
   min-height: 44px;
   padding: 0 16px;
   border: 0;
+  border-radius: var(--shape-sm);
   color: var(--md-on-surface);
   font: var(--type-body-medium);
   text-align: left;

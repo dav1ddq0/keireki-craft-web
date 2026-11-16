@@ -260,6 +260,10 @@ function apply(mode: 'new' | 'current') {
 }
 
 .assign select {
+  /* The native control's width (its longest option); a customizable select (spec 091) sizes to the
+     chosen one. */
+  min-width: 8rem;
+  min-height: 28px;
   padding: 4px 8px;
   border: 1px solid var(--border);
   border-radius: var(--shape-md);

@@ -71,6 +71,9 @@ const palette = computed(() => getTemplate(cv.templateId).palette ?? PALETTE)
           :disabled-reason="fontReason"
         >
           <select :id="id" v-model="style.fontFamily" :disabled="!fontSupported">
+            <!-- Where a customizable select shows the long value, so it can end in an ellipsis (spec 091);
+                 a native select does not render it. -->
+            <button type="button" class="select-value"><selectedcontent></selectedcontent></button>
             <option v-for="font in FONT_OPTIONS" :key="font.id" :value="font.value">
               {{ font.label }} · {{ t(`style.fonts.${font.id}`) }}{{ font.bundled ? '' : ` · ${t('style.systemFont')}` }}
             </option>

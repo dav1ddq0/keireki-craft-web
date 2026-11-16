@@ -86,7 +86,13 @@ function buildCommit(): string {
 // site without the domain (/<repo>/).
 export default defineConfig({
   base: process.env.BASE_PATH ?? '/',
-  plugins: [vue(), contentSecurityPolicy(), serviceWorker()],
+  plugins: [
+    // `<selectedcontent>` is the HTML element a customizable select shows its value in (spec 091),
+    // not a Vue component.
+    vue({ template: { compilerOptions: { isCustomElement: (tag) => tag === 'selectedcontent' } } }),
+    contentSecurityPolicy(),
+    serviceWorker(),
+  ],
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },

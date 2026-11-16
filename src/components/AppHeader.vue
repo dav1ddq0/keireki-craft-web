@@ -186,6 +186,9 @@ const phoneState = computed(() => {
 
 .select {
   min-height: 40px;
+  /* The width the native control took from its longest option; a customizable select (spec 091)
+     sizes to the chosen one, and the header would shift on each change. */
+  min-width: 8rem;
   padding: 0 8px;
   border: 1px solid var(--md-outline-variant);
   border-radius: var(--shape-md);

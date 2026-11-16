@@ -106,6 +106,8 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
 
+- **091** · Drop-down lists in the app's own look: the ten selects open a Material 3 list (16 px card, 8 px options, ✓ on the chosen one); the ⋮ menu of the cards to the same recipe
+
 ## Backlog / ideas 💡
 
 - **Phase 5–6 — Backend**: stateless FastAPI service, then sync. Out of scope for v1; the app must stay fully usable with the backend permanently absent.

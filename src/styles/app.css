@@ -273,6 +273,138 @@ optgroup {
   color: var(--md-on-surface);
 }
 
+/*
+ * The open list in the app's own look (spec 091): the customizable select. Only where the browser has
+ * it and with a mouse; elsewhere the native list above stays, and a phone keeps its own picker. The
+ * list follows the recipe of the app's other floating lists (phone prefix, AI): a md card on the
+ * highest container with elevation 3 and a thin edge, sm options.
+ */
+@supports (appearance: base-select) {
+  @media (pointer: fine) {
+    select,
+    ::picker(select) {
+      appearance: base-select;
+    }
+
+    /*
+     * The closed field as it was: base-select brings a border, a radius and a background of its own,
+     * honours line-height (the native control ignored it) and wraps a long value onto a second line.
+     * The fields' own rules (BaseField, the header, the skill level, the PDF review) still win.
+     */
+    select {
+      border: 0;
+      border-radius: 0;
+      background-color: transparent;
+      line-height: normal;
+      white-space: nowrap;
+    }
+
+    /* A long value (the font) ends in an ellipsis before the chevron instead of pushing it out. */
+    select > .select-value {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      width: 100%;
+      padding: 0;
+      border: 0;
+      background: none;
+      color: inherit;
+      font: inherit;
+      letter-spacing: inherit;
+    }
+
+    select > .select-value selectedcontent {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* A chevron, as the native control drew, instead of base-select's filled triangle. */
+    select::picker-icon {
+      content: '';
+      width: 18px;
+      height: 18px;
+      background-color: currentColor;
+      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") center / contain no-repeat;
+      color: var(--md-on-surface-variant);
+      transition: rotate var(--duration-short) var(--motion-standard);
+    }
+
+    select:open::picker-icon {
+      rotate: 180deg;
+    }
+
+    ::picker(select) {
+      min-width: anchor-size(width);
+      max-height: min(360px, 60vh);
+      margin-block: 4px;
+      padding: 4px;
+      border: 0;
+      border-radius: var(--shape-md);
+      background: var(--md-surface-container-highest);
+      color: var(--md-on-surface);
+      box-shadow: var(--elevation-3), inset 0 0 0 1px var(--md-outline-variant);
+    }
+
+    select option {
+      --container: transparent;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 44px;
+      padding: 0 16px;
+      border-radius: var(--shape-sm);
+      background: var(--container);
+      color: var(--md-on-surface);
+      font: var(--type-body-large);
+      letter-spacing: var(--tracking-body-large);
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    select option:hover,
+    select option:focus-visible {
+      --container: color-mix(in srgb, var(--md-on-surface) calc(var(--state-hover) * 100%), transparent);
+      outline: none;
+    }
+
+    select option:checked {
+      --container: var(--md-secondary-container);
+      color: var(--md-on-secondary-container);
+      font-weight: 500;
+    }
+
+    select option:checked:hover,
+    select option:checked:focus-visible {
+      --container: color-mix(in srgb, var(--md-on-secondary-container) calc(var(--state-hover) * 100%), var(--md-secondary-container));
+    }
+
+    select option::checkmark {
+      color: currentColor;
+    }
+  }
+}
+
+@media (forced-colors: active) {
+  ::picker(select) {
+    border: 1px solid CanvasText;
+  }
+
+  /* The chevron is a mask over a background, which forced colours would blank. */
+  select::picker-icon {
+    forced-color-adjust: none;
+    background-color: ButtonText;
+  }
+
+  select option:checked {
+    forced-color-adjust: none;
+    background: SelectedItem;
+    color: SelectedItemText;
+  }
+}
+
 :where(a) {
   color: var(--accent);
 }
