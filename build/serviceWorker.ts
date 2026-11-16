@@ -99,7 +99,10 @@ self.addEventListener('fetch', (event) => {
 /** Files of the site the app itself never asks for: the link card and the crawlers' files (spec 066). */
 const NOT_FOR_THE_APP = new Set(['og-image.png', 'robots.txt', 'sitemap.xml', 'sw.js'])
 
+/** Pages of the site beside the app: the Android app's privacy policy (spec 092). */
+const SITE_PAGES = 'android/'
+
 /** The files fetched ahead: everything the app may ask for, the country flags included. */
 export function precacheOf(known: string[]): string[] {
-  return known.filter((file) => !NOT_FOR_THE_APP.has(file))
+  return known.filter((file) => !NOT_FOR_THE_APP.has(file) && !file.startsWith(SITE_PAGES))
 }

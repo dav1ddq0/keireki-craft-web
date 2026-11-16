@@ -162,4 +162,9 @@ describe('Service worker (spec 067)', () => {
     const files = ['assets/app-1.js', 'assets/es-1.svg', 'assets/es-1.js', 'og-image.png', 'robots.txt', 'sitemap.xml', 'icon-512.png']
     expect(precacheOf(files)).toEqual(['assets/app-1.js', 'assets/es-1.svg', 'assets/es-1.js', 'icon-512.png'])
   })
+
+  it('does not precache the pages beside the app: the Android privacy policy (spec 092)', () => {
+    const files = ['assets/app-1.js', 'android/privacidad.html', 'android/privacy.html', 'icon-512.png']
+    expect(precacheOf(files)).toEqual(['assets/app-1.js', 'icon-512.png'])
+  })
 })
