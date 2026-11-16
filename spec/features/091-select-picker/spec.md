@@ -1,6 +1,6 @@
 # 091 · Drop-down lists in the app's own look
 
-**Status:** in progress
+**Status:** done
 
 ## What it does
 
@@ -29,18 +29,18 @@ recipe.
 
 ## Acceptance criteria
 
-- [ ] In Chrome/Edge 135+ with a mouse, each of the ten selects opens a list as on the canvas, light
+- [x] In Chrome/Edge 135+ with a mouse, each of the ten selects opens a list as on the canvas, light
       and dark.
-- [ ] The closed field of each select looks as before (size, text, arrow, border, focus, disabled).
-- [ ] Keyboard as today: Enter/Space/↓ open, arrows move, Enter chooses, Esc closes; typing a letter
+- [x] The closed field of each select looks as before (size, text, arrow, border, focus, disabled).
+- [x] Keyboard as today: Enter/Space/↓ open, arrows move, Enter chooses, Esc closes; typing a letter
       jumps; screen readers name the field and the options as before.
-- [ ] A long list (font) scrolls inside the card; a list near the bottom of the window opens above.
-- [ ] Browsers without the feature (Firefox, Safari before 27) and touch screens keep their native
+- [x] A long list (font) scrolls inside the card; a list near the bottom of the window opens above.
+- [x] Browsers without the feature (Firefox, Safari before 27) and touch screens keep their native
       list; nothing breaks.
-- [ ] The ⋮ menu of the cards: 16 px corners, `surface-container-highest`, elevation 3 with its edge,
+- [x] The ⋮ menu of the cards: 16 px corners, `surface-container-highest`, elevation 3 with its edge,
       8 px item corners.
-- [ ] Text 4.5:1 over its background in both themes; forced colours keep the list legible.
-- [ ] `npm test`, build, `qa:e2e`, `qa:consistency`.
+- [x] Text 4.5:1 over its background in both themes; forced colours keep the list legible.
+- [x] `npm test`, build, `qa:e2e`, `qa:consistency`.
 
 ## Out of scope
 

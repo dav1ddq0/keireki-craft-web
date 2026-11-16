@@ -101,12 +101,11 @@ _Completed before this SDD process was adopted; listed here for context, not tra
 - **088** · A made-up bold in the direct PDF: bold italic titles (Monogram, Minimalist) as heavy as in the print; `qa:pdf` passes whole
 - **089** · My CVs marks what the search matched: the letters found in the name and the title, accents ignored
 - **090** · My CVs: each card has Open, a ⋮ menu (Rename, Duplicate) and a trash button apart; deleting is confirmed in a modal window
+- **091** · Drop-down lists in the app's own look: the ten selects open a Material 3 list (16 px card, 8 px options, ✓ on the chosen one); the ⋮ menu of the cards to the same recipe
 
 ## Next 🔜
 
 <!-- Add the next feature as `XXX · <Name>` once its features/XXX-.../spec.md exists. -->
-
-- **091** · Drop-down lists in the app's own look: the ten selects open a Material 3 list (16 px card, 8 px options, ✓ on the chosen one); the ⋮ menu of the cards to the same recipe
 
 ## Backlog / ideas 💡
 
