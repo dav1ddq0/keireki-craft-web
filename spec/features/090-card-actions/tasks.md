@@ -21,3 +21,5 @@
 - [x] 4 · From the user (a screencast): Renombrar's and Duplicar's icons come alive on hover or keyboard focus, in primary: the cursor steps 2 px out of the field and blinks (1 s); a second page rises from behind the first, up and right; none with reduced motion
   - Built site, light and dark: at rest as before (the copy hidden); on hover the caret in primary, moved 2 px, `blink`; on Duplicar the copy at full opacity in primary; ↓ onto Duplicar with the keyboard shows it too. With `reduce`: no movement, no copy. No console errors.
   - `npm test` 1232 passed (3 skipped), build OK, `qa:e2e` 232/232.
+- [x] 5 · From the review: with the keyboard the bin trembles three times (about 1 s) and stops, since the focus can rest on it (back from the dialog with Esc) and a tremble without end would distract (WCAG 2.2.2); under the pointer it goes on
+  - Built site: Enter on the trash, Esc back on it: trembling at once, no animation running 1.3 s later (still at ×1.15); then under the pointer `infinite` and running; at rest none. With `reduce`: nothing. No console errors. Build OK, `qa:e2e` 232/232.

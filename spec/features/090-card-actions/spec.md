@@ -36,7 +36,7 @@ shop's cart, a file manager). The summary in the window matters because several 
 - [x] On hover or keyboard focus the menu icons act out their item, in primary: Renombrar's cursor steps
       out of the field and blinks; Duplicar's copy rises from behind the page (none with reduced motion).
 - [x] The trash button has an accessible name with the CV ("Eliminar «Mi CV»") and the tooltip
-      "Eliminar"; hover and focus show the error colour, the bin grows a little and trembles, as an iOS app about to be deleted (none with reduced
+      "Eliminar"; hover and focus show the error colour, the bin grows a little and trembles, as an iOS app about to be deleted (with the keyboard three times and still; none with reduced
       motion).
 - [x] The confirmation is a modal `<dialog>`: the page behind is dimmed and inert; the focus starts on
       Cancelar; Esc and Cancelar close it without deleting; Eliminar deletes and closes it; the focus

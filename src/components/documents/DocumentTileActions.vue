@@ -99,8 +99,14 @@ const { t } = useI18n()
     transition: scale var(--duration-short) var(--motion-standard);
   }
 
-  .trash:hover svg,
+  /* With the keyboard it trembles three times and stops: the focus can rest here (back from the
+     dialog) and a tremble without end would distract (WCAG 2.2.2). Under the pointer it goes on. */
   .trash:focus-visible svg {
+    scale: 1.15;
+    animation: jiggle 0.32s ease-in-out 3;
+  }
+
+  .trash:hover svg {
     scale: 1.15;
     animation: jiggle 0.32s ease-in-out infinite;
   }
